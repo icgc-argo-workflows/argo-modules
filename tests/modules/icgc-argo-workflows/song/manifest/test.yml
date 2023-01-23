@@ -1,0 +1,10 @@
+## TODO nf-core: Please run the following command to build this file:
+#                nf-core modules create-test-yml song/manifest
+- name: "song manifest"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/manifest -entry test_song_manifest -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/song/manifest/nextflow.config
+  tags:
+    - "song"
+    - "song/manifest"
+  files:
+    - path: "output/song_manifest/out/manifest.txt"
+    - path: "output/song_manifest/versions.yml"
