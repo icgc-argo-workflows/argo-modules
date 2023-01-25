@@ -8,7 +8,6 @@ keywords:
   - validation
 tools:
   - song:
-      ## TODO nf-core: Add a description and other details for the software below
       description: |
         SONG is a robust metadata and validation system used to quickly and reliably track genome metadata 
         scattered across multiple cloud storage systems.

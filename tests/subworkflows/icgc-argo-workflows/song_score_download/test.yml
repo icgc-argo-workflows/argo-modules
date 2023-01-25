@@ -1,5 +1,4 @@
-## TODO nf-core: Please run the following command to build this file:
-#                nf-core subworkflows create-test-yml 
+
 - name: "song_score_download"
   command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_download -entry test_song_score_download -c ./tests/config/nextflow.config -c ./tests/subworkflows/icgc-argo-workflows/song_score_download/nextflow.config
   tags:

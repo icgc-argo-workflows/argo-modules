@@ -14,7 +14,6 @@ tools:
       doi: ""
       licence: ["MIT"]
 
-## TODO nf-core: Add a description of all of the variables used as input
 input:
   - files_to_delete:
       type: file
