@@ -1,0 +1,8 @@
+
+- name: "song submit"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/submit -entry test_song_submit -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/song/submit/nextflow.config
+  tags:
+    - "song"
+    - "song/submit"
+  files:
+    - path: "output/song_submit/versions.yml"

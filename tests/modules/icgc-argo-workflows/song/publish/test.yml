@@ -1,0 +1,8 @@
+
+- name: "song publish"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/publish -entry test_song_publish -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/song/publish/nextflow.config
+  tags:
+    - "song"
+    - "song/publish"
+  files:
+    - path: "output/song/versions.yml"

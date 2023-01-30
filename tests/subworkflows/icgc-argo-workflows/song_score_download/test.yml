@@ -1,0 +1,14 @@
+
+- name: "song_score_download"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_download -entry test_song_score_download -c ./tests/config/nextflow.config -c ./tests/subworkflows/icgc-argo-workflows/song_score_download/nextflow.config
+  tags:
+    - "subworkflows"
+    - "subworkflows/song_score_download"
+  files:
+    - path: "output/songget/b953d8e4-41d2-4334-93d8-e441d213346d.analysis.json"
+    - path: "output/songget/versions.yml"
+    - path: "output/scoredn/out/TEST-PR.DO250183.SA610228.wgs.20210324.gatk-mutect2.somatic.contamination_metrics.tgz"
+    - path: "output/scoredn/out/TEST-PR.DO250183.SA610229.wgs.20210324.gatk-mutect2.somatic.contamination_metrics.tgz"
+    - path: "output/scoredn/out/TEST-PR.DO250183.SA610229.wgs.20210324.gatk-mutect2.somatic.mutect_callable_metrics.tgz"
+    - path: "output/scoredn/out/TEST-PR.DO250183.SA610229.wgs.20210324.gatk-mutect2.somatic.mutect_filtering_metrics.tgz"
+    - path: "output/scoredn/versions.yml"

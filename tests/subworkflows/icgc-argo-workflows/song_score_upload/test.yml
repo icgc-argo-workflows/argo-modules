@@ -1,0 +1,11 @@
+
+- name: "song_score_upload"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload -c ./tests/config/nextflow.config -c ./tests/subworkflows/icgc-argo-workflows/song_score_upload/nextflow.config
+  tags:
+    - "subworkflows"
+    - "subworkflows/song_score_upload"
+  files:
+    - path: output/songsub/versions.yml
+    - path: output/songman/versions.yml
+    - path: output/songman/out/manifest.txt
+    - path: output/songpub/versions.yml
