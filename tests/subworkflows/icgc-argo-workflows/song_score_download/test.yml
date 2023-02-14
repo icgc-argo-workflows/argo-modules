@@ -12,7 +12,7 @@
     - path: "output/scoredn/versions.yml"
 
 - name: "song_score_download_user"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_download -entry test_song_score_download_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --analysis_id YOUR_ANALYSIS_ID
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_download -entry test_song_score_download_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --analysis_id YOUR_ANALYSIS_ID
   tags:
     - "subworkflows"
     - "subworkflows/song_score_download"
