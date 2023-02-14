@@ -1,6 +1,6 @@
 
 - name: "song manifest"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/song/manifest -entry test_song_manifest -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/song/manifest/nextflow.config
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/manifest -entry test_song_manifest_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
   tags:
     - "song"
     - "song/manifest"

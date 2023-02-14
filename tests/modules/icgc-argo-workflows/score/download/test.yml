@@ -1,11 +1,16 @@
 
-- name: "score download"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_score_download -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/score/download/nextflow.config
+- name: "score download in rdpc qa"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_score_download_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
   tags:
     - "score"
     - "score/download"
   files:
-    - path: "output/score/test.bam"
-      md5sum: e667c7caad0bc4b7ac383fd023c654fc
-    - path: "output/score/versions.yml"
-      md5sum: a01fe51bc4c6a3a6226fbf77b2c7cf3b
+    - path: "output/score_download/out/COLO-829-BL_ex.bam"
+
+- name: "score download with user provide params"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_score_download_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --analysis_id YOUR_ANALYSIS_ID --analysis YOUR_ANALYSIS
+  tags:
+    - "score"
+    - "score/download"
+  files:
+    - path: "output/score_download/out/*.*"
