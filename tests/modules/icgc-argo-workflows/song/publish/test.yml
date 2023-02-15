@@ -1,6 +1,6 @@
 
 - name: "song publish"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/song/publish -entry test_song_publish -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/song/publish/nextflow.config
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/publish -entry test_song_publish -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
   tags:
     - "song"
     - "song/publish"

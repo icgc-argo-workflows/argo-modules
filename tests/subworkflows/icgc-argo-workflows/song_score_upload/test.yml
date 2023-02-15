@@ -1,6 +1,6 @@
 
 - name: "song_score_upload"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload -c ./tests/config/nextflow.config -c ./tests/subworkflows/icgc-argo-workflows/song_score_upload/nextflow.config
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN 
   tags:
     - "subworkflows"
     - "subworkflows/song_score_upload"
@@ -8,4 +8,17 @@
     - path: output/songsub/versions.yml
     - path: output/songman/versions.yml
     - path: output/songman/out/manifest.txt
+    - path: output/scoreup/versions.yml
+    - path: output/songpub/versions.yml
+
+- name: "song_score_upload"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --payload YOUR_PAYLOAD --upload_files YOUR_FILES
+  tags:
+    - "subworkflows"
+    - "subworkflows/song_score_upload"
+  files:
+    - path: output/songsub/versions.yml
+    - path: output/songman/versions.yml
+    - path: output/songman/out/manifest.txt
+    - path: output/scoreup/versions.yml
     - path: output/songpub/versions.yml
