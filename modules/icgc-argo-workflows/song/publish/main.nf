@@ -13,11 +13,10 @@ process SONG_PUBLISH {
     }
 
     input:
-    val study_id
-    val analysis_id
+    tuple val(meta), val(analysis_id)
 
     output:
-    val analysis_id               , emit: analysis_id
+    tuple val(meta), val(analysis_id)             , emit: analysis_id
     path "versions.yml"           , emit: versions
 
     when:
@@ -28,6 +27,7 @@ process SONG_PUBLISH {
     def prefix = task.ext.prefix ?: "${analysis_id}"
     def song_url = task.ext.song_url ?: ""
     def accessToken = task.ext.api_token ?: "`cat /tmp/rdpc_secret/secret`"
+    def study_id = "${meta.study_id}"
     def VERSION = task.ext.song_container_version ?: '5.0.2'
     """
     export CLIENT_SERVER_URL=${song_url}

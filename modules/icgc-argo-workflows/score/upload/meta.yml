@@ -16,6 +16,11 @@ tools:
       licence: ["MIT"]
 
 input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
   - analysis_id:
       type: string
       description: SONG metadata analysis ID 
@@ -27,13 +32,18 @@ input:
       description: List of input files to upload
 
 output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - analysis_id:
+      type: string
+      description: SONG metadata analysis ID of the uploaded files
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-  - ready_to_publish:
-      type: string
-      description: SONG metadata analysis ID of the uploaded files
 
 authors:
   - "@lespalex"

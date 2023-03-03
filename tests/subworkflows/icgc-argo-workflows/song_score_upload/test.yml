@@ -12,7 +12,7 @@
     - path: output/songpub/versions.yml
 
 - name: "song_score_upload"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --payload YOUR_PAYLOAD --upload_files YOUR_FILES
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/song_score_upload -entry test_song_score_upload_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --payload YOUR_PAYLOAD --upload_files "[YOUR_FILES]"
   tags:
     - "subworkflows"
     - "subworkflows/song_score_upload"
