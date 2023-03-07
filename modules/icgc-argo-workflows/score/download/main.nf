@@ -15,14 +15,13 @@ process SCORE_DOWNLOAD {
     }
 
     input:
-    path analysis
-    val study_id
-    val analysis_id
+    tuple val(study_id), val(analysis_id), path(analysis)
 
     output:
-    path analysis                 , emit: analysis_json
-    path 'out/*'                  , emit: files
-    path "versions.yml"           , emit: versions
+    path analysis                        , emit: analysis_json
+    path 'out/*'                         , emit: files
+    tuple path(analysis), path('out/*')  , emit: analysis_files
+    path "versions.yml"                  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

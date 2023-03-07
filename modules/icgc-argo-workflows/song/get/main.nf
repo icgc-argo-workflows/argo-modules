@@ -12,11 +12,11 @@ process SONG_GET {
     }
 
     input:
-    val study_id
-    val analysis_id
+    tuple val(study_id), val(analysis_id)
 
     output:
-    path("*.analysis.json"), emit: json
+    tuple val(study_id), val(analysis_id), path("*.analysis.json"), emit: analysis_json
+    path "*.analysis.json", emit: json
     path "versions.yml", emit: versions
 
     when:

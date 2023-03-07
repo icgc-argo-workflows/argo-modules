@@ -1,6 +1,6 @@
 
 process SONG_SUBMIT {
-    tag "${study_id}"
+    tag "$meta.study_id"
     label 'process_single'
 
     pod = [secret: workflow.runName + "-secret", mountPath: "/tmp/rdpc_secret"]
@@ -14,11 +14,11 @@ process SONG_SUBMIT {
     }
 
     input:
-    val study_id
-    path payload
+    tuple val(meta), path(payload), path(files)
 
     output:
     stdout emit: analysis_id
+    tuple val(meta), stdout, path(payload), path(files), emit: analysis_files
     path "versions.yml"           , emit: versions
 
     when:
@@ -29,6 +29,7 @@ process SONG_SUBMIT {
     def song_url = task.ext.song_url ?: ""
     def accessToken = task.ext.api_token ?: "`cat /tmp/rdpc_secret/secret`"
     def VERSION = task.ext.song_container_version ?: '5.0.2'
+    def study_id = "${meta.study_id}"
     """
     export CLIENT_SERVER_URL=${song_url}
     export CLIENT_STUDY_ID=${study_id}

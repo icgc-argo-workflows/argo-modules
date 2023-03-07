@@ -6,20 +6,20 @@ include { SCORE_DOWNLOAD } from '../../../../../modules/icgc-argo-workflows/scor
 
 // Test with data in rdpc-qa
 workflow test_score_download_rdpcqa {
-    
-    study_id = params.test_data['rdpc_qa']['study_id']
-    analysis_id = params.test_data['rdpc_qa']['analysis_id']
-    analysis = file(params.test_data['rdpc_qa']['analysis'])
+    input_channel = [
+      params.test_data['rdpc_qa']['study_id'], 
+      params.test_data['rdpc_qa']['analysis_id'], 
+      file(params.test_data['rdpc_qa']['analysis'])]
 
-    SCORE_DOWNLOAD ( analysis, study_id, analysis_id )
+    SCORE_DOWNLOAD ( input_channel )
 }
 
 // Test with user provide data
 workflow test_score_download_user {
-    
-    study_id = params.study_id
-    analysis_id = params.analysis_id
-    analysis = file(params.analysis)
+    input_channel = [
+      params.study_id, 
+      params.analysis_id, 
+      file(params.analysis)]
 
-    SCORE_DOWNLOAD ( analysis, study_id, analysis_id )
+    SCORE_DOWNLOAD ( input_channel )
 }

@@ -13,13 +13,12 @@ process SONG_MANIFEST {
     }
 
     input:
-    val study_id
-    val analysis_id
-    path upload
+    tuple val(meta), val(analysis_id), path(payload), path(upload)
 
     output:
     path "out/manifest.txt"       , emit: manifest
     path "versions.yml"           , emit: versions
+    tuple val(meta), val(analysis_id), path("out/manifest.txt"), path(upload),    emit: manifest_upload
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,6 +28,7 @@ process SONG_MANIFEST {
     def prefix = task.ext.prefix ?: "${analysis_id}"
     def song_url = task.ext.song_url ?: ""
     def accessToken = task.ext.api_token ?: "`cat /tmp/rdpc_secret/secret`"
+    def study_id = "${meta.study_id}"
     def VERSION = task.ext.song_container_version ?: '5.0.2'
     """
     export CLIENT_SERVER_URL=${song_url}

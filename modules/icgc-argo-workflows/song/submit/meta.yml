@@ -18,18 +18,34 @@ tools:
       licence: ["MIT"]
 
 input:
-  - study_id:
-      type: string
-      description: SONG metadata study ID
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
   - payload:
       type: file
       description: SONG payload containing metadata for uploaded files
+  - files:
+      type: file
+      description: List of downloaded files
 
 output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
   - analysis_id:
       type: string
       description: |
         SONG metadata analysis ID for the uploaded files
+  - payload:
+      type: file
+      description: SONG payload containing metadata for uploaded files
+  - files:
+      type: file
+      description: List of downloaded files
   - versions:
       type: file
       description: File containing software versions
