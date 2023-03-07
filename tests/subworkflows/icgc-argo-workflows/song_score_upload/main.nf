@@ -16,12 +16,17 @@ workflow test_song_score_upload_rdpcqa {
 }
 
 workflow test_song_score_upload_user {
+    
+    payload_channel = Channel.of(file(params.payload))
+    files_channel = Channel.fromPath(params.upload_files).toList()
+    payload_channel.combine(files_channel.toList()).map{
+      payload,files -> [
+        [study_id:params.study_id],
+        payload,
+        files
+      ]
+    }
+    .set {input_channel}
 
-    input_channel = [
-      [study_id:params.study_id],
-      file(params.payload, checkIfExists: true),
-      [file(params.upload_files[0], checkIfExists: true),
-       file(params.upload_files[1], checkIfExists: true)]
-    ]
     SONG_SCORE_UPLOAD ( input_channel )
 }
