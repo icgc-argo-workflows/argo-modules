@@ -14,12 +14,10 @@ process SCORE_UPLOAD {
     }
 
     input:
-    val analysis_id
-    path manifest
-    path upload
+    tuple val(meta), val(analysis_id), path(manifest), path(upload)
 
     output:
-    val analysis_id               , emit: ready_to_publish
+    tuple val(meta), val(analysis_id),    emit: ready_to_publish
     path "versions.yml"           , emit: versions
 
     when:

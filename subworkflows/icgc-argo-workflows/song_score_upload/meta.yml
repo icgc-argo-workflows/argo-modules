@@ -16,18 +16,18 @@ modules:
   - score/upload
   - song/publish
 input:
-  - study_id:
-      type: string
-      description: SONG metadata study ID
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test' ]
   - payload:
       type: file
       description: SONG payload containing metadata for uploaded files
-  - upload:
+  - files:
       type: file
       description: List of files to be uploaded
-  - analysis_id:
-      type: string
-      description: SONG metadata analysis ID
+
 output:
   - analysis_id:
       type: string

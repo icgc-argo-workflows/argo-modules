@@ -10,31 +10,25 @@ include { SONG_PUBLISH as songPub } from '../../../modules/icgc-argo-workflows/s
 
 workflow SONG_SCORE_UPLOAD {
     take:
-        study_id
-        payload
-        upload
-        analysis_id
+        payload_files  //channel: [meta, payload, files]
 
     main:
         ch_versions = Channel.empty()
         
-        if (!analysis_id) {
-          // Create new analysis
-          songSub(study_id, payload)
-          analysis_id = songSub.out.analysis_id
-          ch_versions = ch_versions.mix(songSub.out.versions)
-        }
+        // Create new analysis
+        songSub(payload_files)
+        ch_versions = ch_versions.mix(songSub.out.versions)
 
         // Generate file manifest for upload
-        songMan(study_id, analysis_id, upload.collect())
+        songMan(songSub.out.analysis_files)
         ch_versions = ch_versions.mix(songMan.out.versions)
 
         // Upload to SCORE
-        scoreUp(analysis_id, songMan.out.manifest, upload.collect())
+        scoreUp(songMan.out.manifest_upload)
         ch_versions = ch_versions.mix(scoreUp.out.versions)
 
         // Publish the analysis
-        songPub(study_id, scoreUp.out.ready_to_publish)
+        songPub(scoreUp.out.ready_to_publish)
         ch_versions = ch_versions.mix(songPub.out.versions)
 
     emit:
