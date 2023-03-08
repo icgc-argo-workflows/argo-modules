@@ -50,9 +50,6 @@ def group_readgroup_by_filepair(song_analysis):
             }
 
         else:
-            if filepair_map_to_readgroup[file_r1_r2]['format'] == 'FASTQ':  # shouldn't happen but just in case
-                sys.exit('Error found: same FASTQ %s must not be associated to more than one read group\n' % \
-                    ' and '.join(file_r1_r2) if file_r1_r2[1] else file_r1_r2[0])
             filepair_map_to_readgroup[file_r1_r2]['read_groups'].append(rg)
 
         # make sure no duplicate of read_group_id_in_bam (when populated) within the same bam
@@ -122,6 +119,7 @@ def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), stu
 
         if rg_id_found:
             rg_id_fn = readgroup_id_to_fname(rg_id, os.path.basename(bam), study_id, donor_id, sample_id)
+            # 0x900 == 2304 == not primary alignment + supplementary alignments
             if rg['is_paired_end']:
               cmd = f"samtools collate -uO --threads {cpu} {lane_bam} | \
                 samtools fastq -N -O -F 0x900 --threads {cpu} -0 {out_dir}/{rg_id_fn}_other.fq.gz \
@@ -146,7 +144,7 @@ def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), stu
             
             if read_group_info:
               rg_kv = [ '@RG' ] + [ '%s:%s' % (k, v) for k, v in read_group_info.items() ]
-              rg_array = "\""+'\\t'.join(rg_kv)+"\""
+              rg_array = "\'"+'\\t'.join(rg_kv)+"\'"
 
             sample_sheet[rg['submitter_read_group_id']].update({'read_group': rg_array}) 
 
@@ -250,7 +248,12 @@ def main():
     donor_id = song_analysis['samples'][0]['donor']['donorId']
     sample_id = song_analysis['samples'][0]['sampleId']
     specimen_id = song_analysis['samples'][0]['specimen']['specimenId']
-    sex = 'XX' if song_analysis['samples'][0]['donor']['gender'] == 'Female' else 'XY' 
+    if song_analysis['samples'][0]['donor']['gender'] == 'Female':
+       sex = 'XX'  
+    elif song_analysis['samples'][0]['donor']['gender'] == 'Male': 
+       sex = 'XY'
+    else:
+       sex = 'Other'
     specimen_type = song_analysis['samples'][0]['specimen']['specimenType']
     tumour_normal_designation = song_analysis['samples'][0]['specimen']['tumourNormalDesignation']
     status = '0' if tumour_normal_designation == 'Normal' else '1'
@@ -347,8 +350,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf])  
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi])  
 
 if __name__ == "__main__":
     main()

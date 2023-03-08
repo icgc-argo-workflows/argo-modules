@@ -28,7 +28,7 @@
     - path: "output/prep_sample/out/SA610229_variant_calling_sample_sheet.csv"
 
 - name: "score download with user provide params"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_prep_sample_user -c ./tests/config/nextflow.config -profile docker,debug_qa --song_analysis YOUR_ANALYSIS --files ANALYSIS_FILES
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_user -c ./tests/config/nextflow.config -profile docker,debug_qa --song_analysis YOUR_ANALYSIS --files ANALYSIS_FILES
   tags:
     - "prepare sample sheet"
   files:
