@@ -17,8 +17,6 @@ process PREP_SAMPLE {
   script:
     // add and initialize variables here as needed
 
-    arg_tempdir = params.tempdir ? "-t ${params.tempdir}" : ""
-
     """
     mkdir -p out
 
@@ -26,7 +24,7 @@ process PREP_SAMPLE {
       -p ${metadata_json} \
       -s ${input} \
       -n ${task.cpus} \
-      -o out ${arg_tempdir}
+      -o out
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

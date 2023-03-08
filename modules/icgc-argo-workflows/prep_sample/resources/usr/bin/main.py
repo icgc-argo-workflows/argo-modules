@@ -87,7 +87,7 @@ def readgroup_id_to_fname(rg_id, input_bam_name='', study_id=None, donor_id=None
     return ".".join([study_id, donor_id, sample_id, friendly_rgid, md5sum])
 
 
-def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), study_id=None, donor_id=None, sample_id=None, temp_dir=None, out_dir=None, specimen_id=None, specimen_type=None, tumour_normal_designation=None):
+def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), study_id=None, donor_id=None, sample_id=None, out_dir=None, specimen_id=None, specimen_type=None, tumour_normal_designation=None):
     # get input bam basename, remove extention to use as output subfolder name
     bam_base = os.path.splitext(os.path.basename(bam))[0]
     out_format = bam_base+'/%!.bam'
@@ -229,8 +229,6 @@ def main():
                         help="Input files to process", type=str, nargs='+')
     parser.add_argument("-p", "--metadata-json", dest="metadata_json", required=True,
                         help="JSON file containing song analysis")
-    parser.add_argument('-t', '--tempdir', dest='tempdir', type=str, default=".",
-                        help='Specify directory for temporary files')
     parser.add_argument('-o', '--outdir', dest='outdir', type=str, default="out",
                         help='Specify directory for output files')
     parser.add_argument("-n", "--cpus", type=int, default=cpu_count())
@@ -272,7 +270,7 @@ def main():
           sample_sheet = generate_fastqs_from_bam(filename_to_file(fp, args.input_files)[0],
                                       filepair_map_to_readgroup[fp]['read_groups'],
                                       args.cpus, sample_sheet, study_id, donor_id, sample_id, 
-                                      args.tempdir, args.outdir, specimen_id, specimen_type, 
+                                      args.outdir, specimen_id, specimen_type, 
                                       tumour_normal_designation)
         else: # FASTQ must be one read group
           fq_pair = filename_to_file(fp, args.input_files)
