@@ -43,7 +43,7 @@ workflow STAGE_INPUT {
           sex:row.sex,
           status:row.status, 
           data_type:'cram'], 
-          file(row.cram), file(row.crai))
+          [file(row.cram), file(row.crai)])
       }
       else if (row.analysis_type == "variant_calling") {
         tuple([
@@ -52,7 +52,7 @@ workflow STAGE_INPUT {
           patient:row.patient,
           sample:row.sample, 
           variantcaller:row.variantcaller, 
-          data_type:'vcf'], [file(row.vcf)])
+          data_type:'vcf'], [file(row.vcf), file(row.tbi)])
       }
     }
     .set { ch_input_sample }
