@@ -251,7 +251,7 @@ def main():
     elif song_analysis['samples'][0]['donor']['gender'] == 'Male': 
        sex = 'XY'
     else:
-       sex = 'Other'
+       sex = 'NA'
     specimen_type = song_analysis['samples'][0]['specimen']['specimenType']
     tumour_normal_designation = song_analysis['samples'][0]['specimen']['tumourNormalDesignation']
     status = '0' if tumour_normal_designation == 'Normal' else '1'
@@ -296,7 +296,7 @@ def main():
 
           if read_group_info:
             rg_kv = [ '@RG' ] + [ '%s:%s' % (k, v) for k, v in read_group_info.items() ]
-            rg_array = "\""+'\\t'.join(rg_kv)+"\""
+            rg_array = "\'"+'\\t'.join(rg_kv)+"\'"
 
           sample_sheet[rg_id].update({'read_group': rg_array}) 
         
