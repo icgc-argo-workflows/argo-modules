@@ -1,6 +1,6 @@
 
 include { SONG_SCORE_DOWNLOAD          } from '../../icgc-argo-workflows/song_score_download/main'
-include { PREP_SAMPLE                  } from '../../../modules/icgc-argo-workflows/prep_sample/main.nf'
+include { PREP_SAMPLE                  } from '../../../modules/icgc-argo-workflows/prep/sample/main.nf'
 
 workflow STAGE_INPUT {
 

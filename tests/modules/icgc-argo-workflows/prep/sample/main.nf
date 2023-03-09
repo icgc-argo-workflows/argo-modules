@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl = 2
 
-include { PREP_SAMPLE } from '../../../../modules/icgc-argo-workflows/prep_sample/main.nf'
+include { PREP_SAMPLE } from '../../../../../modules/icgc-argo-workflows/prep/sample/main.nf'
 
 // Test with Submitted Reads (bam) in rdpc-qa
 workflow test_prep_sample_bam {
