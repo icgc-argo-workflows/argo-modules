@@ -1,0 +1,35 @@
+
+- name: "prep sample in rdpc qa for sequencing experiment inputs in BAM format"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_bam -c ./tests/config/nextflow.config -profile docker,debug_qa
+  tags:
+    - "prepare sample sheet"
+  files:
+    - path: "output/prep_sample/out/SA622768_sequencing_experiment_sample_sheet.csv"
+
+- name: "prep sample in rdpc qa for sequencing experiment inputs in FASTQ format"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_fastq -c ./tests/config/nextflow.config -profile docker,debug_qa
+  tags:
+    - "prepare sample sheet"
+  files:
+    - path: "output/prep_sample/out/SA624380_sequencing_experiment_sample_sheet.csv"
+
+- name: "prep sample in rdpc qa for sequencing alignment analysis in CRAM/CRAI format"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_cram_crai -c ./tests/config/nextflow.config -profile docker,debug_qa
+  tags:
+    - "prepare sample sheet"
+  files:
+    - path: "output/prep_sample/out/SA610149_sequencing_alignment_sample_sheet.csv"
+
+- name: "prep sample in rdpc qa for sequencing alignment analysis in VCF/TBI format"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_vcf_tbi -c ./tests/config/nextflow.config -profile docker,debug_qa
+  tags:
+    - "prepare sample sheet"
+  files:
+    - path: "output/prep_sample/out/SA610229_variant_calling_sample_sheet.csv"
+
+- name: "prep sample in rdpc qa with user provide params"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep_sample -entry test_prep_sample_user -c ./tests/config/nextflow.config -profile docker,debug_qa --song_analysis YOUR_ANALYSIS --files ANALYSIS_FILES
+  tags:
+    - "prepare sample sheet"
+  files:
+    - path: "output/prep_sample//out/*_sample_sheet.csv"

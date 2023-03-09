@@ -1,0 +1,109 @@
+{
+  "analysisId": "ee86b5ef-e0bb-40d8-86b5-efe0bbc0d8c1",
+  "studyId": "TEST-QA",
+  "analysisState": "PUBLISHED",
+  "createdAt": "2021-11-15T18:09:10.929013",
+  "updatedAt": "2021-11-15T18:09:40.663451",
+  "firstPublishedAt": "2021-11-15T18:09:40.6596",
+  "publishedAt": "2021-11-15T18:09:40.6596",
+  "analysisStateHistory": [
+    {
+      "initialState": "UNPUBLISHED",
+      "updatedState": "PUBLISHED",
+      "updatedAt": "2021-11-15T18:09:40.6596"
+    }
+  ],
+  "samples": [
+    {
+      "sampleId": "SA622768",
+      "specimenId": "SP222756",
+      "submitterSampleId": "HCC1143_BAM_INPUT",
+      "matchedNormalSubmitterSampleId": null,
+      "sampleType": "Total DNA",
+      "specimen": {
+        "specimenId": "SP222756",
+        "donorId": "DO262482",
+        "submitterSpecimenId": "HCC1143_BAM_INPUT",
+        "tumourNormalDesignation": "Normal",
+        "specimenTissueSource": "Blood derived",
+        "specimenType": "Cell line - derived from normal"
+      },
+      "donor": {
+        "donorId": "DO262482",
+        "studyId": "TEST-QA",
+        "gender": "Female",
+        "submitterDonorId": "HCC1143"
+      }
+    }
+  ],
+  "files": [
+    {
+      "info": {
+        "data_category": "Sequencing Reads"
+      },
+      "objectId": "16495914-5181-501a-af69-49e15e46f951",
+      "studyId": "TEST-QA",
+      "analysisId": "ee86b5ef-e0bb-40d8-86b5-efe0bbc0d8c1",
+      "fileName": "test_rg_3.v2.bam",
+      "fileSize": 14911,
+      "fileType": "BAM",
+      "fileMd5sum": "178f97f7b1ca8bfc28fd5586bdd56799",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads"
+    }
+  ],
+  "analysisType": {
+    "name": "sequencing_experiment",
+    "version": 2
+  },
+  "experiment": {
+    "platform": "ILLUMINA",
+    "platform_model": "HiSeq 2000",
+    "sequencing_date": "2014-12-12",
+    "sequencing_center": "EXT",
+    "experimental_strategy": "WGS",
+    "submitter_sequencing_experiment_id": "TEST_EXP"
+  },
+  "read_groups": [
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8a",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "C0HVY.2",
+      "submitter_read_group_id": "C0HVY_2"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8b",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "D0RE2.1",
+      "submitter_read_group_id": "D0RE2_1"
+    },
+    {
+      "file_r1": "test_rg_3.v2.bam",
+      "file_r2": "test_rg_3.v2.bam",
+      "insert_size": 298,
+      "library_name": "Pond-147580",
+      "is_paired_end": true,
+      "platform_unit": "74_8c",
+      "read_length_r1": 150,
+      "read_length_r2": 150,
+      "sample_barcode": null,
+      "read_group_id_in_bam": "D0RH0.2",
+      "submitter_read_group_id": "D0RH0_2"
+    }
+  ],
+  "read_group_count": 3
+}
