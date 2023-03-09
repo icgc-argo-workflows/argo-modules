@@ -50,9 +50,6 @@ def group_readgroup_by_filepair(song_analysis):
             }
 
         else:
-            if filepair_map_to_readgroup[file_r1_r2]['format'] == 'FASTQ':  # shouldn't happen but just in case
-                sys.exit('Error found: same FASTQ %s must not be associated to more than one read group\n' % \
-                    ' and '.join(file_r1_r2) if file_r1_r2[1] else file_r1_r2[0])
             filepair_map_to_readgroup[file_r1_r2]['read_groups'].append(rg)
 
         # make sure no duplicate of read_group_id_in_bam (when populated) within the same bam
@@ -90,7 +87,7 @@ def readgroup_id_to_fname(rg_id, input_bam_name='', study_id=None, donor_id=None
     return ".".join([study_id, donor_id, sample_id, friendly_rgid, md5sum])
 
 
-def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), study_id=None, donor_id=None, sample_id=None, temp_dir=None, out_dir=None, specimen_id=None, specimen_type=None, tumour_normal_designation=None):
+def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), study_id=None, donor_id=None, sample_id=None, out_dir=None, specimen_id=None, specimen_type=None, tumour_normal_designation=None):
     # get input bam basename, remove extention to use as output subfolder name
     bam_base = os.path.splitext(os.path.basename(bam))[0]
     out_format = bam_base+'/%!.bam'
@@ -122,6 +119,7 @@ def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), stu
 
         if rg_id_found:
             rg_id_fn = readgroup_id_to_fname(rg_id, os.path.basename(bam), study_id, donor_id, sample_id)
+            # 0x900 == 2304 == not primary alignment + supplementary alignments
             if rg['is_paired_end']:
               cmd = f"samtools collate -uO --threads {cpu} {lane_bam} | \
                 samtools fastq -N -O -F 0x900 --threads {cpu} -0 {out_dir}/{rg_id_fn}_other.fq.gz \
@@ -146,7 +144,7 @@ def generate_fastqs_from_bam(bam, readgroups, cpu=None, sample_sheet=dict(), stu
             
             if read_group_info:
               rg_kv = [ '@RG' ] + [ '%s:%s' % (k, v) for k, v in read_group_info.items() ]
-              rg_array = "\""+'\\t'.join(rg_kv)+"\""
+              rg_array = "\'"+'\\t'.join(rg_kv)+"\'"
 
             sample_sheet[rg['submitter_read_group_id']].update({'read_group': rg_array}) 
 
@@ -231,8 +229,6 @@ def main():
                         help="Input files to process", type=str, nargs='+')
     parser.add_argument("-p", "--metadata-json", dest="metadata_json", required=True,
                         help="JSON file containing song analysis")
-    parser.add_argument('-t', '--tempdir', dest='tempdir', type=str, default=".",
-                        help='Specify directory for temporary files')
     parser.add_argument('-o', '--outdir', dest='outdir', type=str, default="out",
                         help='Specify directory for output files')
     parser.add_argument("-n", "--cpus", type=int, default=cpu_count())
@@ -250,7 +246,12 @@ def main():
     donor_id = song_analysis['samples'][0]['donor']['donorId']
     sample_id = song_analysis['samples'][0]['sampleId']
     specimen_id = song_analysis['samples'][0]['specimen']['specimenId']
-    sex = 'XX' if song_analysis['samples'][0]['donor']['gender'] == 'Female' else 'XY' 
+    if song_analysis['samples'][0]['donor']['gender'] == 'Female':
+       sex = 'XX'  
+    elif song_analysis['samples'][0]['donor']['gender'] == 'Male': 
+       sex = 'XY'
+    else:
+       sex = 'NA'
     specimen_type = song_analysis['samples'][0]['specimen']['specimenType']
     tumour_normal_designation = song_analysis['samples'][0]['specimen']['tumourNormalDesignation']
     status = '0' if tumour_normal_designation == 'Normal' else '1'
@@ -269,7 +270,7 @@ def main():
           sample_sheet = generate_fastqs_from_bam(filename_to_file(fp, args.input_files)[0],
                                       filepair_map_to_readgroup[fp]['read_groups'],
                                       args.cpus, sample_sheet, study_id, donor_id, sample_id, 
-                                      args.tempdir, args.outdir, specimen_id, specimen_type, 
+                                      args.outdir, specimen_id, specimen_type, 
                                       tumour_normal_designation)
         else: # FASTQ must be one read group
           fq_pair = filename_to_file(fp, args.input_files)
@@ -295,7 +296,7 @@ def main():
 
           if read_group_info:
             rg_kv = [ '@RG' ] + [ '%s:%s' % (k, v) for k, v in read_group_info.items() ]
-            rg_array = "\""+'\\t'.join(rg_kv)+"\""
+            rg_array = "\'"+'\\t'.join(rg_kv)+"\'"
 
           sample_sheet[rg_id].update({'read_group': rg_array}) 
         
@@ -347,8 +348,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf])  
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi])  
 
 if __name__ == "__main__":
     main()
