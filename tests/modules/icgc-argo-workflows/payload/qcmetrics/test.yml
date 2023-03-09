@@ -1,0 +1,10 @@
+## TODO nf-core: Please run the following command to build this file:
+#                nf-core modules create-test-yml payload/qcmetrics
+- name: "payload qcmetrics"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config
+  tags:
+    - "payload"
+    - "payload/qcmetrics"
+  files:
+    - path: "output/payload/*.test.payload.json"
+    - path: "output/payload/out/TEST-PR.DO250122.SA610149.wgs.*.raw.cutadapt.tgz"
