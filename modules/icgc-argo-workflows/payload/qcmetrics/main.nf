@@ -3,9 +3,11 @@ process PAYLOAD_QCMETRICS {
     tag "$meta.id"
     label 'process_single'
 
+    // Requires `pyyaml` which does not have a dedicated container but is in the MultiQC container
+    conda "bioconda::multiqc=1.13"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/python:3.8.3' :
-        'quay.io/biocontainers/python:3.8.3' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0' :
+        'quay.io/biocontainers/multiqc:1.13--pyhdfd78af_0' }"
 
     input:  // input, make update as needed
       tuple val(meta), path(files_to_upload), path(metadata_analysis)
@@ -13,6 +15,7 @@ process PAYLOAD_QCMETRICS {
       val genome_build
       val wf_name
       val wf_version
+      path pipeline_yml
 
     output:  // output, make update as needed
       tuple val(meta), path("*.payload.json"), path("out/*"), emit: payload_files
@@ -30,7 +33,8 @@ process PAYLOAD_QCMETRICS {
         -w "${wf_name}" \
         -r ${workflow.runName} \
         -s ${workflow.sessionId} \
-        -v ${wf_version}
+        -v ${wf_version} \
+        -p ${pipeline_yml}
 
       cat <<-END_VERSIONS > versions.yml
       "${task.process}":

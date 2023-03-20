@@ -33,6 +33,7 @@ import tarfile
 from datetime import date
 import copy
 from glob import glob
+import yaml
 
 workflow_full_name = {
     'pre-alignment-qc': 'Pre Alignment QC Workflow'
@@ -179,10 +180,17 @@ def main():
     parser.add_argument("-r", "--wf-run", dest="wf_run", required=True, help="workflow run ID")
     parser.add_argument("-s", "--wf-session", dest="wf_session", required=True, help="workflow session ID")
     parser.add_argument("-v", "--wf-version", dest="wf_version", required=True, help="Workflow version")
+    parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
+
     args = parser.parse_args()
     
     with open(args.metadata_analysis, 'r') as f:
       analysis_dict = json.load(f)
+
+    pipeline_info = {}
+    if args.pipeline_ymal:
+      with open(args.pipeline_yml, 'r') as f:
+        pipeline_info = yaml.safe_load(f)
 
     payload = {
         'analysisType': {
@@ -200,7 +208,8 @@ def main():
                     'analysis_type': analysis_dict['analysisType']['name'],
                     'input_analysis_id': analysis_dict.get('analysisId')
                 }
-            ]
+            ],
+            'info': pipeline_info
         },
         'files': [],
         'experiment': analysis_dict.get('experiment'),
