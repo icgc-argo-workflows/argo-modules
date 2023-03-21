@@ -6,7 +6,7 @@ process SCORE_DOWNLOAD {
 
     pod = [secret: workflow.runName + "-secret", mountPath: "/tmp/rdpc_secret"]
 
-    container "${ task.ext.score_container ?: 'ghcr.io/overture-stack/score' }:${ task.ext.score_container_version ?: '5.8.1' }"
+    container "${ params.score_container ?: 'ghcr.io/overture-stack/score' }:${ params.score_container_version ?: '5.8.1' }"
 
     if (workflow.containerEngine == "singularity") {
         containerOptions "--bind \$(pwd):/score-client/logs"
@@ -28,13 +28,12 @@ process SCORE_DOWNLOAD {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${analysis_id}"
-    def song_url = task.ext.song_url ?: ""
-    def score_url = task.ext.score_url ?: ""
-    def transport_parallel = task.ext.transport_parallel ?: task.cpus
-    def transport_mem = task.ext.transport_mem ?: "2"
-    def accessToken = task.ext.api_token ?: "`cat /tmp/rdpc_secret/secret`"
-    def VERSION = task.ext.score_container_version ?: '5.8.1'
+    def song_url = params.song_url_download ?: params.song_url
+    def score_url = params.score_url_download ?: params.score_url
+    def transport_parallel = params.transport_parallel ?: task.cpus
+    def transport_mem = params.transport_mem ?: "2"
+    def accessToken = params.api_token ?: "`cat /tmp/rdpc_secret/secret`"
+    def VERSION = params.score_container_version ?: '5.8.1'
     """
     export METADATA_URL=${song_url}
     export STORAGE_URL=${score_url}
@@ -42,7 +41,7 @@ process SCORE_DOWNLOAD {
     export TRANSPORT_MEMORY=${transport_mem}
     export ACCESSTOKEN=${accessToken}
     
-    score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out 
+    score-client download --analysis-id ${analysis_id} --study-id ${study_id} --output-dir ./out $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
