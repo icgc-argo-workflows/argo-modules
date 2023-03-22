@@ -13,8 +13,6 @@ process PAYLOAD_QCMETRICS {
       tuple val(meta), path(files_to_upload), path(metadata_analysis)
       val genome_annotation
       val genome_build
-      val wf_name
-      val wf_version
       path pipeline_yml
 
     output:  // output, make update as needed
@@ -30,10 +28,10 @@ process PAYLOAD_QCMETRICS {
         -a ${metadata_analysis} \
         -g "${genome_annotation}" \
         -b "${genome_build}" \
-        -w "${wf_name}" \
+        -w "${workflow.manifest.name}" \
         -r ${workflow.runName} \
         -s ${workflow.sessionId} \
-        -v ${wf_version} \
+        -v ${workflow.manifest.version} \
         -p ${pipeline_yml}
 
       cat <<-END_VERSIONS > versions.yml

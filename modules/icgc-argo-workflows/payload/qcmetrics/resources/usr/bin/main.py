@@ -35,10 +35,6 @@ import copy
 from glob import glob
 import yaml
 
-workflow_full_name = {
-    'pre-alignment-qc': 'Pre Alignment QC Workflow'
-}
-
 tool_list = ['fastqc', 'cutadapt']
 
 def calculate_size(file_path):
@@ -186,9 +182,9 @@ def main():
     
     with open(args.metadata_analysis, 'r') as f:
       analysis_dict = json.load(f)
-
+    
     pipeline_info = {}
-    if args.pipeline_ymal:
+    if args.pipeline_yml:
       with open(args.pipeline_yml, 'r') as f:
         pipeline_info = yaml.safe_load(f)
 
@@ -199,7 +195,7 @@ def main():
         'studyId': analysis_dict.get('studyId'),
         'info': {},
         'workflow': {
-            'workflow_name': workflow_full_name.get(args.wf_name, args.wf_name),
+            'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
             'run_id': args.wf_run,
             'session_id': args.wf_session,
@@ -246,7 +242,7 @@ def main():
       file_info = get_files_info(f, date_str, analysis_dict)
       payload['files'].append(file_info)
 
-    with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name), 'w') as f:
+    with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
         f.write(json.dumps(payload, indent=2))
 
 
