@@ -29,7 +29,6 @@ process PAYLOAD_QCMETRICS {
         -g "${genome_annotation}" \
         -b "${genome_build}" \
         -w "${workflow.manifest.name}" \
-        -r ${workflow.runName} \
         -s ${workflow.sessionId} \
         -v ${workflow.manifest.version} \
         -p ${pipeline_yml}
