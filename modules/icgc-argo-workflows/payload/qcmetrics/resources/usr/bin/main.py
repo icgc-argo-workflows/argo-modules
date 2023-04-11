@@ -203,8 +203,10 @@ def main():
     with open(args.metadata_analysis, 'r') as f:
       analysis_dict = json.load(f)
 
-    with open(args.pipeline_yml, 'r') as f:
-      pipeline_info = yaml.safe_load(f)
+    pipeline_info = {}
+    if args.pipeline_yml:
+      with open(args.pipeline_yml, 'r') as f:
+        pipeline_info = yaml.safe_load(f)
 
     payload = {
         'analysisType': {

@@ -13,7 +13,7 @@ workflow test_payload_qcmetrics {
     [[id:'test'], files, analysis]}
     .set{ input_channel }
 
-    PAYLOAD_QCMETRICS ( input_channel, '', '', 'test', '0.1.0')
+    PAYLOAD_QCMETRICS ( input_channel, '', '', file('NO_FILE'))
 }
 
     

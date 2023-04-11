@@ -1,51 +1,58 @@
 name: "payload_qcmetrics"
-## TODO nf-core: Add a description of the module and list keywords
-description: write your description here
+description: |
+  Generate Song payload to submit for ICGC-ARGO QC metrics files
 keywords:
-  - sort
+  - json
+  - song
 tools:
-  - "payload":
-      ## TODO nf-core: Add a description and other details for the software below
-      description: ""
-      homepage: ""
-      documentation: ""
-      tool_dev_url: ""
-      doi: ""
-      licence: ""
+  - "payload_qcmetrics":
+      description: "A simple wrapper written in `nextflow` for the payload generation tool to generate ARGO Song payloads containing QC metrics files."
+      licence: ["MIT"]
 
-## TODO nf-core: Add a description of all of the variables used as input
 input:
-  # Only when we have meta
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  #
-  ## TODO nf-core: Delete / customise this example input
-  - bam:
-      type: file
-      description: BAM/CRAM/SAM file
-      pattern: "*.{bam,cram,sam}"
 
-## TODO nf-core: Add a description of all of the variables used as output
+  - files_to_upload:
+      type: file
+      description: QC metrics files
+
+  - metadata_analysis:
+      type: file
+      description: Song metadata in JSON format
+
+  - genome_annotation:
+      type: string
+      description: genome annotation name
+
+  - genome_build:
+      type: string
+      description: genome build name
+
+  - path pipeline_yml:
+      type: file
+      description: yml file collect from CUSTOM_DUMPSOFTWAREVERSIONS
+
 output:
-  #Only when we have meta
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  #
+
+  - payload_files:
+      type: file
+      description: Generated payload and QC files with normalized names
+
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-  ## TODO nf-core: Delete / customise this example output
-  - bam:
-      type: file
-      description: Sorted BAM/CRAM/SAM file
-      pattern: "*.{bam,cram,sam}"
+
+
 
 authors:
   - "@lindaxiang"

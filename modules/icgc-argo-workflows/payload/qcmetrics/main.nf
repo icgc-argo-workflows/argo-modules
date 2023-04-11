@@ -21,7 +21,7 @@ process PAYLOAD_QCMETRICS {
 
     script:
       // add and initialize variables here as needed
-
+      def arg_pipeline_yml = pipeline_yml.name != 'NO_FILE' ? "-p $pipeline_yml" : ''
       """
       main.py \
         -f ${files_to_upload} \
@@ -31,7 +31,7 @@ process PAYLOAD_QCMETRICS {
         -w "${workflow.manifest.name}" \
         -s ${workflow.sessionId} \
         -v ${workflow.manifest.version} \
-        -p ${pipeline_yml}
+        $arg_pipeline_yml
 
       cat <<-END_VERSIONS > versions.yml
       "${task.process}":
