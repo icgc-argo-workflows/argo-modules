@@ -13,17 +13,21 @@ workflow test_payload_germlinevariant {
     ch_payload=analysis_ch.combine(files_ch.collect().toList())
     .map {analysis_json,files ->
     [
-        [   id : params.analysis_id,
-            study_id : params.study_id,
-            tool : params.tool
-        ],
+        [
+        id : params.id,
+        experimentalStrategy : params.experimentalStrategy,
+        genomeBuild : params.genomeBuild,
+        tumourNormalDesignation : params.tumourNormalDesignation,
+        sampleType : params.sampleType,
+        gender : params.gender,
+        study_id : params.study_id,
+	tool : params.tool
+	],
         files, analysis_json]
     }
     PAYLOAD_GERMLINEVARIANT(
         ch_payload,
-        "",
-        "",
         pipeline_ch,
-        params.tool
+        false
     )
 }
