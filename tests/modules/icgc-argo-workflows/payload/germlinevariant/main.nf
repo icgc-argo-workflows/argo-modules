@@ -21,7 +21,8 @@ workflow test_payload_germlinevariant {
         sampleType : params.sampleType,
         gender : params.gender,
         study_id : params.study_id,
-	tool : params.tool
+	tool : params.tool,
+        dataType : params.dataType
 	],
         files, analysis_json]
     }
