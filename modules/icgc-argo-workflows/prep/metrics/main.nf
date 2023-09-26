@@ -12,7 +12,8 @@ process PREP_METRICS {
     path multiqc
 
     output:
-    tuple val(meta), path('*.json')   , emit: metrics_json
+    tuple val(meta), path('*.argo_metrics.json')   , emit: metrics_json
+    tuple val(meta), path('*.metrics.json')   , emit: ga4gh_metrics_json, optional: true
     path "versions.yml", emit: versions
 
     when:

@@ -26,6 +26,18 @@ import json
 from glob import glob
 import csv
 
+ga4gh_wgs_qc_metrics = [
+ 
+   'insert_size_std_deviation',
+   'mad_autosome_coverage',
+   'mean_autosome_coverage',
+   'mean_insert_size',
+   'pct_autosomes_15x',
+   'pct_reads_mapped',
+   'pct_reads_properly_paired',
+   'yield_bp_q30'
+  ]
+
 tool_fieldmap = {
   'fastqc': {},
   'cutadapt': {},
@@ -178,9 +190,23 @@ def main():
 
     mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 
-    with open("%s.metrics.json" % (args.sampleId), 'w') as f:
+    with open("%s.argo_metrics.json" % (args.sampleId), 'w') as f:
       f.write(json.dumps(mqc_stats_updated, indent=2))
 
+    # retrieve ga4gh standardized QC metrics
+    ga4gh_qc_dict = {
+      'biosample': {
+            'id': args.sampleId
+         },
+      'wgs_qc_metrics': {}
+    }
+    for k,v in mqc_stats_updated.get('metrics', None).items():
+        if not k in ga4gh_wgs_qc_metrics: continue
+        ga4gh_qc_dict['wgs_qc_metrics'].update({k: v}) 
+ 
+    if ga4gh_qc_dict['wgs_qc_metrics']:
+      with open("%s.metrics.json" % (args.sampleId), 'w') as f:
+        f.write(json.dumps(ga4gh_qc_dict, indent=2))
 
 
 if __name__ == "__main__":
