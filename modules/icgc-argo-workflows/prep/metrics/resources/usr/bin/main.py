@@ -75,6 +75,7 @@ fra2pct_fields = ['pct_autosomes_15x', 'pct_autosomes_10x', 'pct_autosomes_30x']
 
 def get_mqc_stats(multiqc, sampleId):
     mqc_stats = {
+       'sample_id': sampleId,
        'metrics': {}
     }
     for f in sorted(glob(multiqc+'/*.txt')):
