@@ -1,0 +1,4 @@
+Sample	cutadapt_version	pairs_processed	r1_with_adapters	r2_with_adapters	pairs_written	bp_processed	bp_written	percent_trimmed
+SA624380-C0HVY.2	3.4	28	0	0	28	4256	4256	0.0
+SA624380-D0RE2.1	3.4	32	0	0	32	4864	4864	0.0
+SA624380-D0RH0.2	3.4	25	0	0	25	3800	3800	0.0

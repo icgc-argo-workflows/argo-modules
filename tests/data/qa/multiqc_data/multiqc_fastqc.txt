@@ -1,0 +1,7 @@
+Sample	Filename	File type	Encoding	Total Sequences	Sequences flagged as poor quality	Sequence length	%GC	total_deduplicated_percentage	avg_sequence_length	basic_statistics	per_base_sequence_quality	per_tile_sequence_quality	per_sequence_quality_scores	per_base_sequence_content	per_sequence_gc_content	per_base_n_content	sequence_length_distribution	sequence_duplication_levels	overrepresented_sequences	adapter_content
+SA624380-C0HVY.2_1	SA624380-C0HVY.2_1.gz	Conventional base calls	Sanger / Illumina 1.9	28.0	0.0	76.0	65.0	100.0	76.0	pass	pass	warn	pass	fail	fail	pass	pass	pass	fail	pass
+SA624380-C0HVY.2_2	SA624380-C0HVY.2_2.gz	Conventional base calls	Sanger / Illumina 1.9	28.0	0.0	76.0	63.0	100.0	76.0	pass	pass	pass	pass	fail	fail	pass	pass	pass	fail	pass
+SA624380-D0RE2.1_1	SA624380-D0RE2.1_1.gz	Conventional base calls	Sanger / Illumina 1.9	32.0	0.0	76.0	65.0	96.875	76.0	pass	pass	pass	pass	fail	fail	pass	pass	pass	fail	pass
+SA624380-D0RE2.1_2	SA624380-D0RE2.1_2.gz	Conventional base calls	Sanger / Illumina 1.9	32.0	0.0	76.0	63.0	100.0	76.0	pass	pass	fail	pass	fail	fail	pass	pass	pass	fail	pass
+SA624380-D0RH0.2_1	SA624380-D0RH0.2_1.gz	Conventional base calls	Sanger / Illumina 1.9	25.0	0.0	76.0	64.0	100.0	76.0	pass	pass	pass	pass	fail	fail	pass	pass	pass	fail	pass
+SA624380-D0RH0.2_2	SA624380-D0RH0.2_2.gz	Conventional base calls	Sanger / Illumina 1.9	25.0	0.0	76.0	63.0	100.0	76.0	pass	pass	pass	pass	fail	fail	pass	pass	pass	fail	pass

@@ -1,0 +1,5 @@
+Module	Section	Sample Name	Source
+Picard	OxoGMetrics	SA622743	/Users/lxiang/Projects/icgc-argo/icgc-argo-workflows/icgc-argo-workflows-dnaalnqc/work/ba/6b3d819d1372e22b0c89f2721c6f44/4/SA622743.CollectOxoGMetrics.oxog_metrics
+Picard	QualityYieldMetrics	SA622743	/Users/lxiang/Projects/icgc-argo/icgc-argo-workflows/icgc-argo-workflows-dnaalnqc/work/ba/6b3d819d1372e22b0c89f2721c6f44/3/SA622743.CollectMultipleMetrics.quality_yield_metrics
+Picard	WgsMetrics	SA622743	/Users/lxiang/Projects/icgc-argo/icgc-argo-workflows/icgc-argo-workflows-dnaalnqc/work/ba/6b3d819d1372e22b0c89f2721c6f44/2/SA622743.CollectWgsMetrics.coverage_metrics
+Samtools	stats	SA622743	/Users/lxiang/Projects/icgc-argo/icgc-argo-workflows/icgc-argo-workflows-dnaalnqc/work/ba/6b3d819d1372e22b0c89f2721c6f44/1/SA622743.stats
