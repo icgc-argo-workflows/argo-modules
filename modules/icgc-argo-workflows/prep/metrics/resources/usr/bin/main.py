@@ -138,7 +138,7 @@ def get_mqc_stats(multiqc, sampleId):
       sequences_flagged_as_poor_quality = []
       gc_content = []
       qc_status = {}
-      qc_metrics = ['basic_statistics', 'per_base_sequence_quality', 'per_tile_sequence_quality', 
+      qc_metrics = ['basic_statistics', 'per_base_sequence_quality', 
                     'per_sequence_quality_scores', 'per_base_sequence_content', 'per_sequence_gc_content', 
                     'per_base_n_content', 'sequence_length_distribution', 'sequence_duplication_levels', 
                     'overrepresented_sequences', 'adapter_content']
