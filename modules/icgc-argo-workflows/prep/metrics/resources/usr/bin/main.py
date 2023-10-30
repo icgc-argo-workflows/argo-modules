@@ -111,7 +111,7 @@ def get_mqc_stats(multiqc, sampleId):
       pairs_trimmed_total = 0
       
       for rg_metrics in mqc_stats['cutadapt']:
-        if rg_metrics.get('pairs_processed') is None:
+        if not rg_metrics.get('pairs_processed'):
           r_with_adapters_total += float(rg_metrics['r_with_adapters'])
           r_processed_total += float(rg_metrics['r_processed'])
           r_trimmed_total += float(rg_metrics['r_processed'])*float(rg_metrics['percent_trimmed'])
