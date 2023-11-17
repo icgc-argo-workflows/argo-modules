@@ -1,0 +1,29 @@
+CALCULATECONTAMINATION:
+  gatk4: 4.4.0.0
+CUSTOM_DUMPSOFTWAREVERSIONS:
+  python: 3.11.0
+  yaml: '6.0'
+GATHERPILEUPSUMMARIES:
+  gatk4: 4.4.0.0
+GETPILEUPSUMMARIES:
+  gatk4: 4.4.0.0
+MULTIQC_ALL:
+  multiqc: '1.15'
+PICARD_COLLECTMULTIPLEMETRICS:
+  picard: 3.0.0
+PICARD_COLLECTOXOGMETRICS:
+  picard: 3.0.0
+PICARD_COLLECTWGSMETRICS:
+  picard: 3.0.0
+PREP_SAMPLE:
+  python: 3.6.9
+  samtools: '1.10'
+SAMTOOLS_STATS:
+  samtools: '1.17'
+Workflow:
+  DNA Alignment QC: 1.0dev
+  Nextflow: 22.10.5
+scoreDn:
+  score-client: 5.9.0
+songGet:
+  song-client: 5.0.2

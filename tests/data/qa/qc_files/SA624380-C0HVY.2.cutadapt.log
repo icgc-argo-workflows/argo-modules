@@ -1,0 +1,18 @@
+This is cutadapt 3.4 with Python 3.9.2
+Command line parameters: --cores 2 -o SA624380-C0HVY.2_1.trim.fastq.gz -p SA624380-C0HVY.2_2.trim.fastq.gz TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R1.fq.gz TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R2.fq.gz
+Processing reads on 2 cores in paired-end mode ...
+Finished in 0.05 s (1875 µs/read; 0.03 M reads/minute).
+
+=== Summary ===
+
+Total read pairs processed:                 28
+  Read 1 with adapter:                       0 (0.0%)
+  Read 2 with adapter:                       0 (0.0%)
+Pairs written (passing filters):            28 (100.0%)
+
+Total basepairs processed:         4,256 bp
+  Read 1:         2,128 bp
+  Read 2:         2,128 bp
+Total written (filtered):          4,256 bp (100.0%)
+  Read 1:         2,128 bp
+  Read 2:         2,128 bp

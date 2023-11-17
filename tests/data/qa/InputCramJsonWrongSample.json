@@ -1,0 +1,121 @@
+{
+  "analysisType": {
+    "name": "sequencing_experiment"
+  },
+  "studyId": "TEST-PR",
+  "experiment": {
+    "experimental_strategy" : "WGS",
+    "platform" : "ILLUMINA",
+    "platform_model" : "HiSeq 2000",
+    "sequencing_center" : "EXT",
+    "sequencing_date" : "2014-12-12",
+    "submitter_sequencing_experiment_id" : "TEST_EXP"
+  },
+  "read_group_count": 4,
+  "read_groups": [
+    {
+      "submitter_read_group_id": "QCMG_866d65b8-ff3f-11e4-b413-bdbd66be296d_130711_7001243_0176_BD2B86ACXX.lane_8.CTTGTA.1_8043985",
+      "read_group_id_in_bam": "QCMG:866d65b8-ff3f-11e4-b413-bdbd66be296d:130711_7001243_0176_BD2B86ACXX.lane_8.CTTGTA.1",
+      "platform_unit": "QCMG_866d65b8-ff3f-11e4-b413-bdbd66be296d_130711_7001243_0176_BD2B86ACXX.lane_8.CTTGTA.1_8043985",
+      "is_paired_end": true,
+      "file_r1": "anon_chr1_completeA.bam",
+      "file_r2": "anon_chr1_completeA.bam",
+      "read_length_r1": 101,
+      "read_length_r2": 101,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "RNA-Seq:QCMG:QCMG:130711_7001243_0176_BD2B86ACXX.lane_8.CTTGTA:RNA-Seq:QCMG:Illumina TruSeq for Library_20130620_F"
+    },
+    {
+      "submitter_read_group_id": "QCMG_91ce15f2-ff3e-11e4-9d73-85b485b025f8_130711_7001243_0176_BD2B86ACXX.lane_5.CTTGTA.1_8043985",
+      "read_group_id_in_bam": "QCMG:91ce15f2-ff3e-11e4-9d73-85b485b025f8:130711_7001243_0176_BD2B86ACXX.lane_5.CTTGTA.1",
+      "platform_unit": "QCMG_91ce15f2-ff3e-11e4-9d73-85b485b025f8_130711_7001243_0176_BD2B86ACXX.lane_5.CTTGTA.1_8043985",
+      "is_paired_end": true,
+      "file_r1": "anon_chr1_completeA.bam",
+      "file_r2": "anon_chr1_completeA.bam",
+      "read_length_r1": 101,
+      "read_length_r2": 101,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "RNA-Seq:QCMG:QCMG:130711_7001243_0176_BD2B86ACXX.lane_5.CTTGTA:RNA-Seq:QCMG:Illumina TruSeq for Library_20130620_F"
+    },
+    {
+      "submitter_read_group_id": "QCMG_dd3f83b8-ff3e-11e4-81af-910d0943bdb6_130711_7001243_0176_BD2B86ACXX.lane_6.CTTGTA.1_8043985",
+      "read_group_id_in_bam": "QCMG:dd3f83b8-ff3e-11e4-81af-910d0943bdb6:130711_7001243_0176_BD2B86ACXX.lane_6.CTTGTA.1",
+      "platform_unit": "QCMG_dd3f83b8-ff3e-11e4-81af-910d0943bdb6_130711_7001243_0176_BD2B86ACXX.lane_6.CTTGTA.1_8043985",
+      "is_paired_end": true,
+      "file_r1": "anon_chr1_completeB.bam",
+      "file_r2": "anon_chr1_completeB.bam",
+      "read_length_r1": 101,
+      "read_length_r2": 101,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "RNA-Seq:QCMG:QCMG:130711_7001243_0176_BD2B86ACXX.lane_6.CTTGTA:RNA-Seq:QCMG:Illumina TruSeq for Library_20130620_F"
+    },
+    {
+      "submitter_read_group_id": "QCMG_22f321c6-ff3f-11e4-8e8b-f8a0800c69f0_130711_7001243_0176_BD2B86ACXX.lane_7.CTTGTA.1_8043985",
+      "read_group_id_in_bam": "QCMG:22f321c6-ff3f-11e4-8e8b-f8a0800c69f0:130711_7001243_0176_BD2B86ACXX.lane_7.CTTGTA.1",
+      "platform_unit": "QCMG_22f321c6-ff3f-11e4-8e8b-f8a0800c69f0_130711_7001243_0176_BD2B86ACXX.lane_7.CTTGTA.1_8043985",
+      "is_paired_end": true,
+      "file_r1": "anon_chr1_completeB.bam",
+      "file_r2": "anon_chr1_completeB.bam",
+      "read_length_r1": 101,
+      "read_length_r2": 101,
+      "insert_size": null,
+      "sample_barcode": null,
+      "library_name": "RNA-Seq:QCMG:QCMG:130711_7001243_0176_BD2B86ACXX.lane_7.CTTGTA:RNA-Seq:QCMG:Illumina TruSeq for Library_20130620_F"
+    }
+  ],
+  "samples": [
+    {
+      "submitterSampleId" : "COLO-829-BL",
+      "sampleType" : "Total DNA",
+      "matchedNormalSubmitterSampleId" : null,
+      "specimen" : {
+        "submitterSpecimenId" : "COLO-829-BL",
+        "tumourNormalDesignation" : "Normal",
+        "specimenTissueSource" : "Blood derived",
+        "specimenType" : "Normal"
+      },
+      "donor" : {
+        "studyId" : "TEST-PR",
+        "submitterDonorId" : "COLO-829",
+        "gender" : "Female"
+      }
+    }
+  ],
+  "files": [
+    {
+      "fileName": "anon_chr1_completeA.cram",
+      "fileSize": 132507,
+      "fileMd5sum": "0d1776d44d8da87758d6b159aa8e6bc5",
+      "fileType": "CRAM",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads",
+      "info": {
+        "data_category": "Sequencing Reads",
+        "ega": {
+          "ega_file_id" : "EGAF000000001",
+          "ega_sample_id" : "EGAN000000001",
+          "ega_dataset_id" : "EGAD000000001"
+        }
+      }
+    },
+    {
+      "fileName": "anon_chr1_completeB.cram",
+      "fileSize": 132507,
+      "fileMd5sum": "0d1776d44d8da87758d6b159aa8e6bc5",
+      "fileType": "CRAM",
+      "fileAccess": "controlled",
+      "dataType": "Submitted Reads",
+      "info": {
+        "data_category": "Sequencing Reads",
+        "ega": {
+          "ega_file_id" : "EGAF000000001",
+          "ega_sample_id" : "EGAN000000001",
+          "ega_dataset_id" : "EGAD000000001"
+        }
+      }
+    }
+  ]
+}
