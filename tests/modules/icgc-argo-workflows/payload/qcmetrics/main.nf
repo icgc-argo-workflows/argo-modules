@@ -13,7 +13,7 @@ workflow test_payload_qcmetrics {
     [[id:'test'], analysis, files, multiqc]}
     .set{ input_channel }
 
-    PAYLOAD_QCMETRICS ( input_channel, '', '', file(params.pipeline_yml))
+    PAYLOAD_QCMETRICS ( input_channel, file(params.pipeline_yml))
 }
 
     
