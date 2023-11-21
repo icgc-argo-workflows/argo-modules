@@ -247,8 +247,6 @@ def main():
     with open(args.metadata_json, 'r') as f:
       song_analysis = json.load(f)
 
-    metadata_json = os.path.join(os.getcwd(), args.outdir, os.path.basename(args.metadata_json))
-    os.symlink(os.path.abspath(args.metadata_json), metadata_json)
     study_id = song_analysis['studyId']
     donor_id = song_analysis['samples'][0]['donor']['donorId']
     sample_id = song_analysis['samples'][0]['sampleId']
@@ -264,7 +262,7 @@ def main():
     status = '0' if tumour_normal_designation == 'Normal' else '1'
     analysis_type = song_analysis['analysisType']['name']
     output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
-    
+    experiment=song_analysis['experiment']['experimental_strategy']
 
     sample_sheet = dict()
     if analysis_type == 'sequencing_experiment':
@@ -317,13 +315,13 @@ def main():
       if rgs_missed_lane:  # throw error here if that happens
           sys.exit("Error: no lane BAM has been generated for some read groups: '%s'. "
                   "Please make sure supplied sequencing files and metadata are correct." % "', '".join(rgs_missed_lane))
-      
+
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count','analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count',"experiment"])
         for k,v in sample_sheet.items():
           single_end = True if v['file_r2'] == 'No_File' else False
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count, metadata_json])
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count,experiment])
     
     elif analysis_type == 'sequencing_alignment':
       for fp in args.input_files:
@@ -337,8 +335,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai', 'analysis_json'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai, metadata_json])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai])
 
     elif analysis_type == 'variant_calling':
       for fp in song_analysis['files']:
@@ -355,8 +353,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi', 'analysis_json'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi, metadata_json]) 
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi])  
 
     elif analysis_type == 'qc_metrics':
       with open(output_sample_sheet, 'w', newline='') as f:
@@ -370,8 +368,7 @@ def main():
             os.symlink(os.path.abspath(fp), qc_file)
             qc_tools = ','.join(fq['info']['analysis_tools'])
 
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file, metadata_json]) 
-
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file]) 
 
 if __name__ == "__main__":
     main()
