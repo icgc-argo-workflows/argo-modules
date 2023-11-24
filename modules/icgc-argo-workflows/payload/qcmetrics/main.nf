@@ -10,9 +10,7 @@ process PAYLOAD_QCMETRICS {
         'quay.io/biocontainers/multiqc:1.13--pyhdfd78af_0' }"
 
     input:  // input, make update as needed
-      tuple val(meta), path(files_to_upload), path(metadata_analysis)
-      val genome_annotation
-      val genome_build
+      tuple val(meta), path(metadata_analysis), path(files_to_upload), path(multiqc)
       path pipeline_yml
 
     output:  // output, make update as needed
@@ -21,17 +19,17 @@ process PAYLOAD_QCMETRICS {
 
     script:
       // add and initialize variables here as needed
-      def arg_pipeline_yml = pipeline_yml.name != 'NO_FILE' ? "-p $pipeline_yml" : ''
+      def arg_pipeline_yml = pipeline_yml ? "-p $pipeline_yml" : ''
+      def arg_multiqc = multiqc ? "-m $multiqc" : ''
       """
       main.py \
         -f ${files_to_upload} \
         -a ${metadata_analysis} \
-        -g "${genome_annotation}" \
-        -b "${genome_build}" \
         -w "${workflow.manifest.name}" \
         -s ${workflow.sessionId} \
         -v ${workflow.manifest.version} \
-        $arg_pipeline_yml
+        $arg_pipeline_yml \
+        $arg_multiqc
 
       cat <<-END_VERSIONS > versions.yml
       "${task.process}":

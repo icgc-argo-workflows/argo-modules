@@ -6,14 +6,14 @@ include { PAYLOAD_QCMETRICS } from '../../../../../modules/icgc-argo-workflows/p
 
 workflow test_payload_qcmetrics {
     
-    analysis_channel = Channel.of(file(params.test_data['rdpc_qa']['seq_exp_analysis']))
-    files_channel = Channel.fromPath(params.test_data['rdpc_qa']['qc_file']).toList()
-    analysis_channel.combine(files_channel.toList())
-    .map { analysis, files ->
-    [[id:'test'], files, analysis]}
+    analysis_channel = Channel.of(file(params.analysis))
+    files_channel = Channel.fromPath(params.qc_files).toList()
+    analysis_channel.combine(files_channel.toList()).combine(Channel.fromPath(params.multiqc))
+    .map { analysis, files, multiqc ->
+    [[id:'test'], analysis, files, multiqc]}
     .set{ input_channel }
 
-    PAYLOAD_QCMETRICS ( input_channel, '', '', file('NO_FILE'))
+    PAYLOAD_QCMETRICS ( input_channel, file(params.pipeline_yml))
 }
 
     

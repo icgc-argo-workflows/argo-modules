@@ -1,0 +1,19 @@
+CUSTOM_DUMPSOFTWAREVERSIONS:
+  python: 3.10.6
+  yaml: '6.0'
+CUTADAPT:
+  cutadapt: '3.4'
+FASTQC:
+  fastqc: 0.11.9
+MULTIQC:
+  multiqc: '1.13'
+PREP_SAMPLE:
+  python: 3.6.9
+  samtools: '1.10'
+Workflow:
+  Nextflow: 22.10.5
+  Pre Alignment QC: 1.0dev
+scoreDn:
+  score-client: 5.9.0
+songGet:
+  song-client: 5.0.2
