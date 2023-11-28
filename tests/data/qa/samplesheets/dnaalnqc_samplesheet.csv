@@ -1,0 +1,2 @@
+analysis_type,study_id,patient,sex,status,sample,cram,crai,analysis_json
+sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,/Users/esu/Desktop/GitHub/icgc-argo-workflows/dnaalnqc/work/8a/7e6fa53b87f868fc04164587f8302d/out/TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,/Users/esu/Desktop/GitHub/icgc-argo-workflows/dnaalnqc/work/8a/7e6fa53b87f868fc04164587f8302d/out/TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,/Users/esu/Desktop/GitHub/icgc-argo-workflows/dnaalnqc/work/8a/7e6fa53b87f868fc04164587f8302d/out/4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
