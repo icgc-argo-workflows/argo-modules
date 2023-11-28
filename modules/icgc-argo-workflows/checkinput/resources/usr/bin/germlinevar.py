@@ -41,6 +41,7 @@ class RowChecker:
         sample_col = 'sample',
         cram_col = 'cram',
         crai_col = 'crai',
+        experiment_col = 'experiment',
         analysis_json_col = 'analysis_json',
         **kwargs,
     ):
@@ -70,6 +71,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._sample_col = sample_col
         self._cram_col = cram_col
         self._crai_col = crai_col
+        self._experiment_col = experiment_col
         self._analysis_json_col = analysis_json_col
         self._seen = set()
         self.modified = []
@@ -93,6 +95,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_sample(row)
         self._validate_cram(row)
         self._validate_crai(row)
+        self._validate_experiment(row)
         self._validate_analysis_json(row)
         self._seen.add((
             row[self._analysis_type_col],
@@ -103,6 +106,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             row[self._sample_col],
             row[self._cram_col],
             row[self._crai_col],
+            row[self._experiment_col],
             row[self._analysis_json_col]))
         self.modified.append(row)
 
@@ -158,6 +162,15 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             raise AssertionError("'crai' input format is incorrect, ensure file ends with '.crai'")
         if row[self._crai_col].split("/")[-1].replace(".cram.crai","")!=row[self._cram_col].split("/")[-1].replace(".cram",""):
             raise AssertionError("'cram' and 'crai' file name bodies do not match.")
+
+    def _validate_experiment(self, row):
+        """Assert that expected Experiment is correct."""
+        if len(row[self._experiment_col]) <= 0:
+            raise AssertionError("'experiment' input is required.")
+        for val in ["WGS","WXS","RNA-Seq","Bisulfite-Seq","ChIP-Seq","Targeted-Seq"]:
+            if val==row[self._experiment_col]:
+                return
+        raise AssertionError("'experiment' type does not match the following: \"WGS\",\"WXS\",\"RNA-Seq\",\"Bisulfite-Seq\",\"ChIP-Seq\",\"Targeted-Seq\".")
 
     def _validate_analysis_json(self, row):
         """Assert that expected analysis_json is correct."""
@@ -232,9 +245,9 @@ def check_samplesheet(file_in, file_out):
         This function checks that the samplesheet follows the following structure,
 
     analysis_type,study_id,patient,sex,status,sample,cram,crai,analysis_json
-    sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
+    sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
     """
-    required_columns = {"analysis_type","study_id","patient","sex","status","sample","cram","crai","analysis_json"}
+    required_columns = {"analysis_type","study_id","patient","sex","status","sample","cram","crai","analysis_json","experiment"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))

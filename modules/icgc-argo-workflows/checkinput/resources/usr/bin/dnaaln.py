@@ -45,6 +45,7 @@ class RowChecker:
         read_group_col = 'read_group',
         single_end_col = 'single_end',
         read_group_count_col = 'read_group_count',
+        experiment_col = 'experiment',
         analysis_json_col = 'analysis_json',
         **kwargs,
     ):
@@ -78,6 +79,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._read_group_col = read_group_col
         self._single_end_col = single_end_col
         self._read_group_count_col = read_group_count_col
+        self._experiment_col = experiment_col
         self._analysis_json_col = analysis_json_col
         self._seen = set()
         self.modified = []
@@ -104,6 +106,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_fastq_2(row)
         self._validate_read_group(row)
         self._validate_read_group_count(row)
+        self._validate_experiment(row)
         self._validate_analysis_json(row)
         self._seen.add((
             row[self._analysis_type_col],
@@ -118,7 +121,9 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             row[self._read_group_col],
             row[self._single_end_col],
             row[self._read_group_count_col],
-            row[self._analysis_json_col]))
+            row[self._experiment_col],
+            row[self._analysis_json_col]
+            ))
         self.modified.append(row)
 
 
@@ -213,6 +218,14 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if len(row[self._read_group_count_col]) <= 0:
             raise AssertionError("'read_group_count' input is required.")
     
+    def _validate_experiment(self, row):
+        """Assert that expected Experiment is correct."""
+        if len(row[self._experiment_col]) <= 0:
+            raise AssertionError("'experiment' input is required.")
+        for val in ["WGS","WXS","RNA-Seq","Bisulfite-Seq","ChIP-Seq","Targeted-Seq"]:
+            if val==row[self._experiment_col]:
+                return
+        raise AssertionError("'experiment' type does not match the following: \"WGS\",\"WXS\",\"RNA-Seq\",\"Bisulfite-Seq\",\"ChIP-Seq\",\"Targeted-Seq\".")
 
     def _validate_analysis_json(self, row):
         """Assert that expected analysis_json is correct."""
@@ -271,7 +284,7 @@ def sniff_format(handle):
 
 
 def check_samplesheet(file_in, file_out):
-    required_columns = {"analysis_type","study_id","patient","sex","status","sample","lane","fastq_1","fastq_2","read_group","single_end","read_group_count","analysis_json"}
+    required_columns = {"analysis_type","study_id","patient","sex","status","sample","lane","fastq_1","fastq_2","read_group","single_end","read_group_count","analysis_json","experiment"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
@@ -320,9 +333,9 @@ Example:
     This function checks that the samplesheet follows the following structure,
 
     analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group,single_end,read_group_count,analysis_json
-    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,C0HVY.2,TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R1.fq.gz,TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R2.fq.gz,'@RG\\tID:C0HVY.2\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8a\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
-    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RE2.1,TEST-QA.DO263089.SA624380.D0RE2.1.b8ac1a3b5b52ced6068b28c4e9b4e5e9_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RE2.1.b8ac1a3b5b52ced6068b28c4e9b4e5e9_R2.fq.gz,'@RG\\tID:D0RE2.1\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8b\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
-    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RH0.2,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R2.fq.gz,'@RG\\tID:D0RH0.2\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8c\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
+    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,C0HVY.2,TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R1.fq.gz,TEST-QA.DO263089.SA624380.C0HVY.2.8775eee1cacedc27428856591023d837_R2.fq.gz,'@RG\\tID:C0HVY.2\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8a\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,WXS,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
+    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RE2.1,TEST-QA.DO263089.SA624380.D0RE2.1.b8ac1a3b5b52ced6068b28c4e9b4e5e9_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RE2.1.b8ac1a3b5b52ced6068b28c4e9b4e5e9_R2.fq.gz,'@RG\\tID:D0RE2.1\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8b\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,WXS,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
+    sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RH0.2,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R2.fq.gz,'@RG\\tID:D0RH0.2\\tSM:SA624380\\tLB:Pond-147580\\tPU:74_8c\\tPI:298\\tCN:EXT\\tPL:ILLUMINA\\tPM:HiSeq 2000\\tDT:2014-12-12\\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,WXS,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
 ''',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
