@@ -7,6 +7,13 @@
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: c625aa2a7ebcc6565c39dd0721efc2f3
+- name: "checkinput aln subset"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.aln_subset.config
+  tags:
+    - "checkinput"
+  files:
+    - path: "output/samplesheet_check/samplesheet.valid.csv"
+      md5sum: e2d551232f98744379134bc9c75fd6e6
 - name: "checkinput alnqc"
   command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.alnqc.config
   tags:
