@@ -42,6 +42,7 @@ class RowChecker:
         cram_col = 'cram',
         crai_col = 'crai',
         experiment_col = 'experiment',
+        genome_build_col = "genome_build",
         analysis_json_col = 'analysis_json',
         **kwargs,
     ):
@@ -72,6 +73,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._cram_col = cram_col
         self._crai_col = crai_col
         self._experiment_col = experiment_col
+        self._genome_build_col = genome_build_col
         self._analysis_json_col = analysis_json_col
         self._seen = set()
         self.modified = []
@@ -96,6 +98,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_cram(row)
         self._validate_crai(row)
         self._validate_experiment(row)
+        self._validate_genome_build(row)
         self._validate_analysis_json(row)
         self._seen.add((
             row[self._analysis_type_col],
@@ -107,6 +110,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             row[self._cram_col],
             row[self._crai_col],
             row[self._experiment_col],
+            row[self._genome_build_col],
             row[self._analysis_json_col]))
         self.modified.append(row)
 
@@ -179,6 +183,11 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if not row[self._analysis_json_col].endswith(".json"):
             raise AssertionError("'analysis_json' input should have the suffix \".json\".")
 
+    def _validate_genome_build(self, row):
+        """Assert that expected analysis_json is correct."""
+        if len(row[self._genome_build_col]) <= 0:
+            raise AssertionError("'genome_build' input is required.")
+
     def validate_unique_samples(self):
         """
         Assert that the combination of sample name and FASTQ filename is unique.
@@ -193,7 +202,6 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         for row in self.modified:
             sample = row[self._sample_col]
             seen[sample] += 1
-            row[self._sample_col] = f"{sample}_T{seen[sample]}"
 
 
 def read_head(handle, num_lines=10):
@@ -244,10 +252,10 @@ def check_samplesheet(file_in, file_out):
     Example:
         This function checks that the samplesheet follows the following structure,
 
-    analysis_type,study_id,patient,sex,status,sample,cram,crai,analysis_json
-    sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
+    analysis_type,study_id,patient,sex,status,sample,cram,crai,genome_build,analysis_json
+    sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,hg38,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
     """
-    required_columns = {"analysis_type","study_id","patient","sex","status","sample","cram","crai","analysis_json","experiment"}
+    required_columns = {"analysis_type","study_id","patient","sex","status","sample","cram","crai","analysis_json","experiment","genome_build"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
