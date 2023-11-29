@@ -271,7 +271,6 @@ def main():
     analysis_type = song_analysis['analysisType']['name']
     output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
     experiment=song_analysis['experiment']['experimental_strategy']
-    output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
 
 
     sample_sheet = dict()
@@ -345,8 +344,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai',"genome_build",'experiment'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai, experiment,genome_build, metadata_json])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai',"genome_build",'experiment', 'analysis_json'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai, genome_build,experiment, metadata_json])
 
     elif analysis_type == 'variant_calling':
       for fp in song_analysis['files']:
@@ -363,13 +362,13 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi',"genome_build",'experiment'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi ,experiment,genome_build, metadata_json])  
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi',"genome_build",'experiment', 'analysis_json'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi ,genome_build,experiment, metadata_json])  
 
     elif analysis_type == 'qc_metrics':
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','qc_tools','qc_file','experiment','analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','qc_tools','qc_file',"genome_build", 'experiment','analysis_json'])
 
         for fp in args.input_files:
           for fq in song_analysis['files']:
@@ -378,7 +377,7 @@ def main():
             os.symlink(os.path.abspath(fp), qc_file)
             qc_tools = ','.join(fq['info']['analysis_tools'])
 
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file,experiment, metadata_json]) 
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file, genome_build, experiment, metadata_json]) 
 
 if __name__ == "__main__":
     main()
