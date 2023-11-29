@@ -1,0 +1,2 @@
+analysis_type,study_id,patient,sex,status,sample,cram,crai,genome_build,experiment,analysis_json
+sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,tests/data/qa/TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,tests/data/qa/TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,,hg38,tests/data/qa/4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json

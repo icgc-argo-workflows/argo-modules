@@ -264,6 +264,8 @@ def main():
     status = '0' if tumour_normal_designation == 'Normal' else '1'
     analysis_type = song_analysis['analysisType']['name']
     output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
+    experiment=song_analysis['experiment']['experimental_strategy']
+    output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
     
 
     sample_sheet = dict()
@@ -317,13 +319,13 @@ def main():
       if rgs_missed_lane:  # throw error here if that happens
           sys.exit("Error: no lane BAM has been generated for some read groups: '%s'. "
                   "Please make sure supplied sequencing files and metadata are correct." % "', '".join(rgs_missed_lane))
-      
+
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count','analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count',"experiment", 'analysis_json'])
         for k,v in sample_sheet.items():
           single_end = True if v['file_r2'] == 'No_File' else False
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count, metadata_json])
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count,experiment, metadata_json])
     
     elif analysis_type == 'sequencing_alignment':
       for fp in args.input_files:
@@ -337,8 +339,8 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai', 'analysis_json'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai, metadata_json])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','cram','crai','experiment'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, cram, crai, experiment, metadata_json])
 
     elif analysis_type == 'variant_calling':
       for fp in song_analysis['files']:
@@ -355,13 +357,13 @@ def main():
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi', 'analysis_json'])
-        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi, metadata_json]) 
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi','experiment'])
+        csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi ,experiment, metadata_json])  
 
     elif analysis_type == 'qc_metrics':
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','qc_tools','qc_file', 'analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','qc_tools','qc_file','experiment' 'analysis_json'])
 
         for fp in args.input_files:
           for fq in song_analysis['files']:
@@ -370,9 +372,7 @@ def main():
             os.symlink(os.path.abspath(fp), qc_file)
             qc_tools = ','.join(fq['info']['analysis_tools'])
 
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file, metadata_json]) 
-
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, qc_tools, qc_file,experiment, metadata_json]) 
 
 if __name__ == "__main__":
     main()
-
