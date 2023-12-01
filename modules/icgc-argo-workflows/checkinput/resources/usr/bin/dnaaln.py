@@ -94,37 +94,35 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
 
         """
         self._validate_analysis_type(row) if row.get(self._analysis_type_col) else ""
-        self._validate_sex(row)
+        self._validate_sex(row) if row.get(self._sex_col) else ""
         self._validate_study_id(row) if row.get(self._study_id_col) else ""
         self._validate_patient(row)
         self._validate_sex(row)
-        self._validate_status(row)
+        self._validate_status(row) if row.get(self._status_col) else ""
         self._validate_sample(row)
         self._validate_lane(row)
         self._validate_single_end(row)
         self._validate_fastq_1(row)
         self._validate_fastq_2(row)
-        self._validate_read_group(row) if row.get(self._read_group_col) else ""
-        self._validate_read_group_count(row) if row.get(self._read_group_count_col) else ""
-        self._validate_experiment(row)
+        self._validate_read_group(row)
+        self._validate_read_group_count(row)
+        self._validate_experiment(row) if row.get(self._experiment_col) else ""
         self._validate_analysis_json(row) if row.get(self._analysis_json_col) else ""
-
-        print(row)
 
         self._seen.add((
             row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
-            row[self._study_id_col] if row.get(self._study_id_col) else None,
-            row[self._patient_col],
-            row[self._sex_col],
-            row[self._status_col],
+            row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
+            row[self._patient_col] if row.get(self._patient_col) else row[self._status_col],
+            row[self._sex_col] if row.get(self._sex_col) else "NA",
+            row[self._status_col] if row.get(self._status_col) else "0",
             row[self._sample_col],
             row[self._lane_col],
             row[self._fastq_1_col],
             row[self._fastq_2_col],
-            row[self._read_group_col] if row.get(self._read_group_col) else None,
+            row[self._read_group_col],
             row[self._single_end_col],
-            row[self._read_group_count_col] if row.get(self._read_group_count_col) else None,
-            row[self._experiment_col],
+            row[self._read_group_count_col],
+            row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
             row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
             ))
         self.modified.append(row)
@@ -206,6 +204,13 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         """Assert that expected read_group is correct."""
         if len(row[self._read_group_col]) <= 0:
             raise AssertionError("'read_group' input is required.")
+        if len(row[self._read_group_col].split("\\t"))<5:
+            raise AssertionError("'read_group' should be \'\\t\' deliminated.")
+        if not(row[self._read_group_col].startswith("@RG")):
+            raise AssertionError("'read_group' should start with '@RG'.")
+        for field,definition in zip(["ID","SM","LB","PU","PL"],["read_group_id","sample_id","library_name","platform_unit","platform"]):
+            if (field+":") not in row[self._read_group_col]:
+                raise AssertionError("'%s' must be in 'read_group' intialized with '%s'." % (definition,field))
     
 
     def _validate_single_end(self, row):
@@ -286,7 +291,7 @@ def sniff_format(handle):
 
 
 def check_samplesheet(file_in, file_out):
-    required_columns = {"patient","sex","status","sample","lane","fastq_1","fastq_2","single_end","experiment"}
+    required_columns = {"sample","lane","fastq_1","fastq_2","single_end","read_group","read_group_count"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))

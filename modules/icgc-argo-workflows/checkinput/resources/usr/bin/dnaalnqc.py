@@ -89,28 +89,27 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         """
         #{"analysis_type","study_id","patient","sex","status","sample","cram","crai","analysis_json"}
         self._validate_analysis_type(row) if row.get(self._analysis_type_col) else ""
-        self._validate_sex(row)
+        self._validate_sex(row) if row.get(self._sex_col) else ""
         self._validate_study_id(row) if row.get(self._study_id_col) else ""
         self._validate_patient(row)
-        self._validate_sex(row)
-        self._validate_status(row)
+        self._validate_status(row) if row.get(self._status_col) else ""
         self._validate_sample(row)
         self._validate_cram(row)
         self._validate_crai(row)
-        self._validate_experiment(row)
-        self._validate_genome_build(row)
+        self._validate_experiment(row) if row.get(self._experiment_col) else ""
+        self._validate_genome_build(row) if row.get(self._genome_build_col) else ""
         self._validate_analysis_json(row) if row.get(self._analysis_json_col) else ""
         self._seen.add((
             row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
-            row[self._study_id_col] if row.get(self._study_id_col) else None,
-            row[self._patient_col],
-            row[self._sex_col],
-            row[self._status_col],
+            row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
+            row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
+            row[self._sex_col] if row.get(self._sex_col) else "NA",
+            row[self._status_col] if row.get(self._status_col) else "0",
             row[self._sample_col],
             row[self._cram_col],
             row[self._crai_col],
-            row[self._experiment_col],
-            row[self._genome_build_col],
+            row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
+            row[self._genome_build_col] if row.get(self._genome_build_col) else "GRCh38",
             row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
             ))
         self.modified.append(row)
@@ -258,7 +257,7 @@ def check_samplesheet(file_in, file_out):
     analysis_type,study_id,patient,sex,status,sample,cram,crai,genome_build,analysis_json
     sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,hg38,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
     """
-    required_columns = {"patient","sex","status","sample","cram","crai","experiment","genome_build"}
+    required_columns = {"sample","cram","crai"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))

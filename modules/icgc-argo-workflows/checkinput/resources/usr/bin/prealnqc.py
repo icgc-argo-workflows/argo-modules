@@ -94,11 +94,10 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
 
         """
         self._validate_analysis_type(row) if row.get(self._analysis_type_col) else ""
-        self._validate_sex(row) 
         self._validate_study_id(row) if row.get(self._study_id_col) else ""
-        self._validate_patient(row)
-        self._validate_sex(row)
-        self._validate_status(row)
+        self._validate_patient(row) if row.get(self._patient_col) else ""
+        self._validate_sex(row) if row.get(self._sex_col) else ""
+        self._validate_status(row) if row.get(self._status_col) else ""
         self._validate_sample(row)
         self._validate_lane(row)
         self._validate_single_end(row)
@@ -106,14 +105,14 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_fastq_2(row)
         self._validate_read_group(row) if row.get(self._read_group_col) else ""
         self._validate_read_group_count(row) if row.get(self._read_group_count_col) else ""
-        self._validate_experiment(row)
+        self._validate_experiment(row) if row.get(self._experiment_col) else ""
         self._validate_analysis_json(row) if row.get(self._analysis_json_col) else ""
         self._seen.add((
             row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
-            row[self._study_id_col] if row.get(self._study_id_col) else None,
-            row[self._patient_col],
-            row[self._sex_col],
-            row[self._status_col],
+            row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
+            row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
+            row[self._sex_col] if row.get(self._sex_col) else "NA",
+            row[self._status_col] if row.get(self._status_col) else "0",
             row[self._sample_col],
             row[self._lane_col],
             row[self._fastq_1_col],
@@ -121,7 +120,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             row[self._read_group_col] if row.get(self._read_group_col) else None,
             row[self._single_end_col],
             row[self._read_group_count_col] if row.get(self._read_group_count_col) else None,
-            row[self._experiment_col],
+            row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
             row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
             ))
         self.modified.append(row)
@@ -306,7 +305,7 @@ def check_samplesheet(file_in, file_out):
         sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RH0.2,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R2.fq.gz,'@RG\tID:D0RH0.2\tSM:SA624380\tLB:Pond-147580\tPU:74_8c\tPI:298\tCN:EXT\tPL:ILLUMINA\tPM:HiSeq 2000\tDT:2014-12-12\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
 
     """
-    required_columns = {"patient","sex","status","sample","lane","fastq_1","fastq_2","single_end","experiment"}
+    required_columns = {"sample","lane","fastq_1","fastq_2","single_end"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
