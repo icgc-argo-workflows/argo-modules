@@ -62,8 +62,6 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
 
         """
         super().__init__(**kwargs)
-        #self._sample_col = sample_col
-        #self._first_col = first_col
         self._analysis_type_col = analysis_type_col
         self._study_id_col = study_id_col
         self._patient_col = patient_col
@@ -75,7 +73,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._experiment_col = experiment_col
         self._genome_build_col = genome_build_col
         self._analysis_json_col = analysis_json_col
-        self._seen = set()
+        self._seen = []
         self.modified = []
 
     def validate_and_transform(self, row):
@@ -91,7 +89,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_analysis_type(row) if row.get(self._analysis_type_col) else ""
         self._validate_sex(row) if row.get(self._sex_col) else ""
         self._validate_study_id(row) if row.get(self._study_id_col) else ""
-        self._validate_patient(row)
+        self._validate_patient(row) if row.get(self._patient_col) else ""
         self._validate_status(row) if row.get(self._status_col) else ""
         self._validate_sample(row)
         self._validate_cram(row)
@@ -99,20 +97,24 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_experiment(row) if row.get(self._experiment_col) else ""
         self._validate_genome_build(row) if row.get(self._genome_build_col) else ""
         self._validate_analysis_json(row) if row.get(self._analysis_json_col) else ""
-        self._seen.add((
-            row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
-            row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
-            row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
-            row[self._sex_col] if row.get(self._sex_col) else "NA",
-            row[self._status_col] if row.get(self._status_col) else "0",
-            row[self._sample_col],
-            row[self._cram_col],
-            row[self._crai_col],
-            row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
-            row[self._genome_build_col] if row.get(self._genome_build_col) else "GRCh38",
-            row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
-            ))
-        self.modified.append(row)
+
+
+        tmp_dict={
+            "analysis_type" : row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
+            "study_id" : row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
+            "patient" : row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
+            "sex" : row[self._sex_col] if row.get(self._sex_col) else "NA",
+            "status" : row[self._status_col] if row.get(self._status_col) else "0",
+            "sample" : row[self._sample_col],
+            "cram" : row[self._cram_col],
+            "crai" : row[self._crai_col],
+            "experiment": row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
+            "genome_build": row[self._genome_build_col] if row.get(self._genome_build_col) else "GRCh38",
+            "analysis_json": row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
+            }
+
+        self._seen.append(row)
+        self.modified.append(tmp_dict)
 
 
     def _validate_analysis_type(self, row):
@@ -189,20 +191,21 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if len(row[self._genome_build_col]) <= 0:
             raise AssertionError("'genome_build' input is required.")
 
-    def validate_unique_samples(self):
+    def validate_unique_values(self,col):
         """
-        Assert that the combination of sample name and FASTQ filename is unique.
-
-        In addition to the validation, also rename all samples to have a suffix of _T{n}, where n is the
-        number of times the same sample exist, but with different FASTQ files, e.g., multiple runs per experiment.
-
+        Assert a single unique value exists in array
         """
-        if len(self._seen) != len(self.modified):
-            raise AssertionError("The pair of sample name and FASTQ must be unique.")
-        seen = Counter()
-        for row in self.modified:
-            sample = row[self._sample_col]
-            seen[sample] += 1
+        if len(set([z[col] for z in self.modified]))!=len([z[col] for z in self.modified]):
+                raise AssertionError("Errors duplicates values detected for '%s'. Each row should have an unique value" % (col))
+                sys.exit(1)
+
+    def validate_common_values(self,col):
+        """
+        Assert each value in array is unique
+        """
+        if len(set([z[col] for z in self.modified]))!=1:
+            raise AssertionError("Errors multiple values detected for '%s'. Only a single value should be used" % (col))
+            sys.exit(1)
 
 
 
@@ -258,11 +261,13 @@ def check_samplesheet(file_in, file_out):
     sequencing_alignment,TEST-QA,DO262466,XY,1,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,WXS,hg38,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
     """
     required_columns = {"sample","cram","crai"}
+    conditional_columns = {"study_id","sex","patient","status","experiment","analysis_json"}
+
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
         # Validate the existence of the expected header columns.
-        if not required_columns.issubset(reader.fieldnames):
+        if not required_columns.issubset(reader.fieldnames) and not conditional_columns.issubset(reader.fieldnames):
             req_cols = ", ".join(required_columns)
             logger.critical(f"The sample sheet **must** contain these column headers: {req_cols}.")
             sys.exit(1)
@@ -274,15 +279,19 @@ def check_samplesheet(file_in, file_out):
             except AssertionError as error:
                 logger.critical(f"{str(error)} On line {i + 2}.")
                 sys.exit(1)
-        checker.validate_unique_samples()
-    header = list(reader.fieldnames)
+
+        for col in["sample","study_id","sex","patient","experiment","status","analysis_json"]:
+            checker.validate_common_values(col)
+        for col in ["cram","crai"]:
+            checker.validate_unique_values(col)
+
+    header = checker.modified[0].keys()
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_out.open(mode="w", newline="") as out_handle:
         writer = csv.DictWriter(out_handle, header, delimiter=",")
         writer.writeheader()
         for row in checker.modified:
             writer.writerow(row)
-
 
 def parse_args(argv=None):
     """Define and immediately parse command line arguments."""

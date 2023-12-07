@@ -31,8 +31,6 @@ class RowChecker:
 
     def __init__(
         self,
-        #sample_col="sample",
-        #first_col="bam_cram",
         analysis_type_col = 'analysis_type',
         study_id_col = 'study_id',
         patient_col = 'patient',
@@ -42,7 +40,6 @@ class RowChecker:
         lane_col = 'lane',
         fastq_1_col = 'fastq_1',
         fastq_2_col = 'fastq_2',
-        read_group_col = 'read_group',
         single_end_col = 'single_end',
         read_group_count_col = 'read_group_count',
         experiment_col = 'experiment',
@@ -65,8 +62,6 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
 
         """
         super().__init__(**kwargs)
-        #self._sample_col = sample_col
-        #self._first_col = first_col
         self._analysis_type_col = analysis_type_col
         self._study_id_col = study_id_col
         self._patient_col = patient_col
@@ -76,12 +71,11 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._lane_col = lane_col
         self._fastq_1_col = fastq_1_col
         self._fastq_2_col = fastq_2_col
-        self._read_group_col = read_group_col
         self._single_end_col = single_end_col
         self._read_group_count_col = read_group_count_col
         self._experiment_col = experiment_col
         self._analysis_json_col = analysis_json_col
-        self._seen = set()
+        self._seen = []
         self.modified = []
 
     def validate_and_transform(self, row):
@@ -103,27 +97,28 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         self._validate_single_end(row)
         self._validate_fastq_1(row)
         self._validate_fastq_2(row)
-        self._validate_read_group(row) if row.get(self._read_group_col) else ""
         self._validate_read_group_count(row) if row.get(self._read_group_count_col) else ""
         self._validate_experiment(row) if row.get(self._experiment_col) else ""
         self._validate_analysis_json(row) if row.get(self._analysis_json_col) else ""
-        self._seen.add((
-            row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
-            row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
-            row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
-            row[self._sex_col] if row.get(self._sex_col) else "NA",
-            row[self._status_col] if row.get(self._status_col) else "0",
-            row[self._sample_col],
-            row[self._lane_col],
-            row[self._fastq_1_col],
-            row[self._fastq_2_col],
-            row[self._read_group_col] if row.get(self._read_group_col) else None,
-            row[self._single_end_col],
-            row[self._read_group_count_col] if row.get(self._read_group_count_col) else None,
-            row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
-            row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
-            ))
-        self.modified.append(row)
+
+        tmp_dict={
+            "analysis_type" : row[self._analysis_type_col] if row.get(self._analysis_type_col) else None,
+            "study_id" : row[self._study_id_col] if row.get(self._study_id_col) else "LOCAL",
+            "patient" : row[self._patient_col] if row.get(self._patient_col) else row[self._sample_col],
+            "sex" : row[self._sex_col] if row.get(self._sex_col) else "NA",
+            "status" : row[self._status_col] if row.get(self._status_col) else "0",
+            "sample" : row[self._sample_col],
+            "lane" : row[self._lane_col],
+            "fastq_1" : row[self._fastq_1_col],
+            "fastq_2" : row[self._fastq_2_col],
+            "single_end" : row[self._single_end_col],
+            "read_group_count" : row[self._read_group_count_col],
+            "experiment" : row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
+            "analysis_json": row[self._analysis_json_col] if row.get(self._analysis_json_col) else None
+            }
+
+        self._seen.append(row)
+        self.modified.append(tmp_dict)
 
 
     def _validate_analysis_type(self, row):
@@ -234,20 +229,35 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if not row[self._analysis_json_col].endswith(".json"):
             raise AssertionError("'analysis_json' input should have the suffix \".json\".")
 
-    def validate_unique_samples(self):
+    def validate_unique_fastq(self):
         """
-        Assert that the combination of sample name and FASTQ filename is unique.
-
-        In addition to the validation, also rename all samples to have a suffix of _T{n}, where n is the
-        number of times the same sample exist, but with different FASTQ files, e.g., multiple runs per experiment.
-
+        Assert that the combination of FASTQ filename is unique.
         """
-        if len(self._seen) != len(self.modified):
-            raise AssertionError("The pair of sample name and FASTQ must be unique.")
-        seen = Counter()
-        for row in self.modified:
-            sample = row[self._sample_col]
-            seen[sample] += 1
+        tmp=[z['fastq_1'] for z in self.modified]+[z['fastq_2'] for z in self.modified]
+
+        for iter in range(0,len(tmp)):
+            current_val=tmp.pop(0)
+            if current_val.endswith(".bam"):
+                continue
+            if current_val in tmp:
+                raise AssertionError("Errors multiple instances of file '%s' detected" % (current_val))
+                sys.exit(1)
+
+    def validate_unique_values(self,col):
+        """
+        Assert a single unique value exists in array
+        """
+        if len(set([z[col] for z in self.modified]))!=len([z[col] for z in self.modified]):
+                raise AssertionError("Errors duplicates values detected for '%s'. Each row should have an unique value" % (col))
+                sys.exit(1)
+
+    def validate_common_values(self,col):
+        """
+        Assert each value in array is unique
+        """
+        if len(set([z[col] for z in self.modified]))!=1:
+            raise AssertionError("Errors multiple values detected for '%s'. Only a single value should be used" % (col))
+            sys.exit(1)
 
 
 def read_head(handle, num_lines=10):
@@ -305,12 +315,14 @@ def check_samplesheet(file_in, file_out):
         sequencing_experiment,TEST-QA,DO263089,XX,1,SA624380,D0RH0.2,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R1.fq.gz,TEST-QA.DO263089.SA624380.D0RH0.2.231146e66d802729c719428e33e555a8_R2.fq.gz,'@RG\tID:D0RH0.2\tSM:SA624380\tLB:Pond-147580\tPU:74_8c\tPI:298\tCN:EXT\tPL:ILLUMINA\tPM:HiSeq 2000\tDT:2014-12-12\tDS:WGS|TEST-QA|SP224367|DO263089|Cell line - derived from tumour|Tumour',False,3,875ef550-e536-4456-9ef5-50e5362456df.analysis.json
 
     """
-    required_columns = {"sample","lane","fastq_1","fastq_2","single_end"}
+    required_columns = {"sample","lane","fastq_1","fastq_2","single_end","read_group_count"}
+    conditional_columns = {"study_id","sex","patient","status","experiment","analysis_json"}
+
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
         # Validate the existence of the expected header columns.
-        if not required_columns.issubset(reader.fieldnames):
+        if not required_columns.issubset(reader.fieldnames) and not conditional_columns.issubset(reader.fieldnames):
             req_cols = ", ".join(required_columns)
             logger.critical(f"The sample sheet **must** contain these column headers: {req_cols}.")
             sys.exit(1)
@@ -322,8 +334,14 @@ def check_samplesheet(file_in, file_out):
             except AssertionError as error:
                 logger.critical(f"{str(error)} On line {i + 2}.")
                 sys.exit(1)
-        checker.validate_unique_samples()
-    header = list(reader.fieldnames)
+        checker.validate_unique_fastq()
+        for col in["sample","study_id","sex","patient","experiment","read_group_count","status","analysis_json"]:
+            checker.validate_common_values(col)
+        for col in ["lane"]:
+            checker.validate_unique_values(col)
+    
+
+    header = checker.modified[0].keys()
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_out.open(mode="w", newline="") as out_handle:
         writer = csv.DictWriter(out_handle, header, delimiter=",")
