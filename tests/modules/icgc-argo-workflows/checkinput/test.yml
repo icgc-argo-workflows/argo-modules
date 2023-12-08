@@ -14,14 +14,14 @@
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: d8e280afe71253702cd43659f13fe123
-- name: "checkinput alnqc"
+- name: "checkinput germlinevar"
   command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.germlinevar.config
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: a6895ef9874c41031125162d521dc4c2
-- name: "checkinput alnqc"
+- name: "checkinput prealnqc"
   command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.prealnqc.config
   tags:
     - "checkinput"
