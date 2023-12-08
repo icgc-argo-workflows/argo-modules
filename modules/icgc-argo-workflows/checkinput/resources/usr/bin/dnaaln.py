@@ -172,7 +172,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             if row.get(col):
                 read_group_info.append("%s:%s" % (id,row[col]))
 
-        tmp_dict['read_group']="RG@:%s\\tDS:%s" % ("\\t".join(read_group_info),"|".join(description))
+        tmp_dict['read_group']="@RG:%s\\tDS:%s" % ("\\t".join(read_group_info),"|".join(description))
 
         self._seen.append(row)
         self.modified.append(tmp_dict)
@@ -249,19 +249,6 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             if row[self._fastq_2_col]!=row[self._fastq_1_col]:
                 raise AssertionError("'fastq_1' and 'fastq_2' prefix differ.")
 
-    def _validate_read_group(self, row):
-        """Assert that expected read_group is correct."""
-        if len(row[self._read_group_col]) <= 0:
-            raise AssertionError("'read_group' input is required.")
-        if len(row[self._read_group_col].split("\\t"))<5:
-            raise AssertionError("'read_group' should be \'\\t\' deliminated.")
-        if not(row[self._read_group_col].startswith("@RG")):
-            raise AssertionError("'read_group' should start with '@RG'.")
-        for field,definition in zip(["ID","SM","LB","PU","PL"],["read_group_id","sample_id","library_name","platform_unit","platform"]):
-            if (field+":") not in row[self._read_group_col]:
-                raise AssertionError("'%s' must be in 'read_group' intialized with '%s'." % (definition,field))
-    
-
     def _validate_single_end(self, row):
         """Assert that expected single_end is correct."""
         if len(row[self._single_end_col]) <= 0:
@@ -292,9 +279,9 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             raise AssertionError("'analysis_json' input should have the suffix \".json\".")
 
     def _validate_library_name(self, row):
-        """Assert that expected analysis_json is correct."""
+        """Assert that expected library_name is correct."""
         if len(row[self._library_name_col]) <= 0:
-            raise AssertionError("'analysis_json' input is required.")
+            raise AssertionError("'library_name' input is required.")
 
     def _validate_platform_unit(self, row):
         """Assert that expected platform_unit is correct."""

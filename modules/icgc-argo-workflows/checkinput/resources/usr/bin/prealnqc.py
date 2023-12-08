@@ -192,11 +192,6 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if row[self._fastq_2_col].endswith(".bam"):
             if row[self._fastq_2_col]!=row[self._fastq_1_col]:
                 raise AssertionError("'fastq_1' and 'fastq_2' prefix differ.")
-
-    def _validate_read_group(self, row):
-        """Assert that expected read_group is correct."""
-        if len(row[self._read_group_col]) <= 0:
-            raise AssertionError("'read_group' input is required.")
     
 
     def _validate_single_end(self, row):

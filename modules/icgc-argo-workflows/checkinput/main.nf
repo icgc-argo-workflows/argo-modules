@@ -12,7 +12,7 @@ process SAMPLESHEET_CHECK {
     val workflow_name
 
     output:
-    path '*.csv'       , emit: csv
+    path 'samplesheet.valid.csv', emit: csv
     path "versions.yml", emit: versions
 
     when:

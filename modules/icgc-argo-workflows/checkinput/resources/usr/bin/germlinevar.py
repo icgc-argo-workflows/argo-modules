@@ -151,16 +151,16 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             raise AssertionError("'sample' input is required.")
     
     def _validate_cram(self, row):
-        """Assert that expected sample is correct."""
+        """Assert that expected cram is correct."""
         if len(row[self._cram_col]) <= 0:
-            raise AssertionError("'sample' input is required.")
+            raise AssertionError("'cram' input is required.")
         if not row[self._cram_col].endswith(".cram"):
             raise AssertionError("'cram' input format is incorrect, ensure file ends with '.cram'")
 
     def _validate_crai(self, row):
-        """Assert that expected sample is correct."""
+        """Assert that expected crai is correct."""
         if len(row[self._crai_col]) <= 0:
-            raise AssertionError("'sample' input is required.")
+            raise AssertionError("'crai' input is required.")
         if not row[self._crai_col].endswith(".crai"):
             raise AssertionError("'crai' input format is incorrect, ensure file ends with '.crai'")
         if row[self._crai_col].split("/")[-1].replace(".cram.crai","")!=row[self._cram_col].split("/")[-1].replace(".cram",""):
@@ -183,7 +183,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             raise AssertionError("'analysis_json' input should have the suffix \".json\".")
 
     def _validate_genome_build(self, row):
-        """Assert that expected analysis_json is correct."""
+        """Assert that expected genome_build is correct."""
         if len(row[self._genome_build_col]) <= 0:
             raise AssertionError("'genome_build' input is required.")
 
