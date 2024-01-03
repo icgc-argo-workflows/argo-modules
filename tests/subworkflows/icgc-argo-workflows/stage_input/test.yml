@@ -1,6 +1,6 @@
 
 - name: "test_stage_input_rdpcqa"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile docker,rdpc_qa --api_token YOUR_TOKEN
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
@@ -13,7 +13,7 @@
     - path: "output/prep_sample/out/SA622798_sequencing_experiment_sample_sheet.csv"
 
 - name: "test_stage_input_user"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_user -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --analysis_id YOUR_ANALYSIS_ID
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.aln.config -profile docker,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
