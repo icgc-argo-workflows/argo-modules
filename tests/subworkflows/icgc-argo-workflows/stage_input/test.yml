@@ -5,12 +5,11 @@
     - "subworkflows"
     - "subworkflows/stage_input"
   files:
-    - path: "output/csv/sample_sheet.csv"
-    - path: "output/songget/c62cee87-04ae-4988-acee-8704aec988d4.analysis.json"
+    - path: "output/prep_sample/out/SA622798_sequencing_experiment_sample_sheet.csv"
+    - path: "output/scoredn/c62cee87-04ae-4988-acee-8704aec988d4.analysis.json"
     - path: "output/scoredn/out/sample_01_L1_1.fastq.gz"
     - path: "output/scoredn/out/sample_01_L1_2.fastq.gz"
-    - path: "output/scoredn/c62cee87-04ae-4988-acee-8704aec988d4.analysis.json"
-    - path: "output/prep_sample/out/SA622798_sequencing_experiment_sample_sheet.csv"
+    - path: "output/songget/c62cee87-04ae-4988-acee-8704aec988d4.analysis.json"
 
 - name: "test_stage_input_user"
   command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.aln.config -profile docker,rdpc_qa
@@ -18,10 +17,6 @@
     - "subworkflows"
     - "subworkflows/stage_input"
   files:
-    - path: "output/csv/sample_sheet.csv"
-    - path: "output/songget/*.analysis.json"
-    - path: "output/scoredn/out/*"
-    - path: "output/scoredn/*.analysis.json"
-    - path: "output/prep_sample/out/*_sample_sheet.csv"
+    - path: "output/samplesheet_check/samplesheet.valid.csv"
 
    
