@@ -170,7 +170,7 @@ workflow STAGE_INPUT {
       }
     }.set{ch_meta_files}
 
-    ch_meta_files.subscribe{println "$it"}
+    //ch_meta_files.subscribe{println "$it"}
 
     emit:
     meta_analysis = ch_meta_analysis         // channel: [ val(meta), analysis_json]
