@@ -12,9 +12,22 @@ workflow STAGE_INPUT {
     main:
     ch_versions = Channel.empty()
 
+    //If local_mode is specified do not upload To RDPC
+    if (params.local_mode){
+      upRdpc_flag=false
+    } else {
+      //Otherwise only upload to RDPC is API_Token is present
+      if (params.api_token || params.api_upload_token){
+        upRdpc_flag=true
+      } else {
+        upRdpc_flag=false
+      }
+    }
 
-
+    //Apply appropriate action if API_TOKEN is supplied
     if (params.api_token || params.api_download_token){
+      //If IDs are present proceed with download otherwise exit
+      if (study_analysis[0] && study_analysis[1]){
       SONG_SCORE_DOWNLOAD( study_analysis )
       ch_versions = ch_versions.mix(SONG_SCORE_DOWNLOAD.out.versions)
 
@@ -22,19 +35,30 @@ workflow STAGE_INPUT {
       ch_versions = ch_versions.mix(PREP_SAMPLE.out.versions)
 
       analysis_input = PREP_SAMPLE.out.sample_sheet_csv
+      } else {
+        exit 1, "Using using API_Token, both a study_id and analysis_id must be specified."
+      }
     } else {
-      SAMPLESHEET_CHECK(file(samplesheet),workflow.Manifest.name)
-      ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
+      //If no API_Token, check for local samplesheet
+      if (samplesheet){
+        SAMPLESHEET_CHECK(file(samplesheet,checkIfExists: true),workflow.Manifest.name)
+        ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
 
-      analysis_input =  SAMPLESHEET_CHECK.out.csv
+        analysis_input =  SAMPLESHEET_CHECK.out.csv
+      } else {
+        exit 1, "When no API_TOKEN is provided, a local samplesheet must be provided."
+      }
     }
 
+    //Collect meta,data files and analysis_json
+    //Two channels for meta,files and meta,analysis_json will be refined afterwards
     analysis_input
     .collectFile(keepHeader: true, name: 'sample_sheet.csv')
     .splitCsv(header:true)
     .map{ row ->
        if (row.analysis_type == "sequencing_experiment" && row.single_end == 'False') {
          tuple([
+           analysis_type : row.analysis_type,
            id:"${row.sample}-${row.lane}".toString(), 
            study_id:row.study_id,
            patient:row.patient,
@@ -52,6 +76,7 @@ workflow STAGE_INPUT {
            )
        } else if (row.analysis_type == "sequencing_experiment" && row.single_end == 'True') {
          tuple([
+           analysis_type : row.analysis_type,
            id:"${row.sample}-${row.lane}".toString(), 
            study_id:row.study_id,
            patient:row.patient,
@@ -69,6 +94,7 @@ workflow STAGE_INPUT {
            ) 
       } else if (row.analysis_type == "sequencing_alignment") {
         tuple([
+          analysis_type : row.analysis_type,
           id:"${row.sample}".toString(),
           study_id:row.study_id,
           patient:row.patient,
@@ -84,6 +110,7 @@ workflow STAGE_INPUT {
       }
       else if (row.analysis_type == "variant_calling") {
         tuple([
+          analysis_type : row.analysis_type,
           id:"${row.sample}".toString(),
           study_id:row.study_id, 
           patient:row.patient,
@@ -100,6 +127,7 @@ workflow STAGE_INPUT {
       }
       else if (row.analysis_type == "qc_metrics") {
         tuple([
+          analysis_type : row.analysis_type,
           id:"${row.sample}".toString(),
           study_id:row.study_id, 
           patient:row.patient,
@@ -117,6 +145,7 @@ workflow STAGE_INPUT {
     }
     .set { ch_input_sample }
 
+    //We want to still have meta when analysis_json doesn't exist
     ch_input_sample.map{ meta,files,analysis ->
       if (analysis){
         tuple([meta,file(analysis)])
@@ -126,14 +155,27 @@ workflow STAGE_INPUT {
     }
     .set{ ch_meta_analysis }
 
-    ch_input_sample.map{ meta,files,analysis -> tuple([meta,files])}.set{ch_files}
+    //Reorganize files as "sequencing_experiment expected input is tuple while other types are flat"
+    ch_input_sample.map{ meta,files,analysis ->
+      if (meta.analysis_type == "sequencing_experiment" && meta.single_end == 'False'){
+        tuple([meta,files])
+      } else if (meta.analysis_type == "sequencing_experiment" && meta.single_end == 'True') {
+        tuple([meta,files])
+      } else if (meta.analysis_type == "sequencing_alignment") {
+        tuple([meta,files[0],files[1]])
+      } else if (meta.analysis_type == "variant_calling") {
+        tuple([meta,files[0],files[1]])
+      } else if (meta.analysis_type == "qc_metrics") {
+        tuple([meta,files[0]])
+      }
+    }.set{ch_meta_files}
 
-    //ch_meta_analysis.subscribe { println "$it" }
-    //ch_files.subscribe { println "$it" }
+    ch_meta_files.subscribe{println "$it"}
 
     emit:
     meta_analysis = ch_meta_analysis         // channel: [ val(meta), analysis_json]
-    sample_files  = ch_files          // channel: [ val(meta), [ files ] ]
+    meta_files  = ch_meta_files          // channel: [ val(meta), [ files ] ]
+    upRdpc = upRdpc_flag
     
     versions = ch_versions                   // channel: [ versions.yml ]
 }

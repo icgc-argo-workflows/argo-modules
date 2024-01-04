@@ -11,8 +11,16 @@
     - path: "output/scoredn/out/sample_01_L1_2.fastq.gz"
     - path: "output/songget/c62cee87-04ae-4988-acee-8704aec988d4.analysis.json"
 
-- name: "test_stage_input_user"
+- name: "test_stage_input_user_aln"
   command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.aln.config -profile docker,rdpc_qa
+  tags:
+    - "subworkflows"
+    - "subworkflows/stage_input"
+  files:
+    - path: "output/samplesheet_check/samplesheet.valid.csv"
+
+- name: "test_stage_input_user_germlinevar"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.germlinevar.config -profile docker,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
