@@ -1,7 +1,7 @@
 
 include { SONG_SCORE_DOWNLOAD          } from '../../icgc-argo-workflows/song_score_download/main'
-include { PREP_SAMPLE                  } from '../../../modules/icgc-argo-workflows/prep/sample/main'
-include { SAMPLESHEET_CHECK            } from '../../../modules/icgc-argo-workflows/checkinput/main'
+include { PREPSAMPLE                  } from '../../../modules/icgc-argo-workflows/prep/sample/main'
+include { SAMPLESHEETCHECK            } from '../../../modules/icgc-argo-workflows/checkinput/main'
 
 workflow STAGE_INPUT {
 
@@ -31,20 +31,20 @@ workflow STAGE_INPUT {
       SONG_SCORE_DOWNLOAD( study_analysis )
       ch_versions = ch_versions.mix(SONG_SCORE_DOWNLOAD.out.versions)
 
-      PREP_SAMPLE ( SONG_SCORE_DOWNLOAD.out.analysis_files )
+      PREPSAMPLE ( SONG_SCORE_DOWNLOAD.out.analysis_files )
       ch_versions = ch_versions.mix(PREP_SAMPLE.out.versions)
 
-      analysis_input = PREP_SAMPLE.out.sample_sheet_csv
+      analysis_input = PREPSAMPLE.out.sample_sheet_csv
       } else {
         exit 1, "Using using API_Token, both a study_id and analysis_id must be specified."
       }
     } else {
       //If no API_Token, check for local samplesheet
       if (samplesheet){
-        SAMPLESHEET_CHECK(file(samplesheet,checkIfExists: true),workflow.Manifest.name)
-        ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
+        SAMPLESHEETCHECK(file(samplesheet,checkIfExists: true),workflow.Manifest.name)
+        ch_versions = ch_versions.mix(SAMPLESHEETCHECK.out.versions)
 
-        analysis_input =  SAMPLESHEET_CHECK.out.csv
+        analysis_input =  SAMPLESHEETCHECK.out.csv
       } else {
         exit 1, "When no API_TOKEN is provided, a local samplesheet must be provided."
       }
