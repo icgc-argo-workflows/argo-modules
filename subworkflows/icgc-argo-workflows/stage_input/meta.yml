@@ -9,7 +9,7 @@ keywords:
 modules:
   - song/get
   - score/download
-  - prep_sample
+  - prep/sample
 input:
   - study_id:
       type: string
