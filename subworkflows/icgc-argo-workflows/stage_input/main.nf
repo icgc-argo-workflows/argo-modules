@@ -157,9 +157,7 @@ workflow STAGE_INPUT {
 
     //Reorganize files as "sequencing_experiment expected input is tuple while other types are flat"
     ch_input_sample.map{ meta,files,analysis ->
-      if (meta.analysis_type == "sequencing_experiment" && meta.single_end == 'False'){
-        tuple([meta,files])
-      } else if (meta.analysis_type == "sequencing_experiment" && meta.single_end == 'True') {
+      if (meta.analysis_type == "sequencing_experiment"){
         tuple([meta,files])
       } else if (meta.analysis_type == "sequencing_alignment") {
         tuple([meta,files[0],files[1]])
