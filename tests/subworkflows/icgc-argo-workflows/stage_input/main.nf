@@ -11,15 +11,14 @@ workflow test_stage_input_rdpcqa {
       params.test_data['rdpc_qa']['analysis_id_stage']
     ]
 
-    STAGE_INPUT ( input_channel )
+    samplesheet_workflow = [null,null]
+
+    STAGE_INPUT (input_channel,samplesheet_workflow)
 }
 
-workflow test_stage_input_user {
+workflow test_stage_input_local {
     
-    input_channel = [
-      params.study_id,
-      params.analysis_id
-    ]
+    input_channel = [null,null]
 
-    STAGE_INPUT ( input_channel )
+    STAGE_INPUT (input_channel,params.input)
 }
