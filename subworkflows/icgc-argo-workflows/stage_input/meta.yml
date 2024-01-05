@@ -10,6 +10,7 @@ modules:
   - song/get
   - score/download
   - prep/sample
+  - checkinput
 input:
   - study_id:
       type: string
