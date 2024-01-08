@@ -1,5 +1,5 @@
 
-process PREPSAMPLE {
+process PREP_SAMPLE {
   tag "${metadata_json.baseName}"
   label 'process_low'
 
