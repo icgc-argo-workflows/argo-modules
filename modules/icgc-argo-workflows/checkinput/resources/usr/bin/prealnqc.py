@@ -184,10 +184,10 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
         if len(row[self._fastq_2_col]) <= 0:
             raise AssertionError("'fastq_2' input is required.")
         if row[self._fastq_2_col].endswith(".fastq.gz"):
-            if row[self._fastq_2_col].split("/")[-1].replace("R2.fastq.gz","")!=row[self._fastq_1_col].split("/")[-1].replace("R1.fastq.gz",""):
+            if row[self._fastq_2_col].split("/")[-1].replace("R2.fastq.gz","").replace("r2.fastq.gz","")!=row[self._fastq_1_col].split("/")[-1].replace("R1.fastq.gz","").replace("r1.fastq.gz",""):
                 raise AssertionError("'fastq_1' and 'fastq_2' prefix differ.")
         if row[self._fastq_2_col].endswith(".fq.gz"):
-            if row[self._fastq_2_col].split("/")[-1].replace("R2.fq.gz","")!=row[self._fastq_1_col].split("/")[-1].replace("R1.fq.gz",""):
+            if row[self._fastq_2_col].split("/")[-1].replace("R2.fq.gz","").replace("r2.fq.gz","")!=row[self._fastq_1_col].split("/")[-1].replace("R1.fq.gz","").replace("r1.fq.gz",""):
                 raise AssertionError("'fastq_1' and 'fastq_2' prefix differ.")
         if row[self._fastq_2_col].endswith(".bam"):
             if row[self._fastq_2_col]!=row[self._fastq_1_col]:
@@ -232,11 +232,18 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
 
         for iter in range(0,len(tmp)):
             current_val=tmp.pop(0)
-            if current_val.endswith(".bam"):
+            if current_val.endswith(".fastq.gz"):
+                continue
+            if current_val.endswith(".fq.gz"):
+                continue
+            if current_val=='NO_FILE':
                 continue
             if current_val in tmp:
                 raise AssertionError("Errors multiple instances of file '%s' detected" % (current_val))
                 sys.exit(1)
+            else:
+                raise AssertionError("Unexpected file format detected for '%s'" % (current_val))
+
 
     def validate_unique_values(self,col):
         """

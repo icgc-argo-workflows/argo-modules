@@ -1,13 +1,13 @@
 
 include { SONG_SCORE_DOWNLOAD          } from '../../icgc-argo-workflows/song_score_download/main'
 include { PREP_SAMPLE                  } from '../../../modules/icgc-argo-workflows/prep/sample/main'
-include { CHECKINPUT            } from '../../../modules/icgc-argo-workflows/checkinput/main'
+include { CHECKINPUT                   } from '../../../modules/icgc-argo-workflows/checkinput/main'
 
 workflow STAGE_INPUT {
 
     take:
     study_analysis  // channel: study_id, analysis_id
-    samplesheet  // channel: samplesheet,workflow_name
+    samplesheet  // channel: samplesheet
     
     main:
     ch_versions = Channel.empty()
@@ -44,12 +44,11 @@ workflow STAGE_INPUT {
         CHECKINPUT(file(samplesheet,checkIfExists: true),workflow.Manifest.name)
         ch_versions = ch_versions.mix(CHECKINPUT.out.versions)
 
-        analysis_input =  CHECKINPUT.out.csv
+        analysis_input = CHECKINPUT.out.csv
       } else {
         exit 1, "When no API_TOKEN is provided, a local samplesheet must be provided."
       }
     }
-
     //Collect meta,data files and analysis_json
     //Two channels for meta,files and meta,analysis_json will be refined afterwards
     analysis_input
@@ -167,8 +166,6 @@ workflow STAGE_INPUT {
         tuple([meta,files[0]])
       }
     }.set{ch_meta_files}
-
-    //ch_meta_files.subscribe{println "$it"}
 
     emit:
     meta_analysis = ch_meta_analysis         // channel: [ val(meta), analysis_json]
