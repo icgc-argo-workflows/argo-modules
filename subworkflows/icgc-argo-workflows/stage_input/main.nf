@@ -169,7 +169,7 @@ workflow STAGE_INPUT {
 
     emit:
     meta_analysis = ch_meta_analysis         // channel: [ val(meta), analysis_json]
-    meta_files  = ch_meta_files          // channel: [ val(meta), [ files ] ]
+    meta_files  = ch_meta_files.first()      // channel: [ val(meta), [ files ] ]
     upRdpc = upRdpc_flag
     
     versions = ch_versions                   // channel: [ versions.yml ]
