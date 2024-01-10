@@ -172,7 +172,7 @@ analysis_type,study_id,patient,sex,status,sample,lane,fastq_1,fastq_2,read_group
             if row.get(col):
                 read_group_info.append("%s:%s" % (id,row[col]))
 
-        tmp_dict['read_group']="@RG:\\ts\\tDS:%s" % ("\\t".join(read_group_info),"|".join(description))
+        tmp_dict['read_group']="@RG\\t%s\\tDS:%s" % ("\\t".join(read_group_info),"|".join(description))
 
         self._seen.append(row)
         self.modified.append(tmp_dict)
