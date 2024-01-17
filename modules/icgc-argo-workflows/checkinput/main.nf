@@ -1,4 +1,4 @@
-process SAMPLESHEET_CHECK {
+process CHECKINPUT {
     tag "$samplesheet"
     label 'process_single'
 
