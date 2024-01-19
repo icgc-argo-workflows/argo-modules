@@ -26,5 +26,12 @@
     - "subworkflows/stage_input"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
+- name: "test_stage_input_user_prealnqc"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.prealnqc.config -profile docker,rdpc_qa
+  tags:
+    - "subworkflows"
+    - "subworkflows/stage_input"
+  files:
+    - path: "output/samplesheet_check/samplesheet.valid.csv"
 
    
