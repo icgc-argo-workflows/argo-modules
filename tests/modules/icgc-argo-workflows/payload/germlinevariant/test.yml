@@ -1,0 +1,55 @@
+## TODO nf-core: Please run the following command to build this file:
+#                nf-core modules create-test-yml payload/germlinevariant
+- name: "payload germlinevariant haplotypecaller"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,haplotypecaller_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+    - path: "output/variant_calling/haplotypecaller/*.json"
+    - path: "output/variant_calling/haplotypecaller/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.haplotypecaller.germline.snv.vcf.gz"
+    - path: "output/variant_calling/haplotypecaller/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.haplotypecaller.germline.snv.vcf.gz.tbi"
+- name: "payload germlinevariant freebayes"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,freebayes_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+  files:
+    - path: "output/variant_calling/freebayes/*.json"
+    - path: "output/variant_calling/freebayes/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.freebayes.germline.snv.vcf.gz"
+    - path: "output/variant_calling/freebayes/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.freebayes.germline.snv.vcf.gz.tbi"
+- name: "payload germlinevariant strelka"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,strelka_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+  files:
+    - path: "output/variant_calling/strelka/*.json"
+    - path: "output/variant_calling/strelka/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.strelka.germline.snv.vcf.gz"
+    - path: "output/variant_calling/strelka/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.strelka.germline.snv.vcf.gz.tbi"
+- name: "payload germlinevariant manta"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,manta_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+  files:
+    - path: "output/variant_calling/manta/*.json"
+    - path: "output/variant_calling/manta/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.manta.germline.snv.vcf.gz"
+    - path: "output/variant_calling/manta/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.manta.germline.snv.vcf.gz.tbi"
+- name: "payload germlinevariant deepvariant"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,deepvariant_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+  files:
+    - path: "output/variant_calling/deepvariant/*.json"
+    - path: "output/variant_calling/deepvariant/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.deepvariant.germline.snv.vcf.gz"
+    - path: "output/variant_calling/deepvariant/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.deepvariant.germline.snv.vcf.gz.tbi"
+- name: "payload germlinevariant tiddit"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/germlinevariant -entry test_payload_germlinevariant -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/germlinevariant/nextflow.config -profile docker,tiddit_vcf
+  tags:
+    - "payload"
+    - "payload/germlinevariant"
+  files:
+    - path: "output/variant_calling/tiddit/*.json"
+    - path: "output/variant_calling/tiddit/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.tiddit.germline.snv.vcf.gz"
+    - path: "output/variant_calling/tiddit/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b/out/*.tiddit.germline.snv.vcf.gz.tbi"
