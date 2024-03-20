@@ -1,2 +1,2 @@
-analysis_type,sample,cram,crai,analysis_json
-sequencing_alignment,SA622744,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram,TEST-QA.DO262466.SA622744.wxs.20210712.aln.cram.crai,4f6d6ddf-3759-4a30-ad6d-df37591a3033.analysis.json
+analysis_type,sample,bam_cram,bai_crai,analysis_json
+sequencing_alignment,SA622744,../../../tests/data/qa/TEST-PR.DO250122.SA610149.wgs.20210708.aln.cram,../../../tests/data/qa/TEST-PR.DO250122.SA610149.wgs.20210708.aln.cram.crai,tests/data/qa/0187b82f-1693-470a-87b8-2f1693f70ac9.analysis.json
