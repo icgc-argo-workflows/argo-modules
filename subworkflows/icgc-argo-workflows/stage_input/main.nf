@@ -76,7 +76,7 @@ workflow STAGE_INPUT {
            experiment:row.experiment,
            single_end : row.single_end.toBoolean()
            ], 
-           [file(row.fastq_1), file(row.fastq_2)],
+           [file(row.fastq_1,checkIfExists: true), file(row.fastq_2,checkIfExists: true)],
            row.analysis_json
            )
        } else if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'true') {
@@ -94,7 +94,7 @@ workflow STAGE_INPUT {
            experiment:row.experiment,
            single_end : row.single_end.toBoolean()
            ], 
-           [file(row.fastq_1)],
+           [file(row.fastq_1,checkIfExists: true)],
            row.analysis_json
            ) 
       } else if (row.analysis_type == "sequencing_alignment") {
@@ -108,8 +108,8 @@ workflow STAGE_INPUT {
           status:row.status.toInteger(),
           genome_build:row.genome_build,
           experiment:row.experiment,
-          data_type:'cram'], 
-          [file(row.cram), file(row.crai)],
+          data_type: "${row.bam_cram}".replaceAll(/^.*\./,"")], 
+          [file(row.bam_cram,checkIfExists: true), file(row.bai_crai,checkIfExists: true)],
           row.analysis_json
           )
       }
@@ -126,7 +126,7 @@ workflow STAGE_INPUT {
           genome_build:row.genome_build,
           experiment:row.experiment,
           data_type:'vcf'],
-          [file(row.vcf), file(row.tbi)],
+          [file(row.vcf,checkIfExists: true), file(row.tbi,checkIfExists: true)],
           row.analysis_json
           )
       }
@@ -143,7 +143,7 @@ workflow STAGE_INPUT {
           genome_build:row.genome_build,
           experiment:row.experiment,
           data_type:'tgz'],
-          [file(row.qc_file)],
+          [file(row.qc_file,checkIfExists: true)],
           row.analysis_json
           )
       }
@@ -153,7 +153,7 @@ workflow STAGE_INPUT {
     //We want to still have meta when analysis_json doesn't exist
     ch_input_sample.map{ meta,files,analysis ->
       if (analysis){
-        tuple([meta,file(analysis)])
+        tuple([meta,file(analysis,checkIfExists: true)])
       } else {
         tuple([meta,null])
       }
