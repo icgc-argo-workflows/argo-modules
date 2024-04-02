@@ -1,0 +1,2 @@
+subworkflows/merg_sort_dup:
+  - subworkflows/icgc-argo-workflows/merg_sort_dup/**
