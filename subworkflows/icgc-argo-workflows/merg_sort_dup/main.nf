@@ -10,7 +10,7 @@ include { SAMTOOLS_INDEX                        } from '../../../modules/icgc-ar
 include { SAMTOOLS_CONVERT                      } from '../../../modules/icgc-argo-workflows/samtools/convert/main'
 include { TAR                                   } from '../../../modules/icgc-argo-workflows/tar/main'
 
-workflow DNASEQ_ALN_MERG_SORT_DUP {
+workflow MERG_SORT_DUP {
 
     take:
     bam
