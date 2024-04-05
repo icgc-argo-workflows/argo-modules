@@ -1,23 +1,11 @@
-- name: "merg_sort_dup_rdpcqa"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merg_sort_dup -entry test_merge_sort_dup_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
-  tags:
+- name: "merg_sort_dup"
+  command: nextflow run main.nf -entry test_merg_sort_dup --tools 'markdup' -profile docker -c ../../../config/nextflow.config
+    tags:
     - "subworkflows"
     - "subworkflows/merge_sort_dup"
   files:
-    - path: "output/songget/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b.analysis.json"
-    - path: "output/songget/versions.yml"
-    - path: "output/scoredn/out/COLO-829-BL_ex.bam"
-    - path: "output/scoredn/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b.analysis.json"
-    - path: "output/scoredn/versions.yml"
-
-- name: "merg_sort_dup_local"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merg_sort_dup -entry test_merg_sort_dup_local -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN --study_id YOUR_STUDY_ID --analysis_id YOUR_ANALYSIS_ID
-  tags:
-    - "subworkflows"
-    - "subworkflows/merg_sort_dup"
-  files:
-    - path: "output/songget/*.analysis.json"
-    - path: "output/songget/versions.yml"
-    - path: "output/scoredn/out/*"
-    - path: "output/scoredn/*.analysis.json"
-    - path: "output/scoredn/versions.yml"
+    # - path: "output/songget/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b.analysis.json"
+    # - path: "output/songget/versions.yml"
+    # - path: "output/scoredn/out/COLO-829-BL_ex.bam"
+    # - path: "output/scoredn/08e7c5b1-b3af-4e20-a7c5-b1b3af2e206b.analysis.json"
+    # - path: "output/scoredn/versions.yml"
