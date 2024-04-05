@@ -9,9 +9,6 @@ include { BIOBAMBAM_BAMMARKDUPLICATES2          } from '../../../modules/icgc-ar
 include { SAMTOOLS_INDEX                        } from '../../../modules/icgc-argo-workflows/samtools/index/main' 
 include { SAMTOOLS_CONVERT                      } from '../../../modules/icgc-argo-workflows/samtools/convert/main'
 include { TAR                                   } from '../../../modules/icgc-argo-workflows/tar/main'
-include { EXAMPLE_EXAMPLE as EXAMPLE1                        } from '../../../modules/icgc-argo-workflows/main'
-include { EXAMPLE_EXAMPLE as EXAMPLE2                        } from '../../../modules/icgc-argo-workflows/main'
-include { EXAMPLE_EXAMPLE as EXAMPLE3                        } from '../../../modules/icgc-argo-workflows/main'
 
 workflow MERG_SORT_DUP {
 
@@ -22,6 +19,13 @@ workflow MERG_SORT_DUP {
     main:
 
     ch_versions = Channel.empty()
+
+    reference_files.branch{
+        fasta : it[1].name.endsWith(".fasta") || it[1].name.endsWith(".fa")
+        return it
+        fai : it[1].name.endsWith(".fai")
+        return it
+    }.set{ref_org}
 
     //bam.subscribe{println "bam: ${it}"}
     //Collect channel (e.g. [metaA,bamA,metaB,bamB] and seperate back in channels of [meta,bam])
@@ -72,38 +76,20 @@ workflow MERG_SORT_DUP {
 //    ch_bams.subscribe{println "input bam: ${it}"}
 //    reference_files.subscribe{println "reference :${it}"}
 
-    //reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]}.subscribe{println "HELP :${it}"}
-    // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]}.set{ch_fa}
-    // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}.set{ch_fai}
-
-    // ch_fa.subscribe{ println "fa : ${it}"}
-    // ch_fai.subscribe{ println "fai : ${it}"}
-    EXAMPLE1(
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
-            
-    )
     SAMTOOLS_MERGE(
         ch_bams,
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
+        ref_org.fasta,
+        ref_org.fai
     )
+
     // SAMTOOLS_MERGE(
     //     ch_bams,
     //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
     //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
     // )
 
-    // SAMTOOLS_MERGE(
-    //     ch_bams,
-    //     ch_fa,
-    //     ch_fai,
-    // )
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
-    EXAMPLE2(
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
-    )
+
 //    SAMTOOLS_MERGE.out.bam.subscribe{println "merge :${it}"}
 
     //If markdup specified, markdup file else return as is
@@ -184,9 +170,10 @@ workflow MERG_SORT_DUP {
     //     ch_fai
     // )
 
-    EXAMPLE3(
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-        reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
+    SAMTOOLS_CONVERT(
+        ch_convert,
+        ref_org.fasta,
+        ref_org.fai
     )
 
     // SAMTOOLS_CONVERT(
@@ -198,79 +185,79 @@ workflow MERG_SORT_DUP {
             // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
         // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
 
-    //ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
+    ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
 
-    //SAMTOOLS_CONVERT.out.cram.combine(SAMTOOLS_CONVERT.out.crai).subscribe{println "COMBINED : $it"}
-    // .map{
-    //     metaA,cram,metaB,index ->
-    //     [
-    //         [
-    //             id:"${metaA.id}",
-    //             study_id:"${metaA.study_id}",
-    //             patient:"${metaA.patient}",
-    //             sex:"${metaA.sex}",
-    //             sample:"${metaA.sample}",
-    //             numLanes:"${metaA.numLanes}",
-    //             date:"${metaA.date}",
-    //             read_group:"${metaA.read_group}",
-    //             data_type:"${metaA.data_type}",
-    //             size:"${metaA.size}",
-    //             experiment:"${metaA.experiment}",
-    //             tool: "${metaA.tool}"
-    //         ],
-    //         cram,index
-    //     ]
-    // }.set{alignment_index}
+    SAMTOOLS_CONVERT.out.cram.combine(SAMTOOLS_CONVERT.out.crai)//.subscribe{println "COMBINED : $it"}
+    .map{
+        metaA,cram,metaB,index ->
+        [
+            [
+                id:"${metaA.id}",
+                study_id:"${metaA.study_id}",
+                patient:"${metaA.patient}",
+                sex:"${metaA.sex}",
+                sample:"${metaA.sample}",
+                numLanes:"${metaA.numLanes}",
+                date:"${metaA.date}",
+                read_group:"${metaA.read_group}",
+                data_type:"${metaA.data_type}",
+                size:"${metaA.size}",
+                experiment:"${metaA.experiment}",
+                tool: "${metaA.tool}"
+            ],
+            cram,index
+        ]
+    }.set{alignment_index}
 
-    // //If Markdup specified, TAR metrics file
-    // if (params.tools.split(',').contains('markdup')){
-    //     TAR(
-    //         BIOBAMBAM_BAMMARKDUPLICATES2.out.metrics
-    //         .map{ meta,file-> 
-    //         [
-    //             [   
-    //                 study_id:"${meta.study_id}",
-    //                 patient:"${meta.patient}",
-    //                 sex:"${meta.sex}",
-    //                 sample:"${meta.sample}",
-    //                 date:"${meta.date}",
-    //                 numLanes:"${meta.numLanes}",
-    //                 read_group:"${meta.read_group}",
-    //                 data_type:"${meta.data_type}",
-    //                 size:"${meta.size}",
-    //                 experiment:"${meta.experiment}",
-    //                 id:"${meta.study_id}.${meta.patient}.${meta.sample}.${meta.experiment}.aln.cram.duplicates_metrics",
-    //                 tools:"${meta.tool}"
-    //             ],file
-    //         ]
-    //         }
-    //     )
-    //     TAR.out.stats.set{metrics}
-    //     Channel.empty()
-    //     .mix(ch_bams.map{meta,files -> files}.collect())
-    //     .mix(SAMTOOLS_MERGE.out.bam.map{meta,file -> file}.collect())
-    //     .mix(BIOBAMBAM_BAMMARKDUPLICATES2.out.bam.map{meta,file -> file}.collect())
-    //     .mix(SAMTOOLS_INDEX.out.bai.map{meta,file -> file}.collect())
-    //     .collect()
-    //     .set{ch_cleanup}
-    // } else {
-    //     Channel.empty()
-    //     .mix(ch_bams.map{meta,files -> files}.collect())
-    //     .mix(SAMTOOLS_MERGE.out.bam.map{meta,file -> file}.collect())
-    //     .mix(SAMTOOLS_INDEX.out.bai.map{meta,file -> file}.collect())
-    //     .collect()
-    //     .set{ch_cleanup}
+    //If Markdup specified, TAR metrics file
+    if (params.tools.split(',').contains('markdup')){
+        TAR(
+            BIOBAMBAM_BAMMARKDUPLICATES2.out.metrics
+            .map{ meta,file-> 
+            [
+                [   
+                    study_id:"${meta.study_id}",
+                    patient:"${meta.patient}",
+                    sex:"${meta.sex}",
+                    sample:"${meta.sample}",
+                    date:"${meta.date}",
+                    numLanes:"${meta.numLanes}",
+                    read_group:"${meta.read_group}",
+                    data_type:"${meta.data_type}",
+                    size:"${meta.size}",
+                    experiment:"${meta.experiment}",
+                    id:"${meta.study_id}.${meta.patient}.${meta.sample}.${meta.experiment}.aln.cram.duplicates_metrics",
+                    tools:"${meta.tool}"
+                ],file
+            ]
+            }
+        )
+        TAR.out.stats.set{metrics}
+        Channel.empty()
+        .mix(ch_bams.map{meta,files -> files}.collect())
+        .mix(SAMTOOLS_MERGE.out.bam.map{meta,file -> file}.collect())
+        .mix(BIOBAMBAM_BAMMARKDUPLICATES2.out.bam.map{meta,file -> file}.collect())
+        .mix(SAMTOOLS_INDEX.out.bai.map{meta,file -> file}.collect())
+        .collect()
+        .set{ch_cleanup}
+    } else {
+        Channel.empty()
+        .mix(ch_bams.map{meta,files -> files}.collect())
+        .mix(SAMTOOLS_MERGE.out.bam.map{meta,file -> file}.collect())
+        .mix(SAMTOOLS_INDEX.out.bai.map{meta,file -> file}.collect())
+        .collect()
+        .set{ch_cleanup}
 
-    //     Channel.empty().set{metrics}  
-    // }
+        Channel.empty().set{metrics}  
+    }
 
 
 
     ch_versions= ch_versions.map{ file -> file.moveTo("${file.getParent()}/.${file.getName()}")}
     
     emit:
-    // cram_alignment_index = alignment_index
-    // tmp_files = ch_cleanup
-    // metrics = metrics
+    cram_alignment_index = alignment_index
+    tmp_files = ch_cleanup
+    metrics = metrics
     versions = ch_versions                     // channel: [ versions.yml ]
 }

@@ -20,12 +20,12 @@ def sampleMetadata = [
 ]
 
 // Define the path to your test BAM file(s)
-def bamFilePath = '/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW/argo-modules/tests/data/qa/sample_01_L*.bam'
+def bamFilePath = '/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW2/argo-modules/tests/data/qa/sample_01_L*.bam'
 
 // Create an input channel with the metadata and BAM file path
 // Note: The BAM file path needs to be wrapped with the file() method to create a Nextflow File object
 //def inputChannel = Channel.of([sampleMetadata, file(bamFilePath)])
-def inputChannel = Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW/argo-modules/tests/data/qa/sample_01_L*.bam').combine(Channel.of(sampleMetadata))
+def inputChannel = Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW2/argo-modules/tests/data/qa/sample_01_L*.bam').combine(Channel.of(sampleMetadata))
 .map{ bam,meta ->
     [
         meta,bam
@@ -39,13 +39,13 @@ def inputChannel = Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKF
 //     ]
 // }
 
-def referenceFiles = Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW/argo-modules/tests/data/qa/GRCh38_Verily_v1.genome.fa').combine(Channel.of(["hello"]))
+def referenceFiles = Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW2/argo-modules/tests/data/qa/test_genome.fa').combine(Channel.of(["hello"]))
         .map{ ref,meta ->
             [
                 meta,ref
             ]
         }.mix(
-        Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW/argo-modules/tests/data/qa/GRCh38_Verily_v1.genome.fa.fai').combine(Channel.of(["hello"]))
+        Channel.fromPath('/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/NEW2/argo-modules/tests/data/qa/test_genome.fa.fai').combine(Channel.of(["hello"]))
         .map{ ref,meta ->
             [
                 meta,ref
