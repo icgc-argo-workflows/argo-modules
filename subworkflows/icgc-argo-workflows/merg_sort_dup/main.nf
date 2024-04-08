@@ -20,14 +20,12 @@ workflow MERG_SORT_DUP {
 
     ch_versions = Channel.empty()
 
+    //Categorize reference_files ([meta, .fasta|.fa] [meta, fai]) into two separate channels based on file extension (reg_org.fasta, reg_org.fai)
     reference_files.branch{
         fasta : it[1].name.endsWith(".fasta") || it[1].name.endsWith(".fa")
-        return it
         fai : it[1].name.endsWith(".fai")
-        return it
     }.set{ref_org}
 
-    //bam.subscribe{println "bam: ${it}"}
     //Collect channel (e.g. [metaA,bamA,metaB,bamB] and seperate back in channels of [meta,bam])
     //Simplfy metadata to group and collect BAMs : [meta, [bamA,bamB,bamC]] for merging
     bam.flatten().buffer( size: 2 )
@@ -73,26 +71,16 @@ workflow MERG_SORT_DUP {
         ]
     }.set{ch_bams}
 
-//    ch_bams.subscribe{println "input bam: ${it}"}
-//    reference_files.subscribe{println "reference :${it}"}
-
+    //Merge the bam files
     SAMTOOLS_MERGE(
         ch_bams,
         ref_org.fasta,
         ref_org.fai
     )
 
-    // SAMTOOLS_MERGE(
-    //     ch_bams,
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
-    // )
-
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
-//    SAMTOOLS_MERGE.out.bam.subscribe{println "merge :${it}"}
-
-    //If markdup specified, markdup file else return as is
+    // Prepare channel for markdup, id updates
     SAMTOOLS_MERGE.out.bam
         .map{
             meta,file ->
@@ -115,8 +103,7 @@ workflow MERG_SORT_DUP {
             ]
     }.set{ch_markdup}
 
-//    ch_markdup.subscribe{println "markdup :${it}"}
-
+    //If markdup specified, markdup file else return as is
     if (params.tools.split(',').contains('markdup')){
         BIOBAMBAM_BAMMARKDUPLICATES2(
             ch_markdup
@@ -127,13 +114,11 @@ workflow MERG_SORT_DUP {
         ch_markdup.set{markdup_bam}//meta,bam
     }
 
-//    markdup_bam.subscribe{println "markdup bam :${it}"}
-
     //Index Csort.Markdup.Bam 
     SAMTOOLS_INDEX(markdup_bam)
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions)
 
-    //Use new index and Bam for conversion to CRAM
+    //Prepare channel [meta, bam, bai(new index)] for conversion: use new index and Bam
     markdup_bam.combine(SAMTOOLS_INDEX.out.bai)//meta,bai
     .map{
         metaA,bam,metaB,index ->
@@ -156,38 +141,17 @@ workflow MERG_SORT_DUP {
         ]
     }.set{ch_convert}
 
-    //ch_convert.mix(ch_fa).mix(ch_fai).subscribe{ println "HELP??? : ${it}"}
-
-    //reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]}.subscribe{println "HELP :${it}"}
-    // SAMTOOLS_CONVERT(
-    //     ch_convert,
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
-    // )
-    // SAMTOOLS_CONVERT(
-    //     ch_convert,
-    //     ch_fa,
-    //     ch_fai
-    // )
-
+    //Convert bam, bai to cram crai
     SAMTOOLS_CONVERT(
         ch_convert,
         ref_org.fasta,
         ref_org.fai
     )
 
-    // SAMTOOLS_CONVERT(
-    //     ch_convert,
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().collect(),
-    //     reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().collect()
-    // )
-
-            // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fasta") || it.name.endsWith(".fa") }]}.flatten().map{ file -> [[],file]},
-        // reference_files.map{ meta,files -> [files.findAll{ it.name.endsWith(".fai") }]}.flatten().map{ file -> [[],file]}
-
     ch_versions = ch_versions.mix(SAMTOOLS_CONVERT.out.versions)
 
-    SAMTOOLS_CONVERT.out.cram.combine(SAMTOOLS_CONVERT.out.crai)//.subscribe{println "COMBINED : $it"}
+    //Prepare output channel [meta, cram, crai]
+    SAMTOOLS_CONVERT.out.cram.combine(SAMTOOLS_CONVERT.out.crai)
     .map{
         metaA,cram,metaB,index ->
         [
@@ -209,7 +173,7 @@ workflow MERG_SORT_DUP {
         ]
     }.set{alignment_index}
 
-    //If Markdup specified, TAR metrics file
+    //If Markdup specified, TAR metrics file, set channels for cleanup and metrics
     if (params.tools.split(',').contains('markdup')){
         TAR(
             BIOBAMBAM_BAMMARKDUPLICATES2.out.metrics
@@ -250,8 +214,6 @@ workflow MERG_SORT_DUP {
 
         Channel.empty().set{metrics}  
     }
-
-
 
     ch_versions= ch_versions.map{ file -> file.moveTo("${file.getParent()}/.${file.getName()}")}
     
