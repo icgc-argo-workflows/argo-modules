@@ -184,21 +184,21 @@ workflow STAGE_INPUT {
 
 
     //Combine BAM and BAI into single channel
-    ch_index_split.bam_to_index.combine(BAM_INDEX.out.bai).map{
-      metaA,bam,metaB,index ->
-      tuple([metaA, bam, index])
+    ch_index_split.bam_to_index.join(BAM_INDEX.out.bai).map{
+      meta,bam,index ->
+      tuple([meta, bam, index])
     }.set{indexed_bam}
 
     //Combine CRAM and CRAI into single channel
-    ch_index_split.cram_to_index.combine(CRAM_INDEX.out.crai).map{
-      metaA,cram,metaB,index ->
-      tuple([metaA, cram, index])
+    ch_index_split.cram_to_index.join(CRAM_INDEX.out.crai).map{
+      meta,cram,index ->
+      tuple([meta, cram, index])
     }.set{indexed_cram}
 
     //Combine VCF and TBI into single channel
-    ch_index_split.vcf_to_index.combine(TABIX_TABIX.out.tbi).map{
-      metaA,vcf,metaB,index ->
-      tuple([metaA, cram, index])
+    ch_index_split.vcf_to_index.join(TABIX_TABIX.out.tbi).map{
+      meta,vcf,index ->
+      tuple([meta, vcf, index])
     }.set{indexed_vcf}
 
     //Combine newly indexed files, previously indexed and others into single channel
