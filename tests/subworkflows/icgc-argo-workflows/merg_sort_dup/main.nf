@@ -58,8 +58,8 @@ workflow test_merg_sort_dup {
     MERG_SORT_DUP (inputChannel, referenceFiles)
 
     // Check if output files exists or have the expected content
-    //MERG_SORT_DUP.out.cram_alignment_index.view { "Generated CRAM Index: ${it}" }
-    //MERG_SORT_DUP.out.tmp_files.view { "Temporary files for cleanup: ${it}" }
-    //MERG_SORT_DUP.out.metrics.view { "Metrics file: ${it}" }
-    //MERG_SORT_DUP.out.versions.view { "Software versions: ${it}" }
+    MERG_SORT_DUP.out.cram_alignment_index.view { "Generated CRAM Index: ${it}" }
+    MERG_SORT_DUP.out.tmp_files.view { "Temporary files for cleanup: ${it}" }
+    MERG_SORT_DUP.out.metrics.view { "Metrics file: ${it}" }
+    MERG_SORT_DUP.out.versions.view { "Software versions: ${it}" }
     }
