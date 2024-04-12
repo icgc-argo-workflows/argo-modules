@@ -1,5 +1,5 @@
 - name: "merg_sort_dup"
-  command: nextflow run main.nf -entry test_merg_sort_dup --tools 'markdup' -profile docker -c ../../../config/nextflow.config
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merg_sort_dup -entry test_merg_sort_dup --tools 'markdup' -profile docker -c ./tests/config/nextflow.config
     tags:
     - "subworkflows"
     - "subworkflows/merge_sort_dup"
