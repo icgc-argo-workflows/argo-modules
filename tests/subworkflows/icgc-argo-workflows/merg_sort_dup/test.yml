@@ -1,4 +1,4 @@
-- name: "merg_sort_dup"
+- name: "merg_sort_dup_markdup"
   command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merg_sort_dup -entry test_merg_sort_dup --tools 'markdup' -profile docker -c ./tests/config/nextflow.config
     tags:
     - "subworkflows"
@@ -11,3 +11,14 @@
     - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram"
     - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram.crai"
     - path: "output/tar/out/Study123.PatientXYZ.SampleA.RNA-seq.aln.cram.duplicates_metrics.tgz"
+
+- name: "merg_sort_dup_default"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merg_sort_dup -entry test_merg_sort_dup -profile docker -c ./tests/config/nextflow.config
+    tags:
+    - "subworkflows"
+    - "subworkflows/merge_sort_dup"
+  files:
+    - path: "output/samtools_merge/Study123.PatientXYZ.SampleA.bam"
+    - path: "output/samtools_index/Study123.PatientXYZ.SampleA.csort.markdup.bam.bai"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram.crai"
