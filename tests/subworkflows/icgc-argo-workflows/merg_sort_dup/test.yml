@@ -19,6 +19,6 @@
     - "subworkflows/merge_sort_dup"
   files:
     - path: "output/samtools_merge/Study123.PatientXYZ.SampleA.bam"
-    - path: "output/samtools_index/Study123.PatientXYZ.SampleA.csort.markdup.bam.bai"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram.crai"
+    - path: "output/samtools_index/Study123.PatientXYZ.SampleA.bam.bai"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.cram"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.cram.crai"

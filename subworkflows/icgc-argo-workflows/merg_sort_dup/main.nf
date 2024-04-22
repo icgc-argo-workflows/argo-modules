@@ -81,7 +81,8 @@ workflow MERG_SORT_DUP {
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     // Prepare channel for markdup, id updates
-    SAMTOOLS_MERGE.out.bam
+    if (params.tools.split(',').contains('markdup')){
+        SAMTOOLS_MERGE.out.bam
         .map{
             meta,file ->
             [
@@ -101,7 +102,30 @@ workflow MERG_SORT_DUP {
                 ],
                 file
             ]
-    }.set{ch_markdup}
+        }.set{ch_markdup}
+    } else {
+        SAMTOOLS_MERGE.out.bam
+        .map{
+            meta,file ->
+            [
+                [
+                    id:"${meta.id}.csort",
+                    study_id:"${meta.study_id}",
+                    patient:"${meta.patient}",
+                    sex:"${meta.sex}",
+                    sample:"${meta.sample}",
+                    date:"${meta.date}",
+                    numLanes:"${meta.numLanes}",
+                    read_group:"${meta.read_group}",
+                    data_type:"${meta.data_type}",
+                    size:"${meta.size}",
+                    experiment:"${meta.experiment}",
+                    tool: "${meta.tool}"
+                ],
+                file
+            ]
+        }.set{ch_markdup}
+    }
 
     //If markdup specified, markdup file else return as is
     if (params.tools.split(',').contains('markdup')){
