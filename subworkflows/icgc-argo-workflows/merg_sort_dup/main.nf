@@ -112,7 +112,7 @@ workflow MERG_SORT_DUP {
             ]
         }.set{ch_markdup}
     } else {
-        SAMTOOLS_MERGE.out.bam
+        SAMTOOLS_SORT.out.bam
         .map{
             meta,file ->
             [
