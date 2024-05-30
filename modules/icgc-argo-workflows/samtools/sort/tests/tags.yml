@@ -1,0 +1,2 @@
+samtools/sort:
+  - "modules/icgc-argo-workflows/samtools/sort/**"
