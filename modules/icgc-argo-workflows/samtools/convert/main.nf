@@ -27,7 +27,6 @@ process SAMTOOLS_CONVERT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def output_extension = input.getExtension() == "bam" ? "cram" : "bam"
 
-
     """
     samtools view \\
         --threads ${task.cpus} \\
