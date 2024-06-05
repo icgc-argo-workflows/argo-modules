@@ -10,7 +10,7 @@ include { SAMTOOLS_INDEX                        } from '../../../modules/icgc-ar
 include { SAMTOOLS_CONVERT                      } from '../../../modules/icgc-argo-workflows/samtools/convert/main'
 include { TAR                                   } from '../../../modules/icgc-argo-workflows/tar/main'
 
-workflow MERG_DUP {
+workflow MERGE_DUP {
 
     take:
     bam

@@ -1,4 +1,4 @@
-name: merg_dup
+name: merge_dup
 description: Merge bam files, and mark duplicates
 keywords:
   - merge
