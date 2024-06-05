@@ -5,8 +5,8 @@ nextflow.enable.dsl = 2
 // Set default parameter values
 params.tools = ' '
 
-// Import the MERG_SORT_DUP subworkflow
-include { MERG_SORT_DUP } from '../../../../subworkflows/icgc-argo-workflows/merg_sort_dup/main.nf'
+// Import the MERG_DUP subworkflow
+include { MERG_DUP } from '../../../../subworkflows/icgc-argo-workflows/merge_dup/main.nf'
 
 // Define channels for input data
 // Define a sample metadata map
@@ -68,11 +68,11 @@ def referenceFiles_transcript = Channel.fromPath('tests/data/qa/test_transcript.
         )
 
 
-workflow test_merg_sort_dup {
-    // Execute the MERG_SORT_DUP subworkflow with the test data
-    MERG_SORT_DUP (inputChannel, referenceFiles)
+workflow test_merge_dup {
+    // Execute the MERG_DUP subworkflow with the test data
+    MERG_DUP (inputChannel, referenceFiles)
 }
 
-workflow test_merg_sort_dup_transcript {
-    MERG_SORT_DUP (inputChannel_transcript, referenceFiles_transcript)
+workflow test_merge_dup_transcript {
+    MERG_DUP (inputChannel_transcript, referenceFiles_transcript)
 }
