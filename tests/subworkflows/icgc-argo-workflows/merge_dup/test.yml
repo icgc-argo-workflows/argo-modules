@@ -24,7 +24,7 @@
     - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.cram.crai"
 
 - name: "merge_dup_markdup_transcript"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merge_dup -entry test_merge_dup_transcript --tools 'markdup' -profile docker -c ./tests/config/nextflow.config
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merge_dup -entry test_merge_dup_transcript --tools 'markdup' -profile docker,trans -c ./tests/config/nextflow.config
     tags:
     - "subworkflows"
     - "subworkflows/merge_dup"
@@ -33,17 +33,17 @@
     - path: "output/biobambam_bammarkduplicates2/Study123.PatientXYZ.SampleA.csort.markdup.bam"
     - path: "output/biobambam_bammarkduplicates2/Study123.PatientXYZ.SampleA.csort.markdup.metrics.txt"
     - path: "output/samtools_index/Study123.PatientXYZ.SampleA.csort.markdup.bam.bai"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.cram.crai"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.transcriptAlign.cram"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.markdup.transcriptAlign.cram.crai"
     - path: "output/tar/out/Study123.PatientXYZ.SampleA.RNA-seq.aln.cram.duplicates_metrics.tgz"
 
 - name: "merge_dup_default_transcript"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merge_dup -entry test_merge_dup_transcript -profile docker -c ./tests/config/nextflow.config
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/merge_dup -entry test_merge_dup_transcript -profile docker,trans -c ./tests/config/nextflow.config
     tags:
     - "subworkflows"
     - "subworkflows/merge_dup"
   files:
     - path: "output/samtools_merge/Study123.PatientXYZ.SampleA.bam"
     - path: "output/samtools_index/Study123.PatientXYZ.SampleA.bam.bai"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.cram"
-    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.cram.crai"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.transcriptAlign.cram"
+    - path: "output/samtools_convert/Study123.PatientXYZ.SampleA.csort.transcriptAlign.cram.crai"
