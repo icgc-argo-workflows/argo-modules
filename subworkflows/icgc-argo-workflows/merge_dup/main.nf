@@ -10,7 +10,7 @@ include { SAMTOOLS_INDEX                        } from '../../../modules/icgc-ar
 include { SAMTOOLS_CONVERT                      } from '../../../modules/icgc-argo-workflows/samtools/convert/main'
 include { TAR                                   } from '../../../modules/icgc-argo-workflows/tar/main'
 
-workflow MERG_SORT_DUP {
+workflow MERGE_DUP {
 
     take:
     bam
@@ -22,8 +22,8 @@ workflow MERG_SORT_DUP {
 
     //Categorize reference_files ([meta, .fasta|.fa] [meta, fai]) into two separate channels based on file extension (reg_org.fasta, reg_org.fai)
     reference_files.branch{
-        fasta : it[1].name.endsWith(".fasta") || it[1].name.endsWith(".fa")
-        fai : it[1].name.endsWith(".fai")
+        fasta : it[1].toString().endsWith(".fasta") || it[1].toString().endsWith(".fa")
+        fai : it[1].toString().endsWith(".fai")
     }.set{ref_org}
 
     //Collect channel (e.g. [metaA,bamA,metaB,bamB] and seperate back in channels of [meta,bam])
