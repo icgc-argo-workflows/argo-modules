@@ -268,6 +268,14 @@ def main():
     else:
       genome_build = None
 
+    library_strandedness = song_analysis['experiment'].get('library_strandedness')
+
+    # Transform 'library_strandedness' based on its value after dictionary creation
+    if library_strandedness == "FIRST_READ_SENSE_STRAND":
+      library_strandedness = "forward"
+    elif library_strandedness == "FIRST_READ_ANTISENSE_STRAND":
+      library_strandedness = "reverse"
+
     analysis_type = song_analysis['analysisType']['name']
     output_sample_sheet = f'{args.outdir}/{sample_id}_{analysis_type}_sample_sheet.csv'
     experiment=song_analysis['experiment']['experimental_strategy']
@@ -327,10 +335,10 @@ def main():
 
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count',"experiment", 'analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','status','sample','lane','fastq_1','fastq_2','read_group','single_end','read_group_count',"experiment", 'library_strandedness', 'analysis_json'])
         for k,v in sample_sheet.items():
           single_end = True if v['file_r2'] == 'No_File' else False
-          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count,experiment, metadata_json])
+          csvwriter.writerow([analysis_type, study_id, donor_id, sex, status, sample_id, k, v['file_r1'], v['file_r2'], v['read_group'], single_end, read_group_count, experiment, library_strandedness, metadata_json])
     
     elif analysis_type == 'sequencing_alignment':
       for fp in args.input_files:

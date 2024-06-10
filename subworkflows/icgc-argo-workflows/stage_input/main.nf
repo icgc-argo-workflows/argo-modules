@@ -63,7 +63,45 @@ workflow STAGE_INPUT {
     .collectFile(keepHeader: true, name: 'sample_sheet.csv')
     .splitCsv(header:true)
     .map{ row ->
-       if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'false') {
+       if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'false' && row.experiment == "RNA-seq") {
+         tuple([
+           analysis_type : row.analysis_type,
+           id:"${row.sample}-${row.lane}".toString(), 
+           study_id:row.study_id,
+           patient:row.patient,
+           sex:row.sex,
+           status:row.status.toInteger(),
+           sample:row.sample, 
+           read_group:row.read_group.toString(), 
+           data_type:'fastq', 
+           numLanes:row.read_group_count,
+           experiment:row.experiment,
+           single_end : row.single_end.toBoolean(),
+           library_strandedness : row.library_strandedness
+           ], 
+           [file(row.fastq_1,checkIfExists: true), file(row.fastq_2,checkIfExists: true)],
+           row.analysis_json
+           )
+       } else if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'true' && row.experiment == "RNA-seq") {
+         tuple([
+           analysis_type : row.analysis_type,
+           id:"${row.sample}-${row.lane}".toString(), 
+           study_id:row.study_id,
+           patient:row.patient,
+           sex:row.sex,
+           status:row.status.toInteger(),
+           sample:row.sample, 
+           read_group:row.read_group.toString(), 
+           data_type:'fastq', 
+           numLanes:row.read_group_count,
+           experiment:row.experiment,
+           single_end : row.single_end.toBoolean(),
+           library_strandedness : row.library_strandedness
+           ], 
+           [file(row.fastq_1,checkIfExists: true), file(row.fastq_2,checkIfExists: true)],
+           row.analysis_json
+           )
+       } else if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'false') {
          tuple([
            analysis_type : row.analysis_type,
            id:"${row.sample}-${row.lane}".toString(), 
