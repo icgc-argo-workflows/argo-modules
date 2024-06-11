@@ -141,7 +141,7 @@ class RowChecker:
             "library_strandedness": row[self._library_strandedness_col] if row.get(self._library_strandedness_col) else None,
             }
 
-        # Transform 'library_strandedness' based on its value after dictionary creation
+        # Transform 'library_strandedness' based on its value after dictionary creation: 1.FIRST_READ_SENSE_STRAND->forward; 2.FIRST_READ_ANTISENSE_STRAND->reverse; 3.UNSTRANDED->UNSTRANDED
         if tmp_dict['library_strandedness'] == "FIRST_READ_SENSE_STRAND":
             tmp_dict['library_strandedness'] = "forward"
         elif tmp_dict['library_strandedness'] == "FIRST_READ_ANTISENSE_STRAND":
@@ -312,6 +312,8 @@ class RowChecker:
         """Assert that expected strandedness is correct"""
         if len(row[self._library_strandedness_col]) <= 0:
             raise AssertionError("'library_strandedness' input in required")
+        if row[self._library_strandedness_col] !="FIRST_READ_SENSE_STRAND" and row[self._library_strandedness_col] !="FIRST_READ_ANTISENSE_STRAND" and row[self._library_strandedness_col] !="UNSTRANDED":
+            raise AssertionError("library_strandedness should be one of the following values : FIRST_READ_SENSE_STRAND,FIRST_READ_ANTISENSE_STRAND,UNSTRANDED")
 
     def _validate_sequencing_date_col(self, row):
         """Assert that expected sequencing_date is correct."""
