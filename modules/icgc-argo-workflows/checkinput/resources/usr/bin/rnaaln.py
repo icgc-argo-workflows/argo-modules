@@ -136,7 +136,7 @@ class RowChecker:
             "fastq_2" : row[self._fastq_2_col] if row.get(self._fastq_2_col) else "NO_FILE",
             "single_end" : row[self._single_end_col].lower(),
             "read_group_count" : row[self._read_group_count_col],
-            "experiment" : row[self._experiment_col] if row.get(self._experiment_col) else "RNA-seq",
+            "experiment" : row[self._experiment_col] if row.get(self._experiment_col) else "RNA-Seq",
             "analysis_json" : row[self._analysis_json_col] if row.get(self._analysis_json_col) else None,
             "library_strandedness": row[self._library_strandedness_col]
             }
