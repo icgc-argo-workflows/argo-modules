@@ -98,7 +98,7 @@ workflow STAGE_INPUT {
            single_end : row.single_end.toBoolean(),
            library_strandedness : row.library_strandedness
            ], 
-           [file(row.fastq_1,checkIfExists: true), file(row.fastq_2,checkIfExists: true)],
+           [file(row.fastq_1,checkIfExists: true)],
            row.analysis_json
            )
        } else if (row.analysis_type == "sequencing_experiment" && row.single_end.toLowerCase() == 'false') {
