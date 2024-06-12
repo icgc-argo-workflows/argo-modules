@@ -136,9 +136,9 @@ class RowChecker:
             "fastq_2" : row[self._fastq_2_col] if row.get(self._fastq_2_col) else "NO_FILE",
             "single_end" : row[self._single_end_col].lower(),
             "read_group_count" : row[self._read_group_count_col],
-            "experiment" : row[self._experiment_col] if row.get(self._experiment_col) else "WGS",
+            "experiment" : row[self._experiment_col] if row.get(self._experiment_col) else "RNA-seq",
             "analysis_json" : row[self._analysis_json_col] if row.get(self._analysis_json_col) else None,
-            "library_strandedness": row[self._library_strandedness_col] if row.get(self._library_strandedness_col) else None,
+            "library_strandedness": row[self._library_strandedness_col]
             }
 
         # Transform 'library_strandedness' based on its value after dictionary creation: 1.FIRST_READ_SENSE_STRAND->forward; 2.FIRST_READ_ANTISENSE_STRAND->reverse; 3.UNSTRANDED->UNSTRANDED
