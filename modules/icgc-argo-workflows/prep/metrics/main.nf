@@ -19,11 +19,11 @@ process PREP_METRICS {
     when:
     task.ext.when == null || task.ext.when
 
-    script: 
-    
+    script:
+    def RNA = (meta.experiment ?: "") == "RNA-Seq"
 
     """
-    main.py \\
+    ${RNA ? 'rnaaln.py' : 'dnaalnqc.py'} \\
         -m $multiqc \\
         -s $meta.id \\
         -q $qc_files
