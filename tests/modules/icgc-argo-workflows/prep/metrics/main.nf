@@ -25,7 +25,7 @@ workflow test_prep_metrics_dnaalnqc {
 workflow test_prep_metrics_rnaalnqc {
 
     qc_files_channel = Channel.fromPath(params.rnaaln_qc_files).toList()
-    input_channel = Channel.of([id: 'SA622743', experiment: 'RNA-Seq']).combine(qc_files_channel.toList())
+    input_channel = Channel.of([id: 'SA622799', experiment: 'RNA-Seq']).combine(qc_files_channel.toList())
 
     PREP_METRICS ( input_channel, Channel.fromPath(params.rnaaln_multiqc))
 

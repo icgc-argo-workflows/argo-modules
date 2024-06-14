@@ -23,7 +23,7 @@ process PREP_METRICS {
     def RNA = (meta.experiment ?: "") == "RNA-Seq"
 
     """
-    ${RNA ? 'rnaaln.py' : 'dnaalnqc.py'} \\
+    ${RNA ? 'rnaaln.py' : 'dnaaln.py'} \\
         -m $multiqc \\
         -s $meta.id \\
         -q $qc_files
