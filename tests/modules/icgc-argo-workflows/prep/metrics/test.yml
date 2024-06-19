@@ -1,13 +1,13 @@
 
 - name: "prep metrics for pre-aln-qc results"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_prealn -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.config
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_prealn -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.prealn.config
   tags:
     - "prepare metrics for pre-aln-qc results"
   files:
     - path: "output/prep_metrics/SA624380.argo_metrics.json"
 
 - name: "prep metrics for dna-aln-qc results"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_dnaalnqc -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.config
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_dnaalnqc -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.dnaaln.config
   tags:
     - "prep metrics for dna-aln-qc results"
   files:
@@ -15,7 +15,7 @@
     - path: "output/prep_metrics/SA622743.argo_metrics.json"
 
 - name: "prep metrics for rna-aln-qc results"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_rnaalnqc -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.config
+  command: nextflow run ./tests/modules/icgc-argo-workflows/prep/metrics -entry test_prep_metrics_rnaalnqc -c ./tests/modules/icgc-argo-workflows/prep/metrics/nextflow.rnaaln.config
   tags:
     - "prep metrics for rna-aln-qc results"
   files:

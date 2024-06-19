@@ -20,13 +20,34 @@ process PREP_METRICS {
     task.ext.when == null || task.ext.when
 
     script:
-    def RNA = (meta.experiment ?: "") == "RNA-Seq"
-
+    def workflow_name = workflow.Manifest.name
+    
     """
-    ${RNA ? 'rnaaln.py' : 'dnaaln.py'} \\
-        -m $multiqc \\
-        -s $meta.id \\
-        -q $qc_files
+    case '$workflow_name' in
+    'Pre Alignment QC')
+        echo $workflow_name detected;
+        prealn.py \\
+            -m $multiqc \\
+            -s $meta.id \\
+            -q $qc_files
+        ;;
+    'DNA Alignment')
+        dnaaln.py \\
+            -m $multiqc \\
+            -s $meta.id \\
+            -q $qc_files
+        ;;
+    'RNA Alignment')
+        rnaaln.py \\
+            -m $multiqc \\
+            -s $meta.id \\
+            -q $qc_files
+        ;;
+    *)
+        echo -n "Unknown workflow"
+        exit 1
+        ;;
+    esac
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
