@@ -23,91 +23,98 @@
 
 import argparse
 import json
-import os
+from glob import glob
+import csv
 
-qc_metrics = [
-   'CORRECT_STRAND_READS',
-   'PCT_RIBOSOMAL_BASES',
-   'PCT_CODING_BASES',
-   'PCT_UTR_BASES',
-   'PCT_INTRONIC_BASES',
-   'PCT_INTERGENIC_BASES',
-   'PCT_MRNA_BASES',
-   'PCT_USABLE_BASES',
-   'PCT_CORRECT_STRAND_READS',
-   'MEDIAN_CV_COVERAGE',
-   'MEDIAN_5PRIME_TO_3PRIME_BIAS',
-   'paired_total',
-   'unpaired_total',
-   'overall_alignment_rate',
-   'total_reads',
-   'avg_input_read_length',
-   'uniquely_mapped_percent',
-   'avg_mapped_read_length',
-   'num_splices',
-   'num_annotated_splices',
-   'mismatch_rate',
-   'multimapped_percent'
-  ]
+tool_fieldmap = { # 'target name' : 'original name'
+    'hisat2': {
+        'paired_total' : 'paired_total',
+        'unpaired_total' : 'unpaired_total',
+        'overall_alignment_rate' : 'overall_alignment_rate'
+    },
+    'star' : {
+        'total_reads' : 'total_reads',
+        'avg_input_read_length' : 'avg_input_read_length',
+        'uniquely_mapped_percent' : 'uniquely_mapped_percent',
+        'avg_mapped_read_length' : 'avg_mapped_read_length',
+        'num_splices' : 'num_splices',
+        'num_annotated_splices' : 'num_annotated_splices',
+        'mismatch_rate' : 'mismatch_rate',
+        'pct_multimapped' : 'multimapped_percent'
+    },
+    'picard_RnaSeqMetrics': {
+        'correct_strand_reads': 'CORRECT_STRAND_READS',
+        'pct_ribosomal_bases': 'PCT_RIBOSOMAL_BASES',
+        'pct_coding_bases' : 'PCT_CODING_BASES',
+        'pct_utr_bases' : 'PCT_UTR_BASES',
+        'pct_intronic_bases' : 'PCT_INTRONIC_BASES',
+        'pct_intergenic_bases' : 'PCT_INTERGENIC_BASES',
+        'pct_mrna_bases' : 'PCT_MRNA_BASES',
+        'pct_usable_bases' : 'PCT_USABLE_BASES',
+        'pct_correct_strand_reads' : 'PCT_CORRECT_STRAND_READS',
+        'median_cv_coverage' : 'MEDIAN_CV_COVERAGE',
+        'median_5prime_to_3prime_bias' : 'MEDIAN_5PRIME_TO_3PRIME_BIAS'
+    }
+}
 
-def parse_metrics_file(metrics_file):
-    with open(metrics_file) as f:
-        lines = f.readlines()
-    header = lines[0].strip().split('\t')
-    values = lines[1].strip().split('\t')
-    # Exclude 'Sample' from parsed metrics
-    return {k: v for k, v in zip(header, values) if k != 'Sample'}
+fra2pct_fields = []
+integer_fields = ['paired_total', 'unpaired_total', 'total_reads', 'num_splices', 'num_annotated_splices', 'correct_strand_reads']
 
-def aggregate_metrics(parsed_metrics):
-    aggregated = {}
-    for metrics in parsed_metrics:
-        for key, value in metrics.items():
-            if key not in aggregated:
-                if key in qc_metrics:
-                    try:
-                        aggregated[key] = float(value)
-                    except ValueError:
-                        aggregated[key] = value
-    return aggregated
+def get_mqc_stats(multiqc, sampleId):
+    mqc_stats = {
+        'sample_id': sampleId,
+        'metrics': {}
+    }
+    for f in sorted(glob(multiqc+'/*.txt')):
+        for tool_metrics in tool_fieldmap.keys():
+            if f.endswith(tool_metrics+'.txt'):
+                with open(f, 'r') as fn: 
+                    mqc_stats[tool_metrics] = []
+                    reader = csv.DictReader(fn, delimiter="\t")
+                    for row in reader:
+                        if not sampleId in row.get('Sample'): continue
+                        mqc_stats[tool_metrics].append(row)
+                        for ftype in tool_fieldmap.keys():
+                            if not ftype == tool_metrics: continue
+                            for f1,f2 in tool_fieldmap[ftype].items():
+                                mqc_stats['metrics'][f1] = round(float(row.get(f2)), 4)
 
-def parse_metrics_file_by_type(file_path):
-    if 'multiqc_hisat2' in file_path:
-        return 'hisat2_summary', parse_metrics_file(file_path)
-    elif 'multiqc_picard_RnaSeqMetrics' in file_path:
-        return 'picard_RnaSeqMetrics', parse_metrics_file(file_path)
-    elif 'multiqc_star' in file_path:
-        return 'star_log', parse_metrics_file(file_path)
-    else:
-        raise ValueError(f"Unknown file type for {file_path}")
+    # convert the fraction to percentage for given fields
+    for fn in fra2pct_fields:
+        if not mqc_stats['metrics'].get(fn): 
+            print(f"Field '{fn}' not found in mqc_stats['metrics'] dictionary")
+            continue
+        new_value = round(float(mqc_stats['metrics'][fn]) * 100, 2)
+        mqc_stats['metrics'].update({
+            fn: new_value
+        })
+
+    # change type to integer for given fields
+    for fn in integer_fields:
+        if fn not in mqc_stats['metrics']: continue
+        new_value = int(mqc_stats['metrics'][fn])
+        mqc_stats['metrics'].update({
+            fn: new_value
+        })
+
+    return mqc_stats
 
 def main():
-    parser = argparse.ArgumentParser(description="Process QC metrics")
-    parser.add_argument("-s", "--sample_id", required=True, help="Sample ID")
-    parser.add_argument("-m", "--metrics_dir", required=True, help="Directory containing the metrics files")
-    parser.add_argument("-q", "--qc_files", dest="qc_files", required=True, type=str, nargs="+", help="qc files")
+    parser = argparse.ArgumentParser(description='Tool: prep_metrics')
+    parser.add_argument("-s", "--sampleId", dest="sampleId", required=True, help="Input sampleId", type=str)
+    parser.add_argument("-m", "--multiqc", dest="multiqc", required=True, help="multiqc files folder")
 
     args = parser.parse_args()
 
-    parsed_metrics = {}
-    detailed_metrics = {}
+    # get tool_specific & aggregated metrics from multiqc
+    mqc_stats = {}
+    if args.multiqc:
+        mqc_stats = get_mqc_stats(args.multiqc, args.sampleId)
 
-    for qc_file in args.qc_files:
-        file_path = os.path.join(args.metrics_dir, qc_file)
-        metrics_type, metrics = parse_metrics_file_by_type(file_path)
-        parsed_metrics[metrics_type] = metrics
-        detailed_metrics[metrics_type] = metrics
+    mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 
-    aggregated_metrics = aggregate_metrics(parsed_metrics.values())
-
-    output_data = {
-        "sample_id": args.sample_id,
-        "metrics": aggregated_metrics,
-        **detailed_metrics
-    }
-
-    output_file = f"{args.sample_id}.argo_metrics.json"
-    with open(output_file, 'w') as f:
-        json.dump(output_data, f, indent=4)
+    with open("%s.argo_metrics.json" % (args.sampleId), 'w') as f:
+        f.write(json.dumps(mqc_stats_updated, indent=2))
 
 if __name__ == "__main__":
     main()

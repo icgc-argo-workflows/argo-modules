@@ -7,9 +7,13 @@ process PREP_METRICS {
         'https://depot.galaxyproject.org/singularity/python:3.8.3' :
         'quay.io/biocontainers/python:3.8.3' }"
 
+    // input:
+    // tuple val(meta), path(qc_files)
+    // path multiqc
+
     input:
-    tuple val(meta), path(qc_files)
-    path multiqc
+    tuple val(meta), path(multiqc)
+    path qc_files
 
     output:
     tuple val(meta), path('*.argo_metrics.json')   , emit: metrics_json
@@ -40,8 +44,7 @@ process PREP_METRICS {
     'RNA Alignment')
         rnaaln.py \\
             -m $multiqc \\
-            -s $meta.id \\
-            -q $qc_files
+            -s $meta.id
         ;;
     *)
         echo -n "Unknown workflow"
@@ -51,7 +54,7 @@ process PREP_METRICS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
+        python: \$(python3 --version | sed 's/Python //g')
     END_VERSIONS
     """
 }

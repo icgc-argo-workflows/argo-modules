@@ -70,6 +70,7 @@ tool_fieldmap = {
 }
 
 fra2pct_fields = ['pct_autosomes_15x', 'pct_autosomes_10x', 'pct_autosomes_30x']
+integer_fields = ['total_pf_reads', 'non-primary_alignments', 'pairs_on_different_chromosomes']
 
 def get_mqc_stats(multiqc, sampleId):
     mqc_stats = {
@@ -88,16 +89,24 @@ def get_mqc_stats(multiqc, sampleId):
               for ftype in tool_fieldmap.keys():
                 if not ftype == tool_metrics: continue
                 for f1,f2 in tool_fieldmap[ftype].items():
-                  mqc_stats['metrics'][f1] = round(float(row.get(f2)), 2)
+                  mqc_stats['metrics'][f1] = round(float(row.get(f2)), 4)
 
     # convert the fraction to percentage for given fields
     for fn in fra2pct_fields:
-      if not mqc_stats['metrics'].get(fn): continue
+      if fn not in mqc_stats['metrics']: continue # <if not mqc_stats['metrics'].get(fn): continue> is wrong as it is possible mqc_stats['metrics'][fn] is 0.0 (it will return false by mistake)
       new_value = round(float(mqc_stats['metrics'][fn]) * 100, 2)
       mqc_stats['metrics'].update({
         fn: new_value
       })
-      
+
+    # change type to integer for given fields
+    for fn in integer_fields:
+        if fn not in mqc_stats['metrics']: continue
+        new_value = int(mqc_stats['metrics'][fn])
+        mqc_stats['metrics'].update({
+            fn: new_value
+        })
+    
     return mqc_stats
 
 def main():

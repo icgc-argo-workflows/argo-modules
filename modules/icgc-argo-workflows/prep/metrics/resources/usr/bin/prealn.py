@@ -26,12 +26,31 @@ import json
 from glob import glob
 import csv
 
-tool_fieldmap = {
-  'fastqc': {},
-  'cutadapt': {}
+tool_fieldmap = { # target name : original name
+  'fastqc': {
+    # 'total_sequences' : 'total_sequences',
+    # 'sequences_flagged_as_poor_quality' : 'sequences_flagged_as_poor_quality',
+    # 'sequence_length' : 'sequence_length',
+    # 'pct_gc' : 'percent_gc',
+    # 'basic_statistics' : 'basic_statistics',
+    # 'pct_base_sequence_quality' : 'per_base_sequence_quality',
+    # 'pct_tile_sequence_quality' : 'per_tile_sequence_quality',
+    # 'pct_sequence_quality_scores' : 'per_sequence_quality_scores',
+    # 'pct_base_sequence_content' : 'per_base_sequence_content',
+    # 'pct_sequence_gc_content' : 'per_sequence_gc_content',
+    # 'pct_base_n_content' : 'per_base_n_content',
+    # 'sequence_length_distribution' : 'sequence_length_distribution',
+    # 'sequence_duplication_levels' : 'sequence_duplication_levels',
+    # 'overrepresented_sequences' : 'overrepresented_sequences',
+    # 'adapter_content' : 'adapter_content'
+  },
+  'cutadapt': {
+    # 'pct_trimmed' : 'percent_trimmed'
+  }
 }
 
 fra2pct_fields = ['pct_autosomes_15x', 'pct_autosomes_10x', 'pct_autosomes_30x']
+integer_fields = ['r1_with_adapters_total', 'r2_with_adapters_total', 'r_with_adapters_total', 'total_sequences', 'sequences_flagged_as_poor_quality']
 
 def get_mqc_stats(multiqc, sampleId):
     mqc_stats = {
@@ -50,15 +69,7 @@ def get_mqc_stats(multiqc, sampleId):
               for ftype in tool_fieldmap.keys():
                 if not ftype == tool_metrics: continue
                 for f1,f2 in tool_fieldmap[ftype].items():
-                  mqc_stats['metrics'][f1] = round(float(row.get(f2)), 2)
-
-    # convert the fraction to percentage for given fields
-    for fn in fra2pct_fields:
-      if not mqc_stats['metrics'].get(fn): continue
-      new_value = round(float(mqc_stats['metrics'][fn]) * 100, 2)
-      mqc_stats['metrics'].update({
-        fn: new_value
-      })
+                  mqc_stats['metrics'][f1] = round(float(row.get(f2)), 4)
 
     # aggregate fastqc and cutadapt metrics into sample level based on multiqc data
     if mqc_stats.get('cutadapt'):
@@ -84,13 +95,13 @@ def get_mqc_stats(multiqc, sampleId):
       if r_processed_total > 0:
         mqc_stats['metrics'].update({
           'r_with_adapters_total': round(r_with_adapters_total),
-          'percent_trimmed_total': round(r_trimmed_total / r_processed_total, 2)
+          'pct_trimmed_total': round(r_trimmed_total / r_processed_total, 2)
         })
       else:
         mqc_stats['metrics'].update({
           'r1_with_adapters_total': round(r1_with_adapters_total),
           'r2_with_adapters_total': round(r2_with_adapters_total),
-          'percent_trimmed_total': round(pairs_trimmed_total / pairs_processed_total, 2)
+          'pct_trimmed_total': round(pairs_trimmed_total / pairs_processed_total, 2)
         })
 
     if mqc_stats.get('fastqc'):
@@ -115,7 +126,7 @@ def get_mqc_stats(multiqc, sampleId):
         {
           'total_sequences': round(sum(total_sequences)),
           'sequences_flagged_as_poor_quality': round(sum(sequences_flagged_as_poor_quality)),
-          'percent_gc': round(sum(gc_content) / sum(total_sequences),2)
+          'pct_gc': round(sum(gc_content) / sum(total_sequences),2)
         }
       )
       
@@ -126,6 +137,22 @@ def get_mqc_stats(multiqc, sampleId):
               {fn: status}
             )
             break
+
+    # convert the fraction to percentage for given fields
+    for fn in fra2pct_fields:
+      if fn not in mqc_stats['metrics']: continue
+      new_value = round(float(mqc_stats['metrics'][fn]) * 100, 2)
+      mqc_stats['metrics'].update({
+        fn: new_value
+      })
+
+    # change type to integer for given fields
+    for fn in integer_fields:
+        if fn not in mqc_stats['metrics']: continue
+        new_value = int(mqc_stats['metrics'][fn])
+        mqc_stats['metrics'].update({
+            fn: new_value
+        })
 
     return mqc_stats
 
