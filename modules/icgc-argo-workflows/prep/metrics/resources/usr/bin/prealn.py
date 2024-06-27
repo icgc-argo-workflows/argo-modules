@@ -26,27 +26,9 @@ import json
 from glob import glob
 import csv
 
-tool_fieldmap = { # target name : original name
-  'fastqc': {
-    # 'total_sequences' : 'total_sequences',
-    # 'sequences_flagged_as_poor_quality' : 'sequences_flagged_as_poor_quality',
-    # 'sequence_length' : 'sequence_length',
-    # 'pct_gc' : 'percent_gc',
-    # 'basic_statistics' : 'basic_statistics',
-    # 'pct_base_sequence_quality' : 'per_base_sequence_quality',
-    # 'pct_tile_sequence_quality' : 'per_tile_sequence_quality',
-    # 'pct_sequence_quality_scores' : 'per_sequence_quality_scores',
-    # 'pct_base_sequence_content' : 'per_base_sequence_content',
-    # 'pct_sequence_gc_content' : 'per_sequence_gc_content',
-    # 'pct_base_n_content' : 'per_base_n_content',
-    # 'sequence_length_distribution' : 'sequence_length_distribution',
-    # 'sequence_duplication_levels' : 'sequence_duplication_levels',
-    # 'overrepresented_sequences' : 'overrepresented_sequences',
-    # 'adapter_content' : 'adapter_content'
-  },
-  'cutadapt': {
-    # 'pct_trimmed' : 'percent_trimmed'
-  }
+tool_fieldmap = {
+  'fastqc': {},
+  'cutadapt': {}
 }
 
 fra2pct_fields = ['pct_autosomes_15x', 'pct_autosomes_10x', 'pct_autosomes_30x']
@@ -148,11 +130,11 @@ def get_mqc_stats(multiqc, sampleId):
 
     # change type to integer for given fields
     for fn in integer_fields:
-        if fn not in mqc_stats['metrics']: continue
-        new_value = int(mqc_stats['metrics'][fn])
-        mqc_stats['metrics'].update({
-            fn: new_value
-        })
+      if fn not in mqc_stats['metrics']: continue
+      new_value = int(mqc_stats['metrics'][fn])
+      mqc_stats['metrics'].update({
+        fn: new_value
+      })
 
     return mqc_stats
 

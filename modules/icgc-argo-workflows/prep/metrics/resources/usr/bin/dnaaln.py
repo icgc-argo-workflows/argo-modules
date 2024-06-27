@@ -74,8 +74,8 @@ integer_fields = ['total_pf_reads', 'non-primary_alignments', 'pairs_on_differen
 
 def get_mqc_stats(multiqc, sampleId):
     mqc_stats = {
-       'sample_id': sampleId,
-       'metrics': {}
+      'sample_id': sampleId,
+      'metrics': {}
     }
     for f in sorted(glob(multiqc+'/*.txt')):
       for tool_metrics in tool_fieldmap.keys():
@@ -104,7 +104,7 @@ def get_mqc_stats(multiqc, sampleId):
         if fn not in mqc_stats['metrics']: continue
         new_value = int(mqc_stats['metrics'][fn])
         mqc_stats['metrics'].update({
-            fn: new_value
+          fn: new_value
         })
     
     return mqc_stats
@@ -115,8 +115,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(description='Tool: prep_metrics')
-    parser.add_argument("-s", "--sampleId", dest="sampleId", required=True,
-                        help="Input sampleId", type=str)
+    parser.add_argument("-s", "--sampleId", dest="sampleId", required=True, help="Input sampleId", type=str)
     parser.add_argument("-m", "--multiqc", dest="multiqc", required=True, help="multiqc files folder")
     parser.add_argument("-q", "--qc_files", dest="qc_files", required=True, type=str, nargs="+", help="qc files")
 
