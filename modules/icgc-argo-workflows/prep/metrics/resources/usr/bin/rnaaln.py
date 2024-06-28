@@ -107,11 +107,9 @@ def main():
     args = parser.parse_args()
 
     # get tool_specific & aggregated metrics from multiqc
-    mqc_stats_total = {}
     mqc_stats = {}
     for fn in sorted(args.multiqc):
         mqc_stats = get_mqc_stats(fn, args.sampleId)
-
 
     mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 

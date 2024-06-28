@@ -29,19 +29,19 @@ process PREP_METRICS {
         echo $workflow_name detected;
         prealn.py \\
             -m $multiqc \\
-            -s $meta.id \\
+            -s $meta.sample \\
             -q $qc_files
         ;;
     'DNA Alignment')
         dnaaln.py \\
             -m $multiqc \\
-            -s $meta.id \\
+            -s $meta.sample \\
             -q $qc_files
         ;;
     'RNA Alignment')
         rnaaln.py \\
             -m $multiqc \\
-            -s $meta.id
+            -s $meta.sample
         ;;
     *)
         echo -n "Unknown workflow"
