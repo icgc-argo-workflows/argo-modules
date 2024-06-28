@@ -1,0 +1,46 @@
+[2024-06-14 17:14:50,018] multiqc                                            [DEBUG  ]  This is MultiQC v1.21
+[2024-06-14 17:14:50,026] multiqc                                            [DEBUG  ]  Loading config settings from: multiqc_config.yml
+[2024-06-14 17:14:50,026] multiqc                                            [DEBUG  ]  New config: {'report_comment': 'This is a comment about this report.', 'report_section_order': {'icgc-argo-workflows-rnaaln-methods-description': {'order': -1000}, 'software_versions': {'order': -1001}, 'icgc-argo-workflows-rnaaln-summary': {'order': -1002}}, 'title': 'ICGC-ARGO Post RNA Alignment QC Report', 'subtitle': 'this is a test version', 'intro_text': 'MultiQC reports summarise analysis results.', 'show_analysis_paths': False, 'show_analysis_time': True, 'read_count_multiplier': 0.001, 'read_count_prefix': 'K', 'read_count_desc': 'thousands', 'export_plots': False, 'fn_clean_sample_names': True, 'run_modules': ['picard', 'hisat2', 'star']}
+[2024-06-14 17:14:50,026] multiqc                                            [DEBUG  ]  Added to filename clean extensions: [[{'type': 'regex_keep', 'pattern': 'SA[0-9]{1,20}'}]]
+[2024-06-14 17:14:50,029] multiqc                                            [DEBUG  ]  Loading config settings from: multiqc_config.yml
+[2024-06-14 17:14:50,029] multiqc                                            [DEBUG  ]  New config: {'report_comment': 'This is a comment about this report.', 'report_section_order': {'icgc-argo-workflows-rnaaln-methods-description': {'order': -1000}, 'software_versions': {'order': -1001}, 'icgc-argo-workflows-rnaaln-summary': {'order': -1002}}, 'title': 'ICGC-ARGO Post RNA Alignment QC Report', 'subtitle': 'this is a test version', 'intro_text': 'MultiQC reports summarise analysis results.', 'show_analysis_paths': False, 'show_analysis_time': True, 'read_count_multiplier': 0.001, 'read_count_prefix': 'K', 'read_count_desc': 'thousands', 'export_plots': False, 'fn_clean_sample_names': True, 'run_modules': ['picard', 'hisat2', 'star']}
+[2024-06-14 17:14:50,029] multiqc                                            [DEBUG  ]  Added to filename clean extensions: [[{'type': 'regex_keep', 'pattern': 'SA[0-9]{1,20}'}]]
+[2024-06-14 17:14:50,029] multiqc                                            [DEBUG  ]  Command used: /usr/local/bin/multiqc --force --config multiqc_config.yml .
+[2024-06-14 17:14:50,812] multiqc                                            [WARNING]  MultiQC Version v1.22.2 now available!
+[2024-06-14 17:14:50,813] multiqc                                            [DEBUG  ]  Latest MultiQC version is v1.22.2, released 2024-05-31
+[2024-06-14 17:14:50,813] multiqc                                            [DEBUG  ]  Working dir : /Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66
+[2024-06-14 17:14:50,813] multiqc                                            [DEBUG  ]  Template    : default
+[2024-06-14 17:14:50,813] multiqc                                            [DEBUG  ]  Running Python 3.11.8 | packaged by conda-forge | (main, Feb 16 2024, 20:53:32) [GCC 12.3.0]
+[2024-06-14 17:14:50,813] multiqc                                            [INFO   ]  Report title: ICGC-ARGO Post RNA Alignment QC Report
+[2024-06-14 17:14:50,814] multiqc                                            [INFO   ]  Only using modules: picard, hisat2, star
+[2024-06-14 17:14:50,814] multiqc                                            [DEBUG  ]  Analysing modules: picard, star, hisat2
+[2024-06-14 17:14:50,814] multiqc                                            [DEBUG  ]  Using temporary directory for creating report: /tmp/tmpgm0e_83_
+[2024-06-14 17:14:50,815] multiqc                                            [INFO   ]  Search path : /Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66
+[2024-06-14 17:14:50,816] multiqc                                            [DEBUG  ]  Ignored 306 search patterns as didn't match running modules.
+[2024-06-14 17:14:50,873] multiqc                                            [DEBUG  ]  Summary of files that were skipped by the search: [skipped_no_match: 10]
+[2024-06-14 17:14:50,895] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file picard_histogram.txt
+[2024-06-14 17:14:50,896] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file picard_histogram_1.txt
+[2024-06-14 17:14:50,903] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file multiqc_picard_RnaSeqMetrics.txt
+[2024-06-14 17:14:50,954] multiqc.modules.picard.picard                      [INFO   ]  Found 1 RnaSeqMetrics reports
+[2024-06-14 17:14:50,955] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file picard_histogram_2.txt
+[2024-06-14 17:14:50,958] multiqc.modules.hisat2.hisat2                      [DEBUG  ]  Duplicate sample name found! Overwriting: SA622799
+[2024-06-14 17:14:50,959] multiqc.modules.hisat2.hisat2                      [INFO   ]  Found 1 reports
+[2024-06-14 17:14:50,959] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file multiqc_hisat2.txt
+[2024-06-14 17:14:50,964] multiqc.utils.software_versions                    [DEBUG  ]  Reading software versions from config.software_versions
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-methods-description' not found.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'software_versions' not found.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-summary' not found.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-methods-description' not found for module 'Picard'.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'software_versions' not found for module 'Picard'.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-summary' not found for module 'Picard'.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-methods-description' not found for module 'HISAT2'.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'software_versions' not found for module 'HISAT2'.
+[2024-06-14 17:14:50,964] multiqc                                            [DEBUG  ]  Reordering sections: anchor 'icgc-argo-workflows-rnaaln-summary' not found for module 'HISAT2'.
+[2024-06-14 17:14:50,978] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file multiqc_general_stats.txt
+[2024-06-14 17:14:50,978] multiqc                                            [DEBUG  ]  Compressing plot data
+[2024-06-14 17:14:50,994] multiqc.utils.util_functions                       [DEBUG  ]  Wrote data file multiqc_data.json
+[2024-06-14 17:14:50,995] multiqc                                            [INFO   ]  Report      : ICGC-ARGO-Post-RNA-Alignment-QC-Report_multiqc_report.html
+[2024-06-14 17:14:50,995] multiqc                                            [INFO   ]  Data        : ICGC-ARGO-Post-RNA-Alignment-QC-Report_multiqc_report_data
+[2024-06-14 17:14:50,995] multiqc                                            [DEBUG  ]  Moving data file from '/tmp/tmpgm0e_83_/multiqc_data' to '/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66/ICGC-ARGO-Post-RNA-Alignment-QC-Report_multiqc_report_data'
+[2024-06-14 17:14:51,012] multiqc                                            [DEBUG  ]  Full report path: /Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66/ICGC-ARGO-Post-RNA-Alignment-QC-Report_multiqc_report.html
+[2024-06-14 17:14:51,124] multiqc                                            [INFO   ]  MultiQC complete

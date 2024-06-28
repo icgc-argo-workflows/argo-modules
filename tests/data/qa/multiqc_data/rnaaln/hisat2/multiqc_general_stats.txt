@@ -1,0 +1,2 @@
+Sample	Picard: RnaSeqMetrics_mqc-generalstats-picard_rnaseqmetrics-PCT_RIBOSOMAL_BASES	Picard: RnaSeqMetrics_mqc-generalstats-picard_rnaseqmetrics-PCT_MRNA_BASES	HISAT2_mqc-generalstats-hisat2-overall_alignment_rate
+SA622799	10.0551	0.0826	100.0

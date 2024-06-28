@@ -1,0 +1,3 @@
+Module	Section	Sample Name	Source
+Picard	RnaSeqMetrics	SA622799	/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/60/aa5f1eba43871dd9572177be612f40/3/TCRB-CA.DO262498.SA622799.csort.markdup.star.rna_metrics
+STAR	SummaryLog	SA622799	/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/60/aa5f1eba43871dd9572177be612f40/2/TCRB-CA.DO262498.SA622799.S01L1.Log.final.out
