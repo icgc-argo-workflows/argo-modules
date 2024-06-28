@@ -22,6 +22,7 @@ process PREP_METRICS {
     script:
     def workflow_name = workflow.Manifest.name
     
+    
     """
     case '$workflow_name' in
     'Pre Alignment QC')

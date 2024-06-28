@@ -102,14 +102,16 @@ def get_mqc_stats(multiqc, sampleId):
 def main():
     parser = argparse.ArgumentParser(description='Tool: prep_metrics')
     parser.add_argument("-s", "--sampleId", dest="sampleId", required=True, help="Input sampleId", type=str)
-    parser.add_argument("-m", "--multiqc", dest="multiqc", required=True, help="multiqc files folder")
+    parser.add_argument("-m", "--multiqc", dest="multiqc", required=True, help="multiqc files folder", type=str, nargs="+")
 
     args = parser.parse_args()
 
     # get tool_specific & aggregated metrics from multiqc
+    mqc_stats_total = {}
     mqc_stats = {}
-    if args.multiqc:
-        mqc_stats = get_mqc_stats(args.multiqc, args.sampleId)
+    for fn in sorted(args.multiqc):
+        mqc_stats = get_mqc_stats(fn, args.sampleId)
+
 
     mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 

@@ -21,8 +21,14 @@ workflow test_prep_metrics_dnaalnqc {
 }
 
 // 
-workflow test_prep_metrics_rnaalnqc {
-    input_channel = Channel.of([id: 'SA622799']).combine(Channel.fromPath(params.multiqc))
+workflow test_prep_metrics_rnaalnqc_star {
+    input_channel = Channel.of([id: 'SA622799']).combine(Channel.fromPath(params.multiqc_star))
+
+    PREP_METRICS ( input_channel, [])
+}
+
+workflow test_prep_metrics_rnaalnqc_hisat2 {
+    input_channel = Channel.of([id: 'SA622799']).combine(Channel.fromPath(params.multiqc_hisat2))
 
     PREP_METRICS ( input_channel, [])
 }
