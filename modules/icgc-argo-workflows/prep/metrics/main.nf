@@ -1,5 +1,5 @@
 process PREP_METRICS {
-    tag "$meta.id"
+    tag "$meta.sample"
     label 'process_single'
 
     conda "conda-forge::python=3.8.3"
@@ -32,7 +32,7 @@ process PREP_METRICS {
             -s $meta.sample \\
             -q $qc_files
         ;;
-    'DNA Alignment')
+    'DNA Alignment QC')
         dnaaln.py \\
             -m $multiqc \\
             -s $meta.sample \\

@@ -175,7 +175,7 @@ def main():
 
     mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 
-    with open("%s.argo_metrics.json" % (args.sampleId), 'w') as f:
+    with open("%s.prealn_argo_metrics.json" % (args.sampleId), 'w') as f:
       f.write(json.dumps(mqc_stats_updated, indent=2))
 
 if __name__ == "__main__":
