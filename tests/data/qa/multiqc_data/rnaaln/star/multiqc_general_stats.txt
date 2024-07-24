@@ -1,0 +1,2 @@
+Sample	Picard: RnaSeqMetrics_mqc-generalstats-picard_rnaseqmetrics-PCT_RIBOSOMAL_BASES	Picard: RnaSeqMetrics_mqc-generalstats-picard_rnaseqmetrics-PCT_MRNA_BASES	STAR_mqc-generalstats-star-uniquely_mapped_percent	STAR_mqc-generalstats-star-uniquely_mapped
+SA622799	0.06939999999999999	0.08009999999999999	99.06	738.0

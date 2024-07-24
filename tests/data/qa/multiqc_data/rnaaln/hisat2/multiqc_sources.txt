@@ -1,0 +1,3 @@
+Module	Section	Sample Name	Source
+Picard	RnaSeqMetrics	SA622799	/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66/5/TCRB-CA.DO262498.SA622799.csort.markdup.rna_metrics
+HISAT2	all_sections	SA622799	/Users/gfeng/Documents/Work/ICGC-ARGO-WORKFLOWS/rnaaln/update_prep_metrics/nf-core-rnaaln/work/db/878450a93307149b3ab3b8e29cae66/3/TCRB-CA.DO262498.SA622799.S01L1_summary.txt
