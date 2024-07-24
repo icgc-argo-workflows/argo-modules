@@ -144,7 +144,7 @@ def main():
 
     mqc_stats_updated = {k: v for k, v in mqc_stats.items() if v}
 
-    with open("%s.dnaaln_argo_metrics.json" % (args.sampleId), 'w') as f:
+    with open("%s.dnaaln.argo_metrics.json" % (args.sampleId), 'w') as f:
       f.write(json.dumps(mqc_stats_updated, indent=2))
 
     # retrieve ga4gh standardized QC metrics
@@ -159,7 +159,7 @@ def main():
         ga4gh_qc_dict['wgs_qc_metrics'].update({k: v}) 
 
     if ga4gh_qc_dict['wgs_qc_metrics']:
-      with open("%s.dnaaln_metrics.json" % (args.sampleId), 'w') as f:
+      with open("%s.dnaaln.metrics.json" % (args.sampleId), 'w') as f:
         f.write(json.dumps(ga4gh_qc_dict, indent=2))
 
 if __name__ == "__main__":
