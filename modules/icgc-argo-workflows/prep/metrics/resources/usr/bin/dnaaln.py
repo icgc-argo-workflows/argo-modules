@@ -47,7 +47,7 @@ tool_fieldmap = {
      'total_pf_reads': 'sequences',
      'average_base_quality': 'average_quality',
      'average_read_length': 'average_length',
-     'reads_duplicated_percent': 'reads_duplicated_percent',
+     'pct_reads_duplicated': 'reads_duplicated_percent',
      'non-primary_alignments': 'non-primary_alignments',
      'pairs_on_different_chromosomes': 'pairs_on_different_chromosomes',
      'mismatch_bases_rate': 'error_rate'
