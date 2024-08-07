@@ -268,10 +268,15 @@ def main():
       with open(args.pipeline_yml, 'r') as f:
         pipeline_info = yaml.safe_load(f)
 
+    updated_pipeline_info = {}
     for key, value in pipeline_info.items():
+       new_key = key.split(":")[-1]
+       updated_pipeline_info[new_key] = value
+
+    for key, value in updated_pipeline_info.items():
         for sub_key, sub_value in value.items():
             value[sub_key] = str(sub_value)
-        pipeline_info[key] = value
+        updated_pipeline_info[key] = value
 
     # get tool_specific & aggregated metrics from multiqc
     mqc_stats = {}
@@ -296,7 +301,7 @@ def main():
                     'input_analysis_id': analysis_dict.get('analysisId')
                 }
             ],
-            'pipeline_info': pipeline_info,
+            'pipeline_info': updated_pipeline_info,
             'metrics': mqc_stats.get('metrics', None)
         },
         'files': [],
