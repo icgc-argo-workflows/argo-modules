@@ -2,7 +2,6 @@ process PAYLOAD_ALIGNMENT {
     tag "$meta.id"
     label 'process_single'
 
-    // Requires `pyyaml` which does not have a dedicated container but is in the MultiQC container
     conda "bioconda::multiqc=1.13"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/multiqc:1.13--pyhdfd78af_0' :
@@ -11,6 +10,8 @@ process PAYLOAD_ALIGNMENT {
     input:  // input, make update as needed
       tuple val(meta), path(files_to_upload), path(metadata_analysis)
       path pipeline_yml
+      val genome_build
+      val genome_annotation
 
     output:  // output, make update as needed
       tuple val(meta), path("*.payload.json"), path("out/*"), emit: payload_files
@@ -19,18 +20,17 @@ process PAYLOAD_ALIGNMENT {
     script:
       // add and initialize variables here as needed
       def arg_pipeline_yml = pipeline_yml.name != 'NO_FILE' ? "-p $pipeline_yml" : ''
-      def workflow_name = workflow.Manifest.name
-
       """
-      main_adapteddna.py \
+      main.py \
         -f ${files_to_upload} \
         -a ${metadata_analysis} \
-        -b "${meta.genomeBuild}" \
-        -w ${workflow_name} \
+        -w "${workflow.manifest.name}" \
         -r ${workflow.runName} \
         -s "${workflow.sessionId}" \
         -v "${workflow.manifest.version}" \
         -c "${meta.read_groups_count}" \
+        -b "${genome_build}" \
+        -n "${genome_annotation}" \
         $arg_pipeline_yml
 
       cat <<-END_VERSIONS > versions.yml

@@ -25,21 +25,15 @@ import sys
 import json
 import sys
 import argparse
-import subprocess
 import json
-import re
 import hashlib
 import uuid
-import tarfile
 from datetime import date
 import copy
-from glob import glob
 import yaml
-import io
-import shutil
 
 workflow_full_name = {
-    'rna-seq-alignment': 'RNA Seq Alignment'
+    'rna-seq-alignment': 'RNA Alignment'
 }
 
 def calculate_size(file_path):
@@ -57,31 +51,18 @@ def calculate_md5(file_path):
 def rename_file(f, payload, rg_count, sample_info, date_str):
     experimental_strategy = payload['experiment']['experimental_strategy'].lower()
 
-    if f.endswith('.bam'):
-        file_ext = 'bam'
-    elif f.endswith('.bam.bai'):
-        file_ext = 'bam.bai'
-    elif f.endswith('.cram'):
-        file_ext = 'cram'
-    elif f.endswith('.cram.crai'):
-        file_ext = 'cram.crai'
+    if f.endswith('.txt'):
+        file_ext = 'txt'
     else:
         sys.exit('Error: unknown aligned seq extention: %s' % f)
 
-    aln_type = ''
-    if 'transcriptAlign' in f:
-        aln_type = 'transcriptAlign'
-    else:
-        aln_type = 'genomeAlign'
-
-    new_name = "%s.%s.%s.%s.%s.%s.%s.%s" % (
+    new_name = "%s.%s.%s.%s.%s.%s.%s" % (
         payload['studyId'],
         sample_info[0]['donor']['donorId'],
         sample_info[0]['sampleId'],
         experimental_strategy,
-        aln_type,
         date_str,
-        'aln',
+        'splice-junctions',
         file_ext
     )
 
@@ -97,18 +78,18 @@ def rename_file(f, payload, rg_count, sample_info, date_str):
     return dst
 
 
-def get_files_info(file_to_upload,pipeline_info):
+def get_files_info(file_to_upload,updated_pipeline_info):
     return {
         'fileName': os.path.basename(file_to_upload),
         'fileType': file_to_upload.split(".")[-1].upper(),
         'fileSize': calculate_size(file_to_upload),
         'fileMd5sum': calculate_md5(file_to_upload),
         'fileAccess': 'controlled',
-        'dataType': 'Aligned Reads' if file_to_upload.split(".")[-1] in ('bam', 'cram') else 'Aligned Reads Index',
+        'dataType': 'Splice Junctions',
         'info': {
-            'data_category': 'Sequencing Reads',
+            'data_category': 'Transcriptome Profiling',
             'data_subtypes': None,
-            'analysis_tools': [{key.split(":")[-1]:pipeline_info[key]} for key in pipeline_info.keys()]
+            'analysis_tools': updated_pipeline_info
             }
     }
 
@@ -133,14 +114,19 @@ def main(args):
       with open(args.pipeline_yml, 'r') as f:
         pipeline_info = yaml.safe_load(f)
 
+    updated_pipeline_info = {}
     for key, value in pipeline_info.items():
+       new_key = key.split(":")[-1]
+       updated_pipeline_info[new_key] = value
+
+    for key, value in updated_pipeline_info.items():
         for sub_key, sub_value in value.items():
             value[sub_key] = str(sub_value)
-        pipeline_info[key] = value
+        updated_pipeline_info[key] = value
 
     payload = {
         'analysisType': {
-            'name': 'sequencing_alignment'
+            'name': 'splice_junctions'
         },
         'studyId': seq_experiment_analysis_dict.get('studyId'),
         'info': {},
@@ -148,6 +134,7 @@ def main(args):
             'workflow_name': workflow_full_name.get(args.wf_name, args.wf_name),
             'workflow_version': args.wf_version,
             'genome_build': args.genome_build,
+            'genome_annotation': args.genome_annotation,
             'run_id': args.wf_run,
             'session_id': args.wf_session,
             'inputs': [
@@ -159,9 +146,9 @@ def main(args):
         },
         'files': [],
         'samples': get_sample_info(seq_experiment_analysis_dict.get('samples')),
-        'experiment': {},
-        'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
-        'read_groups': seq_experiment_analysis_dict.get('read_groups')
+        'experiment': {} #,
+        # 'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
+        # 'read_groups': seq_experiment_analysis_dict.get('read_groups')
     }
 
     # pass `info` dict from seq_experiment payload to new payload
@@ -189,14 +176,14 @@ def main(args):
         )
 
     # get number of read groups from aligned seq file
-    aligned_file = [ f for f in args.files_to_upload if (f.endswith('.bam') or f.endswith('.cram')) ][0]
+    # aligned_file = [ f for f in args.files_to_upload if (f.endswith('.bam') or f.endswith('.cram')) ][0]
     rg_count = args.read_group_count
 
     # get file of the payload
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
         renamed_file = rename_file(f, payload, rg_count, seq_experiment_analysis_dict['samples'], date_str)
-        payload['files'].append(get_files_info(renamed_file,pipeline_info))
+        payload['files'].append(get_files_info(renamed_file,updated_pipeline_info))
 
     with open("%s.rna_alignment.payload.json" % str(uuid.uuid4()), 'w') as f:
         f.write(json.dumps(payload, indent=2))
@@ -215,6 +202,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--wf_run", dest="wf_run", required=True, help="workflow run ID")
     parser.add_argument("-s", "--wf_session", dest="wf_session", required=True, help="workflow session ID")
     parser.add_argument("-b", "--genome_build", dest="genome_build", default="GRCh38_Verily_v1", help="Genome build")
+    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", default="GENCODE v40", help="Genome annotation")
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
     parser.add_argument("-c", "--read_group_count", dest="read_group_count", required=True,type=int,help="read_group_count")
 
