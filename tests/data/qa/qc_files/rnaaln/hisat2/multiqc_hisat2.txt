@@ -1,2 +1,2 @@
 Sample	paired_total	paired_aligned_none	paired_aligned_one	paired_aligned_multi	paired_aligned_discord_one	unpaired_total	unpaired_aligned_none	unpaired_aligned_one	unpaired_aligned_multi	overall_alignment_rate
-SA622799	745	0	661	84	0	0	0	0	0	100.0
+SA622799	697	0	646	50	1	0	0	0	0	100.0

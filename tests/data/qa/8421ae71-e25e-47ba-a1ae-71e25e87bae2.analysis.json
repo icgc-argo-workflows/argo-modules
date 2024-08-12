@@ -1,0 +1,139 @@
+{
+  "analysisId" : "8421ae71-e25e-47ba-a1ae-71e25e87bae2",
+  "studyId" : "TCRB-CA",
+  "analysisState" : "PUBLISHED",
+  "analysisType" : {
+    "name" : "sequencing_experiment",
+    "version" : 5
+  },
+  "samples" : [
+        {
+      "sampleId" : "SA622799",
+      "specimenId" : "SP222784",
+      "submitterSampleId" : "donor1_sample1_id",
+      "sampleType" : "Total RNA",
+      "matchedNormalSubmitterSampleId" : "donor1_sample2_id",
+      "specimen" : {
+        "specimenId" : "SP222784",
+        "donorId" : "DO262498",
+        "submitterSpecimenId" : "donor1_sample1",
+        "tumourNormalDesignation" : "Tumour",
+        "specimenTissueSource" : "Solid tissue",
+        "specimenType" : "Primary tumour"
+      },
+      "donor" : {
+        "donorId" : "DO262498",
+        "studyId" : "TCRB-CA",
+        "submitterDonorId" : "donor1",
+        "gender" : "Male"
+      }
+    }
+    ],
+  "files" : [
+        {
+      "info" : {
+        "data_category" : "Sequencing Reads"
+      },
+      "objectId" : "9f727a4b-022e-5dc7-9bf8-feb6c202c2ad",
+      "studyId" : "TCRB-CA",
+      "analysisId" : "8421ae71-e25e-47ba-a1ae-71e25e87bae2",
+      "fileName" : "sample_01_L1_1.fastq.gz",
+      "fileType" : "FASTQ",
+      "fileMd5sum" : "72a9c293606c1d6a52a66f3ae09b007c",
+      "fileSize" : 18438,
+      "fileAccess" : "controlled",
+      "dataType" : "Submitted Reads"
+    },
+        {
+      "info" : {
+        "data_category" : "Sequencing Reads"
+      },
+      "objectId" : "04609f6b-8aae-54c5-b10f-769e296c6613",
+      "studyId" : "TCRB-CA",
+      "analysisId" : "8421ae71-e25e-47ba-a1ae-71e25e87bae2",
+      "fileName" : "sample_01_L1_2.fastq.gz",
+      "fileType" : "FASTQ",
+      "fileMd5sum" : "60e57075f3fb37721bc2ed1d352e8898",
+      "fileSize" : 18261,
+      "fileAccess" : "controlled",
+      "dataType" : "Submitted Reads"
+    },
+        {
+      "info" : {
+        "data_category" : "Sequencing Reads"
+      },
+      "objectId" : "6e8a76f8-c844-5f4b-9d02-1f6b8f7ae680",
+      "studyId" : "TCRB-CA",
+      "analysisId" : "8421ae71-e25e-47ba-a1ae-71e25e87bae2",
+      "fileName" : "sample_01_L2_1.fastq.gz",
+      "fileType" : "FASTQ",
+      "fileMd5sum" : "3dbdac6163b0890d348f4d6e676308a7",
+      "fileSize" : 17275,
+      "fileAccess" : "controlled",
+      "dataType" : "Submitted Reads"
+    },
+        {
+      "info" : {
+        "data_category" : "Sequencing Reads"
+      },
+      "objectId" : "3f895c2d-5695-506d-8224-cb18bbdbb7a8",
+      "studyId" : "TCRB-CA",
+      "analysisId" : "8421ae71-e25e-47ba-a1ae-71e25e87bae2",
+      "fileName" : "sample_01_L2_2.fastq.gz",
+      "fileType" : "FASTQ",
+      "fileMd5sum" : "f0b8b4f6594b286c3c2300022b31f674",
+      "fileSize" : 17359,
+      "fileAccess" : "controlled",
+      "dataType" : "Submitted Reads"
+    }
+    ],
+  "createdAt" : "2022-03-22T21:36:48.090063",
+  "updatedAt" : "2022-03-22T21:37:37.102959",
+  "firstPublishedAt" : "2022-03-22T21:37:37.098904",
+  "publishedAt" : "2022-03-22T21:37:37.098904",
+  "analysisStateHistory" : [
+        {
+      "initialState" : "UNPUBLISHED",
+      "updatedState" : "PUBLISHED",
+      "updatedAt" : "2022-03-22T21:37:37.098904"
+    }
+    ],
+  "experiment" : {
+    "experimental_strategy" : "RNA-Seq",
+    "library_strandedness" : "UNSTRANDED",
+    "platform" : "ILLUMINA",
+    "platform_model" : "Polyester",
+    "sequencing_center" : "SIM",
+    "sequencing_date" : "2021-04-21",
+    "submitter_sequencing_experiment_id" : "TEST_EXP"
+  },
+  "read_group_count" : 2,
+  "read_groups" : [
+        {
+      "file_r1" : "sample_01_L1_1.fastq.gz",
+      "file_r2" : "sample_01_L1_2.fastq.gz",
+      "insert_size" : 250,
+      "is_paired_end" : true,
+      "library_name" : "sim01",
+      "platform_unit" : "sim01",
+      "read_group_id_in_bam" : null,
+      "read_length_r1" : 100,
+      "read_length_r2" : 100,
+      "sample_barcode" : null,
+      "submitter_read_group_id" : "S01L1"
+    },
+        {
+      "file_r1" : "sample_01_L2_1.fastq.gz",
+      "file_r2" : "sample_01_L2_2.fastq.gz",
+      "insert_size" : 250,
+      "is_paired_end" : true,
+      "library_name" : "sim01",
+      "platform_unit" : "sim01",
+      "read_group_id_in_bam" : null,
+      "read_length_r1" : 100,
+      "read_length_r2" : 100,
+      "sample_barcode" : null,
+      "submitter_read_group_id" : "S01L2"
+    }
+    ]
+}
