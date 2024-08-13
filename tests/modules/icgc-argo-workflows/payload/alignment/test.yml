@@ -1,17 +1,28 @@
-- name: "payload qcmetrics alnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.aln.config -profile docker
+- name: "payload alignment dna"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.dnaaln.config -profile docker
   tags:
     - "payload"
-    - "payload/qcmetrics"
+    - "payload/alignment"
   files:
-    - path: "output/payload_qcmetrics/*.DNA_Alignment_QC.payload.json"
+    - path: "output/payload_alignment/*.DNA_Alignment_QC.payload.json"
     - path: "output/payload_qcmetrics/out/TEST-QA.DO262466.SA622743.wxs.*.aln.*.tgz"
 
-- name: "payload qcmetrics prealnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.prealn.config -profile docker
+- name: "payload alignment rna-genome"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln.config -profile docker
   tags:
     - "payload"
-    - "payload/qcmetrics"
+    - "payload/alignment"
+  files:
+    - path: "output/payload_qcmetrics/*.rna_alignment.payload.json"
+    - path: "output/payload_qcmetrics/out/TEST-QA.DO263089.SA624380.wgs.genomeAlign.*.aln.cram"
+    - path: "output/payload_qcmetrics/out/TEST-QA.DO263089.SA624380.wgs.genomeAlign.*.aln.cram.crai"
+
+
+- name: "payload alignment rna-transcriptome"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaalnTrans.config -profile docker
+  tags:
+    - "payload"
+    - "payload/alignment"
   files:
     - path: "output/payload_qcmetrics/*.Pre_Alignment_QC.payload.json"
     - path: "output/payload_qcmetrics/out/TEST-QA.DO263089.SA624380.wgs.*.prealn.*.tgz"

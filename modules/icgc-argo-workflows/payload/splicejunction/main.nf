@@ -39,4 +39,3 @@ process PAYLOAD_SPLICE_JUNCTION {
       END_VERSIONS
       """
   }
-//           -b "${meta.genomeBuild}" \

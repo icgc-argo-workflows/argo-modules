@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
- Copyright (c) 2019, Ontario Institute for Cancer Research (OICR).
+ Copyright (c) 2024, Ontario Institute for Cancer Research (OICR).
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU Affero General Public License as published
@@ -16,8 +16,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
- Author: Junjun Zhang <junjun.zhang@oicr.on.ca>
-         Linda Xiang <linda.xiang@oicr.on.ca>
+ Author: Guanqiao Feng <gfeng@oicr.on.ca>
  """
 
 import os
@@ -33,7 +32,7 @@ import copy
 import yaml
 
 workflow_full_name = {
-    'rna-seq-alignment': 'RNA Alignment'
+    'rna-seq-alignment': 'RNA Seq Alignment'
 }
 
 def calculate_size(file_path):
