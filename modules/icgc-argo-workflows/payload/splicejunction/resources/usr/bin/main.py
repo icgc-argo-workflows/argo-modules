@@ -31,9 +31,6 @@ from datetime import date
 import copy
 import yaml
 
-workflow_full_name = {
-    'rna-seq-alignment': 'RNA Seq Alignment'
-}
 
 def calculate_size(file_path):
     return os.stat(file_path).st_size
@@ -77,7 +74,7 @@ def rename_file(f, payload, rg_count, sample_info, date_str):
     return dst
 
 
-def get_files_info(file_to_upload,updated_pipeline_info):
+def get_files_info(file_to_upload):
     return {
         'fileName': os.path.basename(file_to_upload),
         'fileType': file_to_upload.split(".")[-1].upper(),
@@ -87,8 +84,7 @@ def get_files_info(file_to_upload,updated_pipeline_info):
         'dataType': 'Splice Junctions',
         'info': {
             'data_category': 'Transcriptome Profiling',
-            'data_subtypes': None,
-            'analysis_tools': updated_pipeline_info
+            'data_subtypes': None
             }
     }
 
@@ -130,12 +126,13 @@ def main(args):
         'studyId': seq_experiment_analysis_dict.get('studyId'),
         'info': {},
         'workflow': {
-            'workflow_name': workflow_full_name.get(args.wf_name, args.wf_name),
+            'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
             'genome_build': args.genome_build,
             'genome_annotation': args.genome_annotation,
             'run_id': args.wf_run,
             'session_id': args.wf_session,
+            'pipeline_info': updated_pipeline_info,
             'inputs': [
                 {
                     'analysis_type': 'sequencing_experiment',
@@ -182,9 +179,9 @@ def main(args):
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
         renamed_file = rename_file(f, payload, rg_count, seq_experiment_analysis_dict['samples'], date_str)
-        payload['files'].append(get_files_info(renamed_file,updated_pipeline_info))
+        payload['files'].append(get_files_info(renamed_file))
 
-    with open("%s.rna_alignment.payload.json" % str(uuid.uuid4()), 'w') as f:
+    with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
         f.write(json.dumps(payload, indent=2))
 
 

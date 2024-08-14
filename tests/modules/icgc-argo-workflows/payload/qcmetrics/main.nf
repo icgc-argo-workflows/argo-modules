@@ -10,7 +10,7 @@ workflow test_payload_qcmetrics {
     files_channel = Channel.fromPath(params.qc_files).toList()
     analysis_channel.combine(files_channel.toList()).combine(Channel.fromPath(params.multiqc))
     .map { analysis, files, multiqc ->
-    [[id:'test'], analysis, files, multiqc]}
+    [[id:'test'], files, analysis, multiqc]}
     .set{ input_channel }
     genome_build = params.genome_build ?: []
     genome_annotation = params.genome_annotation ?: []
