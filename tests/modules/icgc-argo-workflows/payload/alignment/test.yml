@@ -7,3 +7,14 @@
     - path: "output/payload_alignment/*.RNA_Seq_Alignment.payload.json"
     - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.genomeAlign.*.aln.cram"
     - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.genomeAlign.*.aln.cram.crai"
+
+- name: "payload rna alignment transcriptome-based"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln-trans.config -profile docker
+  tags:
+    - "payload"
+    - "payload/alignment"
+  files:
+    - path: "output/payload_alignment/*.RNA_Seq_Alignment.payload.json"
+    - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.transcriptAlign.*.aln.cram"
+    - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.transcriptAlign.*.aln.cram.crai"
+    
