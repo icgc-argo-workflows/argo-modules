@@ -1,6 +1,6 @@
 
 - name: "score download in rdpc qa"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_score_download_rdpcqa -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
+  command: nextflow run ./tests/modules/icgc-argo-workflows/score/download -entry test_score_download_rdpcqa -c ./tests/config/nextflow.config -profile docker,rdpc_qa --api_token YOUR_TOKEN
   tags:
     - "score"
     - "score/download"
