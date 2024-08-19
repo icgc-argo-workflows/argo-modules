@@ -44,7 +44,7 @@ def calculate_md5(file_path):
     return md5.hexdigest()
 
 
-def rename_file(f, payload, rg_count, sample_info, date_str):
+def rename_file(f, payload, sample_info, date_str):
     experimental_strategy = payload['experiment']['experimental_strategy'].lower()
 
     if f.endswith('.txt'):
@@ -124,7 +124,6 @@ def main(args):
             'name': 'splice_junctions'
         },
         'studyId': seq_experiment_analysis_dict.get('studyId'),
-        'info': {},
         'workflow': {
             'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
@@ -142,43 +141,17 @@ def main(args):
         },
         'files': [],
         'samples': get_sample_info(seq_experiment_analysis_dict.get('samples')),
-        'experiment': {} #,
-        # 'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
-        # 'read_groups': seq_experiment_analysis_dict.get('read_groups')
+        'experiment': {},
+        'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
+        'read_groups': seq_experiment_analysis_dict.get('read_groups')
     }
 
-    # pass `info` dict from seq_experiment payload to new payload
-    if 'info' in seq_experiment_analysis_dict and isinstance(seq_experiment_analysis_dict['info'], dict):
-        payload['info'] = seq_experiment_analysis_dict['info']
-    else:
-        payload.pop('info')
-
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))
-
-    if 'library_strategy' in payload['experiment']:
-        experimental_strategy = payload['experiment'].pop('library_strategy')
-        payload['experiment']['experimental_strategy'] = experimental_strategy
-
-    # get inputs from read_group_ubam_analysis
-    for ubam_analysis in args.read_group_ubam_analysis:
-        with open(ubam_analysis, 'r') as f:
-            ubam_analysis_dict = json.load(f)
-
-        payload['workflow']['inputs'].append(
-            {
-                'analysis_type': 'read_group_ubam',
-                'input_analysis_id': ubam_analysis_dict.get('analysisId')
-            }
-        )
-
-    # get number of read groups from aligned seq file
-    # aligned_file = [ f for f in args.files_to_upload if (f.endswith('.bam') or f.endswith('.cram')) ][0]
-    rg_count = args.read_group_count
 
     # get file of the payload
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
-        renamed_file = rename_file(f, payload, rg_count, seq_experiment_analysis_dict['samples'], date_str)
+        renamed_file = rename_file(f, payload, seq_experiment_analysis_dict['samples'], date_str)
         payload['files'].append(get_files_info(renamed_file))
 
     with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
@@ -191,8 +164,6 @@ if __name__ == "__main__":
                         nargs="+", help="Aligned reads files to upload")
     parser.add_argument("-a", "--seq_experiment_analysis", dest="seq_experiment_analysis", required=True,
                         help="Input analysis for sequencing experiment", type=str)
-    parser.add_argument("-u", "--read_group_ubam_analysis", dest="read_group_ubam_analysis", default=[],
-                        help="Input payloads for the analysis", type=str, nargs='+')
     parser.add_argument("-w", "--wf_name", dest="wf_name", required=True, help="Workflow name")
     parser.add_argument("-v", "--wf_version", dest="wf_version", required=True, help="Workflow version")
     parser.add_argument("-r", "--wf_run", dest="wf_run", required=True, help="workflow run ID")
@@ -200,7 +171,6 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--genome_build", dest="genome_build", default="GRCh38_Verily_v1", help="Genome build")
     parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", default="GENCODE v40", help="Genome annotation")
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
-    parser.add_argument("-c", "--read_group_count", dest="read_group_count", required=True,type=int,help="read_group_count")
 
     args = parser.parse_args()
 

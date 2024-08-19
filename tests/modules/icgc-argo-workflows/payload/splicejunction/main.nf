@@ -10,7 +10,7 @@ workflow test_payload_splice_junction {
     files_channel = Channel.fromPath(params.file_to_upload)
     analysis_channel.combine(files_channel)
     .map { analysis, files ->
-    [[id: 'test', read_groups_count:'2'], files, analysis]}
+    [[id: 'test'], files, analysis]}
     .set{ input_channel }
     genome_build = params.genome_build ?: []
     genome_annotation = params.genome_annotation ?: []

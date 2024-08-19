@@ -38,5 +38,3 @@ process PAYLOAD_ALIGNMENT {
       END_VERSIONS
       """
   }
-
-          // -c "${meta.read_groups_count}" \

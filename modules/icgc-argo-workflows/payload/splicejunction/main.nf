@@ -28,7 +28,6 @@ process PAYLOAD_SPLICE_JUNCTION {
         -r ${workflow.runName} \
         -s "${workflow.sessionId}" \
         -v "${workflow.manifest.version}" \
-        -c "${meta.read_groups_count}" \
         -b "${genome_build}" \
         -n "${genome_annotation}" \
         $arg_pipeline_yml
