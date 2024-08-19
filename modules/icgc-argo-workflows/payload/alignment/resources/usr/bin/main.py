@@ -162,18 +162,6 @@ def main(args):
 
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))
 
-    # get inputs from read_group_ubam_analysis
-    for ubam_analysis in args.read_group_ubam_analysis:
-        with open(ubam_analysis, 'r') as f:
-            ubam_analysis_dict = json.load(f)
-
-        payload['workflow']['inputs'].append(
-            {
-                'analysis_type': 'read_group_ubam',
-                'input_analysis_id': ubam_analysis_dict.get('analysisId')
-            }
-        )
-
     # get file of the payload
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
@@ -191,13 +179,11 @@ if __name__ == "__main__":
                         nargs="+", help="Aligned reads files to upload")
     parser.add_argument("-a", "--seq_experiment_analysis", dest="seq_experiment_analysis", required=True,
                         help="Input analysis for sequencing experiment", type=str)
-    parser.add_argument("-u", "--read_group_ubam_analysis", dest="read_group_ubam_analysis", default=[],
-                        help="Input payloads for the analysis", type=str, nargs='+')
     parser.add_argument("-w", "--wf_name", dest="wf_name", required=True, help="Workflow name")
     parser.add_argument("-v", "--wf_version", dest="wf_version", required=True, help="Workflow version")
     parser.add_argument("-r", "--wf_run", dest="wf_run", required=True, help="workflow run ID")
     parser.add_argument("-s", "--wf_session", dest="wf_session", required=True, help="workflow session ID")
-    parser.add_argument("-b", "--genome_build", dest="genome_build", help="Genome build")
+    parser.add_argument("-b", "--genome_build", dest="genome_build", required=True, help="Genome build")
     parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation")
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
 
