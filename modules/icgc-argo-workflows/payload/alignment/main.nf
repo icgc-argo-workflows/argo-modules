@@ -28,7 +28,6 @@ process PAYLOAD_ALIGNMENT {
         -r ${workflow.runName} \
         -s "${workflow.sessionId}" \
         -v "${workflow.manifest.version}" \
-        -c "${meta.read_groups_count}" \
         -b "${genome_build}" \
         -n "${genome_annotation}" \
         $arg_pipeline_yml
@@ -39,3 +38,5 @@ process PAYLOAD_ALIGNMENT {
       END_VERSIONS
       """
   }
+
+          // -c "${meta.read_groups_count}" \

@@ -42,7 +42,7 @@ def calculate_md5(file_path):
     return md5.hexdigest()
 
 
-def rename_file(f, payload, rg_count, sample_info, date_str):
+def rename_file(f, payload, sample_info, date_str):
     experimental_strategy = payload['experiment']['experimental_strategy'].lower()
 
     if f.endswith('.bam'):
@@ -57,19 +57,21 @@ def rename_file(f, payload, rg_count, sample_info, date_str):
         sys.exit('Error: unknown aligned seq extention: %s' % f)
 
     aln_type = ''
-    if 'transcriptAlign' in f:
-        aln_type = 'transcriptAlign'
-    else:
-        aln_type = 'genomeAlign'
+    if experimental_strategy == 'dna-seq':
+        aln_type = 'aln'
+    elif experimental_strategy == 'rna-seq':
+        if 'transcriptAlign' in f:
+            aln_type = 'transcriptAln'
+        else:
+            aln_type = 'genomeAln'
 
-    new_name = "%s.%s.%s.%s.%s.%s.%s.%s" % (
+    new_name = "%s.%s.%s.%s.%s.%s.%s" % (
         payload['studyId'],
         sample_info[0]['donor']['donorId'],
         sample_info[0]['sampleId'],
         experimental_strategy,
-        aln_type,
         date_str,
-        'aln',
+        aln_type,
         file_ext
     )
 
@@ -135,7 +137,6 @@ def main(args):
             'name': 'sequencing_alignment'
         },
         'studyId': seq_experiment_analysis_dict.get('studyId'),
-        'info': {},
         'workflow': {
             'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
@@ -159,17 +160,7 @@ def main(args):
     if args.genome_annotation:
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
-    # pass `info` dict from seq_experiment payload to new payload
-    if 'info' in seq_experiment_analysis_dict and isinstance(seq_experiment_analysis_dict['info'], dict):
-        payload['info'] = seq_experiment_analysis_dict['info']
-    else:
-        payload.pop('info')
-
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))
-
-    if 'library_strategy' in payload['experiment']:
-        experimental_strategy = payload['experiment'].pop('library_strategy')
-        payload['experiment']['experimental_strategy'] = experimental_strategy
 
     # get inputs from read_group_ubam_analysis
     for ubam_analysis in args.read_group_ubam_analysis:
@@ -183,14 +174,10 @@ def main(args):
             }
         )
 
-    # get number of read groups from aligned seq file
-    # aligned_file = [ f for f in args.files_to_upload if (f.endswith('.bam') or f.endswith('.cram')) ][0]
-    rg_count = args.read_group_count
-
     # get file of the payload
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
-        renamed_file = rename_file(f, payload, rg_count, seq_experiment_analysis_dict['samples'], date_str)
+        renamed_file = rename_file(f, payload, seq_experiment_analysis_dict['samples'], date_str)
         payload['files'].append(get_files_info(renamed_file))
 
     with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
@@ -213,7 +200,6 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--genome_build", dest="genome_build", help="Genome build")
     parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation")
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
-    parser.add_argument("-c", "--read_group_count", dest="read_group_count", required=True,type=int,help="read_group_count")
 
     args = parser.parse_args()
 
