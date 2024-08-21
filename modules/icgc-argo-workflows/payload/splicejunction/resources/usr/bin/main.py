@@ -44,7 +44,7 @@ def calculate_md5(file_path):
     return md5.hexdigest()
 
 
-def rename_file(f, payload, sample_info, date_str):
+def rename_file(f, payload, sample_info, date_str, aligner):
     experimental_strategy = payload['experiment']['experimental_strategy'].lower()
 
     if f.endswith('.txt'):
@@ -52,13 +52,14 @@ def rename_file(f, payload, sample_info, date_str):
     else:
         sys.exit('Error: unknown aligned seq extention: %s' % f)
 
-    new_name = "%s.%s.%s.%s.%s.%s.%s" % (
+    new_name = "%s.%s.%s.%s.%s.%s.%s.%s" % (
         payload['studyId'],
         sample_info[0]['donor']['donorId'],
         sample_info[0]['sampleId'],
         experimental_strategy,
         date_str,
-        'splice-junctions',
+        aligner,
+        'splice_junctions',
         file_ext
     )
 
@@ -109,10 +110,15 @@ def main(args):
       with open(args.pipeline_yml, 'r') as f:
         pipeline_info = yaml.safe_load(f)
 
+    aligner = ""
     updated_pipeline_info = {}
     for key, value in pipeline_info.items():
-       new_key = key.split(":")[-1]
-       updated_pipeline_info[new_key] = value
+        new_key = key.split(":")[-1]
+        updated_pipeline_info[new_key] = value
+        if new_key == 'HISAT2_ALIGN':
+            aligner = "hisat2"
+        if new_key == "STAR_ALIGN":
+            aligner = "star"
 
     for key, value in updated_pipeline_info.items():
         for sub_key, sub_value in value.items():
@@ -151,7 +157,7 @@ def main(args):
     # get file of the payload
     date_str = date.today().strftime("%Y%m%d")
     for f in args.files_to_upload:
-        renamed_file = rename_file(f, payload, seq_experiment_analysis_dict['samples'], date_str)
+        renamed_file = rename_file(f, payload, seq_experiment_analysis_dict['samples'], date_str, aligner)
         payload['files'].append(get_files_info(renamed_file))
 
     with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
