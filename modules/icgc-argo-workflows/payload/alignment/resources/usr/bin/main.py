@@ -57,7 +57,7 @@ def rename_file(f, payload, sample_info, date_str, aligner):
         sys.exit('Error: unknown aligned seq extention: %s' % f)
 
     aln_type = ''
-    if experimental_strategy == 'dna-seq':
+    if experimental_strategy == 'wgs':
         aln_type = 'aln'
     elif experimental_strategy == 'rna-seq':
         if 'transcriptAlign' in f:
@@ -132,6 +132,10 @@ def main(args):
             aligner = "hisat2"
         if new_key == "STAR_ALIGN":
             aligner = "star"
+        if new_key == "BWA_MEM":
+            aligner = "bwa"
+        if new_key == "BWA_MEM2":
+            aligner = "bwa2"
 
     for key, value in updated_pipeline_info.items():
         for sub_key, sub_value in value.items():
