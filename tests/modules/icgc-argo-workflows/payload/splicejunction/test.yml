@@ -5,6 +5,6 @@
     - "payload/splice_junction"
   files:
     - path: "output/splicejunction/*.RNA_Seq_Alignment.payload.json"
-    - path: "output/splicejunction/out/TCRB-CA.DO262498.SA622799.rna-seq.*.splice-junctions.txt"
+    - path: "output/splicejunction/out/TCRB-CA.DO262498.SA622799.rna-seq.*.hisat2.splice_junctions.txt"
 
 
