@@ -167,7 +167,7 @@ def main(args):
         'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
         'read_groups': seq_experiment_analysis_dict.get('read_groups')
     }
-    if args.genome_annotation:
+    if args.genome_annotation != "[]":
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))

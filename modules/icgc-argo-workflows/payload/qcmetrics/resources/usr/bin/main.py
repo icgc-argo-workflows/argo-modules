@@ -329,9 +329,9 @@ def main():
       if analysis_dict['workflow'].get('genome_annotation'):
          payload['workflow']['genome_annotation'] = analysis_dict['workflow'].get('genome_annotation')
     else:
-      if args.genome_build:
+      if args.genome_build != "[]":
         payload['workflow']['genome_build'] = args.genome_build
-      if args.genome_annotation:
+      if args.genome_annotation != "[]":
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     new_dir = 'out'
