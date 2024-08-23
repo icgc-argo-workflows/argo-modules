@@ -1,6 +1,6 @@
 
 - name: "song submit"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/song/submit -entry test_song_submit -c ./tests/config/nextflow.config -profile docker,debug_qa --api_token YOUR_TOKEN
+  command: nextflow run ./tests/modules/icgc-argo-workflows/song/submit -entry test_song_submit -c ./tests/config/nextflow.config -profile docker,rdpc_qa --api_token YOUR_TOKEN
   tags:
     - "song"
     - "song/submit"
