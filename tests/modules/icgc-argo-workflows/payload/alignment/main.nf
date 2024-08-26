@@ -10,11 +10,9 @@ workflow test_payload_alignment {
     files_channel = Channel.fromPath(params.aln_files).toList()
     analysis_channel.combine(files_channel.toList())
     .map { analysis, files ->
-    [[id: 'test'], files, analysis]}
+    [[id: 'test', genome_build: "${params.genome_build}", genome_annotation: "${params.genome_annotation}"], files, analysis]}
     .set{ input_channel }
-    genome_build = params.genome_build ?: []
-    genome_annotation = params.genome_annotation ?: []
 
-    PAYLOAD_ALIGNMENT ( input_channel, file(params.pipeline_yml), genome_build, genome_annotation)
+    PAYLOAD_ALIGNMENT ( input_channel, file(params.pipeline_yml))
 }
 

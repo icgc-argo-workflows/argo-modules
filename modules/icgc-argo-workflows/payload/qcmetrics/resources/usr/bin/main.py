@@ -305,7 +305,6 @@ def main():
             'name': 'qc_metrics'
         },
         'studyId': analysis_dict.get('studyId'),
-        'info': {},
         'workflow': {
             'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
@@ -329,9 +328,9 @@ def main():
       if analysis_dict['workflow'].get('genome_annotation'):
          payload['workflow']['genome_annotation'] = analysis_dict['workflow'].get('genome_annotation')
     else:
-      if args.genome_build != "[]":
+      if args.genome_build != "null":
         payload['workflow']['genome_build'] = args.genome_build
-      if args.genome_annotation != "[]":
+      if args.genome_annotation != "null":
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     new_dir = 'out'

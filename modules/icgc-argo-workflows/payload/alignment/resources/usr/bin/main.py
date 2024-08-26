@@ -167,7 +167,7 @@ def main(args):
         'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
         'read_groups': seq_experiment_analysis_dict.get('read_groups')
     }
-    if args.genome_annotation != "[]":
+    if args.genome_annotation != "null":
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--wf_run", dest="wf_run", required=True, help="workflow run ID")
     parser.add_argument("-s", "--wf_session", dest="wf_session", required=True, help="workflow session ID")
     parser.add_argument("-b", "--genome_build", dest="genome_build", required=True, help="Genome build")
-    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation")
+    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation", default=None)
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
 
     args = parser.parse_args()
