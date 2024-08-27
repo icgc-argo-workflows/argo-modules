@@ -21,6 +21,8 @@ process PAYLOAD_QCMETRICS {
       // add and initialize variables here as needed
         def arg_pipeline_yml = pipeline_yml ? "-p $pipeline_yml" : ''
         def arg_multiqc = multiqc ? "-m $multiqc" : ''
+        def arg_genome_build = meta.genome_build ? "-b \"${meta.genome_build}\"" : ''
+        def arg_genome_annotation = meta.genome_annotation ? "-n \"${meta.genome_annotation}\"" : ''
         """
         main.py \
         -f ${files_to_upload} \
@@ -28,8 +30,8 @@ process PAYLOAD_QCMETRICS {
         -w "${workflow.manifest.name}" \
         -s ${workflow.sessionId} \
         -v ${workflow.manifest.version} \
-        -b "${meta.genome_build}" \
-        -n "${meta.genome_annotation}" \
+        $arg_genome_build \
+        $arg_genome_annotation \
         $arg_pipeline_yml \
         $arg_multiqc
 

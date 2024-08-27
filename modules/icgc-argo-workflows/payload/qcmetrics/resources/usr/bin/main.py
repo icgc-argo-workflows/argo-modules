@@ -264,8 +264,8 @@ def main():
     parser.add_argument("-w", "--wf-name", dest="wf_name", required=True, help="Workflow name")
     parser.add_argument("-s", "--wf-session", dest="wf_session", required=True, help="workflow session ID")
     parser.add_argument("-v", "--wf-version", dest="wf_version", required=True, help="Workflow version")
-    parser.add_argument("-b", "--genome_build", dest="genome_build", help="Genome build")
-    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation")
+    parser.add_argument("-b", "--genome_build", dest="genome_build", help="Genome build", default=None)
+    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation", default=None)
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
     parser.add_argument("-m", "--multiqc", dest="multiqc", required=False, help="multiqc json file")
 
@@ -328,9 +328,9 @@ def main():
       if analysis_dict['workflow'].get('genome_annotation'):
          payload['workflow']['genome_annotation'] = analysis_dict['workflow'].get('genome_annotation')
     else:
-      if args.genome_build != "null":
+      if args.genome_build is not None:
         payload['workflow']['genome_build'] = args.genome_build
-      if args.genome_annotation != "null":
+      if args.genome_annotation is not None:
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     new_dir = 'out'

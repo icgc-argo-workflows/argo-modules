@@ -150,7 +150,6 @@ def main(args):
         'workflow': {
             'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
-            'genome_build': args.genome_build,
             'run_id': args.wf_run,
             'session_id': args.wf_session,
             'pipeline_info': updated_pipeline_info,
@@ -159,7 +158,8 @@ def main(args):
                     'analysis_type': 'sequencing_experiment',
                     'input_analysis_id': seq_experiment_analysis_dict.get('analysisId')
                 }
-            ]
+            ],
+            'genome_build': args.genome_build
         },
         'files': [],
         'samples': get_sample_info(seq_experiment_analysis_dict.get('samples')),
@@ -167,7 +167,7 @@ def main(args):
         'read_group_count': seq_experiment_analysis_dict.get('read_group_count'),
         'read_groups': seq_experiment_analysis_dict.get('read_groups')
     }
-    if args.genome_annotation != "null":
+    if args.genome_annotation is not None:
         payload['workflow']['genome_annotation'] = args.genome_annotation
 
     payload['experiment'].update(seq_experiment_analysis_dict.get('experiment', {}))

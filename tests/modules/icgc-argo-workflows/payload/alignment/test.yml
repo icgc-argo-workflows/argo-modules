@@ -1,5 +1,5 @@
 - name: "payload rna alignment"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment_rna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln.config -profile docker
   tags:
     - "payload"
     - "payload/alignment"
@@ -9,7 +9,7 @@
     - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.*.hisat2.genome_aln.cram.crai"
 
 - name: "payload rna alignment transcriptome-based"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln-trans.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment_rna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.rnaaln-trans.config -profile docker
   tags:
     - "payload"
     - "payload/alignment"
@@ -19,7 +19,7 @@
     - path: "output/payload_alignment/out/TCRB-CA.DO262498.SA622799.rna-seq.*.star.transcriptome_aln.cram.crai"
     
 - name: "payload dna alignment"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.dnaaln.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/alignment -entry test_payload_alignment_dna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/alignment/nextflow.dnaaln.config -profile docker
   tags:
     - "payload"
     - "payload/alignment"

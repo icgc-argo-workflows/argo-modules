@@ -1,5 +1,5 @@
 - name: "payload qcmetrics rnaaln"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.rnaaln.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics_rna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.rnaaln.config -profile docker
   tags:
     - "payload"
     - "payload/qcmetrics"
@@ -8,7 +8,7 @@
     - path: "output/payload_qcmetrics/out/TCRB-CA.DO262498.SA622799.rna-seq.*.hisat2.*.tgz"
 
 - name: "payload qcmetrics prealnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.prealnqc.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics_dna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.prealnqc.config -profile docker
   tags:
     - "payload"
     - "payload/qcmetrics"
@@ -17,7 +17,7 @@
     - path: "output/payload_qcmetrics/out/TEST-QA.DO263089.SA624380.wgs.*.prealn.*.tgz"
 
 - name: "payload qcmetrics dnaalnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.dnaalnqc.config -profile docker
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/qcmetrics -entry test_payload_qcmetrics_dna -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/qcmetrics/nextflow.dnaalnqc.config -profile docker
   tags:
     - "payload"
     - "payload/qcmetrics"
