@@ -1,0 +1,10 @@
+- name: "payload splice junction rnaaln"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/payload/splicejunction -entry test_payload_splice_junction -c ./tests/config/nextflow.config -c ./tests/modules/icgc-argo-workflows/payload/splicejunction/nextflow.config -profile docker
+  tags:
+    - "payload"
+    - "payload/splice_junction"
+  files:
+    - path: "output/splicejunction/*.RNA_Seq_Alignment.payload.json"
+    - path: "output/splicejunction/out/TCRB-CA.DO262498.SA622799.rna-seq.*.hisat2.splice_junctions.txt"
+
+

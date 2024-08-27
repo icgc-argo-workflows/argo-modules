@@ -18,13 +18,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   Authors:
-    Linda Xiang
+    Linda Xiang <linda.xiang@oicr.on.ca>
+    Guanqiao Feng <gfeng@oicr.on.ca>
 """
 
 import os
 import sys
 import argparse
-import subprocess
 import json
 import re
 import hashlib
@@ -34,16 +34,13 @@ from datetime import date
 import copy
 from glob import glob
 import yaml
-import csv
-import io
-from math import log10, isnan
 
 workflow_process_map = {
     'Pre Alignment QC': 'prealn',
     'DNA Alignment QC': 'aln'
 }
 
-tool_list = ['fastqc', 'cutadapt', 'CollectMultipleMetrics', 'CollectWgsMetrics', 'CollectHsMetrics', 'stats', 'mosdepth', 'CollectOxoGMetrics', 'contamination']
+tool_list = ['fastqc', 'cutadapt', 'CollectMultipleMetrics', 'CollectWgsMetrics', 'CollectHsMetrics', 'stats', 'mosdepth', 'CollectOxoGMetrics', 'contamination', 'picard_RnaSeqMetrics', 'hisat2', 'star']
 
 def calculate_size(file_path):
     return os.stat(file_path).st_size
@@ -56,7 +53,7 @@ def calculate_md5(file_path):
             md5.update(chunk)
     return md5.hexdigest()
 
-def get_files_info(file_to_upload, date_str, analysis_dict, process_indicator, multiqc={}):
+def get_files_info(file_to_upload, date_str, analysis_dict, aligner, process_indicator, multiqc={}):
     # sampleId = analysis_dict['samples'][0]['sampleId']
     file_info = {
         'fileSize': calculate_size(file_to_upload),
@@ -125,13 +122,33 @@ def get_files_info(file_to_upload, date_str, analysis_dict, process_indicator, m
         file_info['info'].update({'analysis_tools': ['Mosdepth']})
         file_info['info'].update({'description': 'Mosdepth performs fast BAM/CRAM depth calculation for WGS, exome, or targeted sequencing.'})
 
-
     elif re.match(r'.+?contamination\.tgz$', file_to_upload):
         file_type = 'gatk_contamination'
         file_info.update({'dataType': 'Aligned Reads QC'})
         file_info['info']['data_subtypes'] = ['Contamination']
         file_info['info'].update({'analysis_tools': ['GATK:CalculateContamination']})
         file_info['info'].update({'description': 'GATK4 tool to calculate the fraction of reads coming from cross-sample contamination.'})
+
+    elif re.match(r'.+?RnaSeqMetrics.', file_to_upload): # to be more specific in the future to match other matching styles
+        file_type = 'picard_RnaSeqMetrics'
+        file_info.update({'dataType': 'Aligned Reads QC'})
+        file_info['info']['data_subtypes'] = ['Library Quality', 'Read Characteristics']
+        file_info['info'].update({'analysis_tools': ['Picard:RnaSeqMetrics']})
+        file_info['info'].update({'description': 'Picard tool to collect metrics describing the distribution of the bases within the transcripts.'})
+
+    elif re.match(r'.+?hisat2.', file_to_upload): # to be more specific in the future to match other matching styles
+        file_type = 'hisat2'
+        file_info.update({'dataType': 'Aligned Reads QC'})
+        file_info['info']['data_subtypes'] = ['Library Quality', 'Read Characteristics']
+        file_info['info'].update({'analysis_tools': ['Hisat2:summary']})
+        file_info['info'].update({'description': 'Hisat2 alignment summary file to collect metrics describing mapping rates.'})
+
+    elif re.match(r'.+?star.', file_to_upload): # to be more specific in the future to match other matching styles
+        file_type = 'star'
+        file_info.update({'dataType': 'Aligned Reads QC'})
+        file_info['info']['data_subtypes'] = ['Library Quality', 'Read Characteristics']
+        file_info['info'].update({'analysis_tools': ['STAR:log']})
+        file_info['info'].update({'description': 'STAR alignment summary file to collect metrics describing mapping metrics.'})
 
     else:
         sys.exit('Error: unknown QC metrics file: %s' % file_to_upload)
@@ -140,24 +157,40 @@ def get_files_info(file_to_upload, date_str, analysis_dict, process_indicator, m
     metric_info = multiqc.get(file_type, [])
     metric_info_updated = []
     for metric_item in metric_info:
-      metric_info_updated.append(metric_item)
+        metric_info_updated.append(metric_item)
     file_info['info'].update({'metrics': metric_info_updated})
 
-    # file naming patterns:
-    #   pattern:  <argo_study_id>.<argo_donor_id>.<argo_sample_id>.<experiment_strategy>.<date>.<process_indicator>.<file_type>.<file_ext>
-    #   process_indicator: pre-alignment, alignment(aligner), post-alignment(caller)
-    #   example: TEST-PR.DO250183.SA610229.rna-seq.20200319.star.genome_aln.cram
-    new_fname = '.'.join([
+    # naming for different file types. add/edit as needed
+    file_type_map = {
+    'star': 'supplement',
+    'hisat2': 'supplement',
+    'picard_RnaSeqMetrics': 'collectrnaseqmetrics',
+    'samtools_stats': 'duplicates_metrics'
+    } 
+
+    if analysis_dict['experiment']['experimental_strategy'].lower() == "rna-seq":
+      new_fname = '.'.join([
+        analysis_dict['studyId'],
+        analysis_dict['samples'][0]['donor']['donorId'],
+        analysis_dict['samples'][0]['sampleId'],
+        analysis_dict['experiment']['experimental_strategy'].lower() if analysis_dict['experiment'].get('experimental_strategy') else analysis_dict['experiment']['library_strategy'],
+        date_str,
+        aligner,
+        file_type_map.get(file_type, file_type),
+        'tgz'
+      ])
+    else:
+      new_fname = '.'.join([
         analysis_dict['studyId'],
         analysis_dict['samples'][0]['donor']['donorId'],
         analysis_dict['samples'][0]['sampleId'],
         analysis_dict['experiment']['experimental_strategy'].lower() if analysis_dict['experiment'].get('experimental_strategy') else analysis_dict['experiment']['library_strategy'],
         date_str,
         process_indicator,
-        file_type,
+        file_type_map.get(file_type, file_type),
         'tgz'
-      ])    
-    
+      ])
+
     file_info['fileName'] = new_fname
     file_info['fileType'] = new_fname.split('.')[-1].upper()
 
@@ -209,8 +242,8 @@ def prepare_tarball(sampleId, qc_files, tool_list):
       if not tool in files_to_tar: files_to_tar[tool] = []
       for f in sorted(qc_files):
         if tool in f:
-          files_to_tar[tool].append(f)   
-    
+          files_to_tar[tool].append(f)
+
     for tool in tool_list:
       if not files_to_tar[tool]: continue
       tarfile_name = f"{tgz_dir}/{sampleId}.{tool}.tgz"
@@ -231,11 +264,13 @@ def main():
     parser.add_argument("-w", "--wf-name", dest="wf_name", required=True, help="Workflow name")
     parser.add_argument("-s", "--wf-session", dest="wf_session", required=True, help="workflow session ID")
     parser.add_argument("-v", "--wf-version", dest="wf_version", required=True, help="Workflow version")
+    parser.add_argument("-b", "--genome_build", dest="genome_build", help="Genome build", default=None)
+    parser.add_argument("-n", "--genome_annotation", dest="genome_annotation", help="Genome annotation", default=None)
     parser.add_argument("-p", "--pipeline_yml", dest="pipeline_yml", required=False, help="Pipeline info in yaml")
     parser.add_argument("-m", "--multiqc", dest="multiqc", required=False, help="multiqc json file")
 
     args = parser.parse_args()
-    
+
     with open(args.metadata_analysis, 'r') as f:
       analysis_dict = json.load(f)
 
@@ -243,6 +278,21 @@ def main():
     if args.pipeline_yml:
       with open(args.pipeline_yml, 'r') as f:
         pipeline_info = yaml.safe_load(f)
+    
+    aligner = ""
+    updated_pipeline_info = {}
+    for key, value in pipeline_info.items():
+        new_key = key.split(":")[-1]
+        updated_pipeline_info[new_key] = value
+        if new_key == 'HISAT2_ALIGN':
+          aligner = "hisat2"
+        if new_key == "STAR_ALIGN":
+          aligner = "star"
+
+    for key, value in updated_pipeline_info.items():
+        for sub_key, sub_value in value.items():
+            value[sub_key] = str(sub_value)
+        updated_pipeline_info[key] = value
 
     # get tool_specific & aggregated metrics from multiqc
     mqc_stats = {}
@@ -255,7 +305,6 @@ def main():
             'name': 'qc_metrics'
         },
         'studyId': analysis_dict.get('studyId'),
-        'info': {},
         'workflow': {
             'workflow_name': args.wf_name,
             'workflow_version': args.wf_version,
@@ -266,7 +315,7 @@ def main():
                     'input_analysis_id': analysis_dict.get('analysisId')
                 }
             ],
-            'pipeline_info': pipeline_info,
+            'pipeline_info': updated_pipeline_info,
             'metrics': mqc_stats.get('metrics', None)
         },
         'files': [],
@@ -274,20 +323,15 @@ def main():
         'samples': get_sample_info(analysis_dict.get('samples'))
     }
     if analysis_dict.get('workflow'):
-      if analysis_dict['workflow'].get('genome_build'): 
-         payload['workflow']['genome_build'] = analysis_dict['workflow'].get('genome_build')
+      if analysis_dict['workflow'].get('genome_build'):
+        payload['workflow']['genome_build'] = analysis_dict['workflow'].get('genome_build')
       if analysis_dict['workflow'].get('genome_annotation'):
          payload['workflow']['genome_annotation'] = analysis_dict['workflow'].get('genome_annotation')
-
-    # pass `info` dict from seq_experiment payload to new payload
-    if 'info' in analysis_dict and isinstance(analysis_dict['info'], dict):
-      payload['info'] = analysis_dict['info']
     else:
-      payload.pop('info')
-
-    if 'library_strategy' in payload['experiment']:
-      experimental_strategy = payload['experiment'].pop('library_strategy')
-      payload['experiment']['experimental_strategy'] = experimental_strategy
+      if args.genome_build is not None:
+        payload['workflow']['genome_build'] = args.genome_build
+      if args.genome_annotation is not None:
+        payload['workflow']['genome_annotation'] = args.genome_annotation
 
     new_dir = 'out'
     try:
@@ -300,10 +344,10 @@ def main():
 
     # prepare tarball to include all QC files generated by one tool
     prepare_tarball(analysis_dict['samples'][0]['sampleId'], args.files_to_upload, tool_list)
-   
+
     process_indicator = workflow_process_map.get(args.wf_name)
     for f in sorted(glob('tarball/*.tgz')):
-      file_info = get_files_info(f, date_str, analysis_dict, process_indicator, mqc_stats)
+      file_info = get_files_info(f, date_str, analysis_dict, aligner, process_indicator, mqc_stats)
       payload['files'].append(file_info)
 
     with open("%s.%s.payload.json" % (str(uuid.uuid4()), args.wf_name.replace(" ","_")), 'w') as f:
