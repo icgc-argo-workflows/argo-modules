@@ -1,0 +1,2 @@
+analysis_type,study_id,patient,sex,status,sample,experiment,vcf,vcf_index,analysis_json
+variant_call,TEST-PRO,DO001,XY,1,SA001,WGS,example.vcf.gz,,tests/data/qa/test-job-2.payload.json
