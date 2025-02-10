@@ -161,12 +161,11 @@ workflow STAGE_INPUT {
           patient:row.patient,
           sample:row.sample,
           sex:row.sex,
-          status:row.status.toInteger(), 
           variantcaller:row.variantcaller, 
           genome_build:row.genome_build,
           experiment:row.experiment,
           data_type:'vcf'],
-          [file(row.vcf,checkIfExists: true), row.tbi],
+          [file(row.vcf,checkIfExists: true), row.vcf_index],
           row.analysis_json
           )
       }
@@ -191,6 +190,7 @@ workflow STAGE_INPUT {
     .set {ch_input_sample}
 
     //Reorganize files as flat tuple except "sequencing_experiment
+
     ch_input_sample.map{ meta,files,analysis ->
       if (meta.analysis_type == "sequencing_experiment"){
         tuple([meta,files]) //tuple([meta,[read1,read2]])
