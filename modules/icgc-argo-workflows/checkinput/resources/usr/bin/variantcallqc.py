@@ -27,7 +27,14 @@ class RowChecker:
     VALID_FORMATS = (
         "bcf",
         "vcf",
-        "vcf.gz"
+        "vcf.gz",
+        "vcf.csi",
+        "vcf.gz.csi",
+        "vcf.tbi",
+        "vcf.gz.tbi",
+        "bcf.tbi"
+        "bcf.csi"
+        ""
     )
 
     def __init__(
@@ -40,7 +47,7 @@ class RowChecker:
         sample_col = 'sample',
         experiment_col = 'experiment',
         vcf_col = 'vcf',
-        vcf_vcf_index_col = 'vcf_index',
+        vcf_index_col = 'vcf_index',
         analysis_json_col = 'analysis_json',
         **kwargs,
     ):
@@ -68,7 +75,7 @@ class RowChecker:
         self._sample_col = sample_col
         self._experiment_col = experiment_col
         self._vcf_col = vcf_col
-        self._vcf_index_col = vcf_vcf_index_col
+        self._vcf_index_col = vcf_index_col
         self._analysis_json_col = analysis_json_col
         self._seen = []
         self.modified = []
