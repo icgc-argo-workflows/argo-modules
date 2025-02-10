@@ -37,7 +37,8 @@ import yaml
 
 workflow_process_map = {
     'Pre Alignment QC': 'prealn',
-    'DNA Alignment QC': 'aln'
+    'DNA Alignment QC': 'aln',
+    'Variant Call QC': 'vcfqc'
 }
 
 tool_list = ['fastqc', 'cutadapt', 'CollectMultipleMetrics', 'CollectWgsMetrics', 'CollectHsMetrics', 'stats', 'mosdepth', 'CollectOxoGMetrics', 'contamination', 'picard_RnaSeqMetrics', 'hisat2', 'star']
@@ -149,6 +150,12 @@ def get_files_info(file_to_upload, date_str, analysis_dict, aligner, process_ind
         file_info['info']['data_subtypes'] = ['Library Quality', 'Read Characteristics']
         file_info['info'].update({'analysis_tools': ['STAR:log']})
         file_info['info'].update({'description': 'STAR alignment summary file to collect metrics describing mapping metrics.'})
+    elif re.match(r'.+?bcftools_stats.', file_to_upload): # to be more specific in the future to match other matching styles
+        file_type = 'star'
+        file_info.update({'dataType': 'Variant Call QC'})
+        file_info['info']['data_subtypes'] = ['Library Quality']
+        file_info['info'].update({'analysis_tools': ['Bcftools:Stats']})
+        file_info['info'].update({'description': 'BCFtools stats summary file to collect metrics describing variant metrics.'})
 
     else:
         sys.exit('Error: unknown QC metrics file: %s' % file_to_upload)
@@ -165,7 +172,8 @@ def get_files_info(file_to_upload, date_str, analysis_dict, aligner, process_ind
     'star': 'supplement',
     'hisat2': 'supplement',
     'picard_RnaSeqMetrics': 'collectrnaseqmetrics',
-    'samtools_stats': 'duplicates_metrics'
+    'samtools_stats': 'duplicates_metrics',
+    'bcftools_stats': 'variant_metrics'
     } 
 
     if analysis_dict['experiment']['experimental_strategy'].lower() == "rna-seq":
@@ -180,6 +188,16 @@ def get_files_info(file_to_upload, date_str, analysis_dict, aligner, process_ind
         'tgz'
       ])
     else:
+      print(
+        analysis_dict['studyId'],
+        analysis_dict['samples'][0]['donor']['donorId'],
+        analysis_dict['samples'][0]['sampleId'],
+        analysis_dict['experiment']['experimental_strategy'].lower() if analysis_dict['experiment'].get('experimental_strategy') else analysis_dict['experiment']['library_strategy'],
+        date_str,
+        process_indicator,
+        file_type_map.get(file_type, file_type),
+        'tgz'
+      )
       new_fname = '.'.join([
         analysis_dict['studyId'],
         analysis_dict['samples'][0]['donor']['donorId'],
