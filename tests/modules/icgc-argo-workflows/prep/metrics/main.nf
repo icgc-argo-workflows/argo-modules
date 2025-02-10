@@ -32,3 +32,9 @@ workflow test_prep_metrics_rnaalnqc_hisat2 {
 
     PREP_METRICS ( input_channel, [])
 }
+
+workflow test_prep_metrics_vcfqc {
+    input_channel = Channel.of([[sample: 'SA622799'],[]])
+    qc_files_channel = Channel.fromPath(params.qc_files).collect()
+    PREP_METRICS ( input_channel, qc_files_channel)
+}
