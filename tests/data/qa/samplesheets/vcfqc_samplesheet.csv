@@ -1,0 +1,2 @@
+analysis_type,study_id,patient,sex,sample,variantcaller,vcf,vcf_index,genome_build,experiment,analysis_json
+variant_calling,EXAMPLE-CA,EXAMPLE_PATIENT,XX,EXAMPLE_SAMPLE,DRAGEN,tests/data/qa/NA20126.hard-filtered.vcf.gz,tests/data/qa/NA20126.hard-filtered.vcf.gz.tbi,GRCh38_hla_decoy_ebv,WGS,
