@@ -1,0 +1,29 @@
+BCF_DEL:
+  bcftools: '1.20'
+BCF_HET_INDEL:
+  bcftools: '1.20'
+BCF_HET_SNP:
+  bcftools: '1.20'
+BCF_HOMO_INDEL:
+  bcftools: '1.20'
+BCF_HOMO_SNP:
+  bcftools: '1.20'
+BCF_INS:
+  bcftools: '1.20'
+BCF_SNP:
+  bcftools: '1.20'
+CUSTOM_DUMPSOFTWAREVERSIONS:
+  python: 3.11.0
+  yaml: '6.0'
+PREP_SAMPLE:
+  python: 3.6.9
+  samtools: '1.10'
+STATS_TSTV:
+  bcftools: '1.20'
+Workflow:
+  Nextflow: 24.10.3
+  Variant Call QC: 1.0dev
+scoreDn:
+  score-client: 5.10.0
+songGet:
+  song-client: 5.0.2
