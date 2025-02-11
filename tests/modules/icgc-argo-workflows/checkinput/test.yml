@@ -36,7 +36,7 @@
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: b9e5fce0aaf20753b47f7385a01db771
 - name: "checkinput variantcallqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow. variantcallqc.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.variantcallqc.config -profile docker,rdpc_qa
   tags:
     - "checkinput"
   files:
