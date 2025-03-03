@@ -149,7 +149,7 @@ workflow STAGE_INPUT {
           genome_build:row.genome_build,
           experiment:row.experiment,
           data_type: "${row.bam_cram}".replaceAll(/^.*\./,"").toLowerCase()], 
-          [file(row.bam_cram,checkIfExists: true), row.bai_crai],
+          row.bai_crai ? [file(row.bam_cram,checkIfExists: true),file(row.bai_crai,checkIfExists: true)] : [file(row.bam_cram,checkIfExists: true)],
           row.analysis_json
           )
       }
@@ -188,9 +188,7 @@ workflow STAGE_INPUT {
       }
     }
     .set {ch_input_sample}
-
-    //ch_input_sample.subscribe{println "??? ${it}"}
-    //ch_input_sample.subscribe{println "???CHECK?? ${it[1].size()==2}"}
+    
     //Reorganize files as flat tuple except "sequencing_experiment
     ch_input_sample.map{ meta,files,analysis ->
       if (meta.analysis_type == "sequencing_experiment"){
@@ -203,19 +201,17 @@ workflow STAGE_INPUT {
         tuple([meta,files[0]])
       }
     }.branch{ //identify files that require indexing
-      bam_to_index : it[0].analysis_type=='sequencing_alignment' && it[2].isEmpty() && it[0].data_type=='bam'
+      bam_to_index : it[0].analysis_type=='sequencing_alignment' && it[1].size()!=2 && it[0].data_type=='bam'
         return tuple([it[0],it[1]])
-      cram_to_index : it[0].analysis_type=='sequencing_alignment' && it[2].isEmpty() && it[0].data_type=='cram'
+      cram_to_index : it[0].analysis_type=='sequencing_alignment' && it[1].size()!=2 && it[0].data_type=='cram'
         return tuple([it[0],it[1]])
       vcf_to_index : it[0].analysis_type=='variant_calling' && it[1].size()!=2
         return tuple([it[0],it[1]])
-      indexed : (it[0].analysis_type=='sequencing_alignment' && ! it[2].isEmpty()) | (it[0].analysis_type=='variant_calling' && it[1].size()==2)
-        return tuple([it[0],it[1],it[2]])      
+      indexed : (it[0].analysis_type=='sequencing_alignment' && it[1].size()==2) | (it[0].analysis_type=='variant_calling' && it[1].size()==2)
+        return tuple([it[0],it[1][0],it[1][1]])     
       others: (it[0].analysis_type=='sequencing_experiment') | (it[0].analysis_type=='qc_metrics')
         return tuple([it[0],it[1]])
     }.set{ch_index_split}
-
-
 
     //Perform indexiing
     BAM_INDEX(ch_index_split.bam_to_index)
