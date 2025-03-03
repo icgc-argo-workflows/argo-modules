@@ -1,6 +1,6 @@
 
 - name: "test_stage_input_rdpcqa"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile docker,rdpc_qa --api_token YOUR_TOKEN
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile standard,rdpc_qa --api_token YOUR_TOKEN
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"

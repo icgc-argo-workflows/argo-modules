@@ -161,7 +161,6 @@ workflow STAGE_INPUT {
           patient:row.patient,
           sample:row.sample,
           sex:row.sex,
-          status:row.status.toInteger(), 
           variantcaller:row.variantcaller, 
           genome_build:row.genome_build,
           experiment:row.experiment,
