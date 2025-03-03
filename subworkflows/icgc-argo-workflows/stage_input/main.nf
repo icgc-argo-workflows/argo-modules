@@ -153,7 +153,7 @@ workflow STAGE_INPUT {
           row.analysis_json
           )
       }
-      else if (row.analysis_type == "variant_calling") {
+      else if (row.analysis_type == "variant_calling" ) {
         tuple([
           analysis_type : row.analysis_type,
           id:"${row.sample}".toString(),
@@ -165,7 +165,7 @@ workflow STAGE_INPUT {
           genome_build:row.genome_build,
           experiment:row.experiment,
           data_type:'vcf'],
-          [file(row.vcf,checkIfExists: true), row.vcf_index],
+          row.vcf_index ? [file(row.vcf,checkIfExists: true),file(row.vcf_index,checkIfExists: true)] : [file(row.vcf,checkIfExists: true)],
           row.analysis_json
           )
       }
@@ -189,15 +189,16 @@ workflow STAGE_INPUT {
     }
     .set {ch_input_sample}
 
+    //ch_input_sample.subscribe{println "??? ${it}"}
+    //ch_input_sample.subscribe{println "???CHECK?? ${it[1].size()==2}"}
     //Reorganize files as flat tuple except "sequencing_experiment
-
     ch_input_sample.map{ meta,files,analysis ->
       if (meta.analysis_type == "sequencing_experiment"){
         tuple([meta,files]) //tuple([meta,[read1,read2]])
       } else if (meta.analysis_type == "sequencing_alignment") {
         tuple([meta,files[0],files[1]])
       } else if (meta.analysis_type == "variant_calling") {
-        tuple([meta,files[0],files[1]])
+        tuple([meta,files])
       } else if (meta.analysis_type == "qc_metrics") {
         tuple([meta,files[0]])
       }
@@ -206,13 +207,14 @@ workflow STAGE_INPUT {
         return tuple([it[0],it[1]])
       cram_to_index : it[0].analysis_type=='sequencing_alignment' && it[2].isEmpty() && it[0].data_type=='cram'
         return tuple([it[0],it[1]])
-      vcf_to_index : it[0].analysis_type=='variant_calling' && it[2].isEmpty()
+      vcf_to_index : it[0].analysis_type=='variant_calling' && it[1].size()!=2
         return tuple([it[0],it[1]])
-      indexed : (it[0].analysis_type=='sequencing_alignment' && ! it[2].isEmpty()) | (it[0].analysis_type=='variant_calling' && ! it[2].isEmpty())
+      indexed : (it[0].analysis_type=='sequencing_alignment' && ! it[2].isEmpty()) | (it[0].analysis_type=='variant_calling' && it[1].size()==2)
         return tuple([it[0],it[1],it[2]])      
       others: (it[0].analysis_type=='sequencing_experiment') | (it[0].analysis_type=='qc_metrics')
         return tuple([it[0],it[1]])
     }.set{ch_index_split}
+
 
 
     //Perform indexiing
