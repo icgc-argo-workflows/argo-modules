@@ -360,17 +360,17 @@ def main():
          if not fp['fileType'] == 'VCF': continue
          variantcaller = fp['info']['analysis_tools'][0]
       for fp in args.input_files:
-        if fp.endswith('vcf.gz'): 
+        if fp.endswith('vcf.gz') or fp.endswith('bcf') or fp.endswith('vcf'): 
           vcf = os.path.join(os.getcwd(), args.outdir, os.path.basename(fp))
           os.symlink(os.path.abspath(fp), vcf)
-        elif fp.endswith('vcf.gz.tbi'):
+        elif fp.endswith('vcf.gz.tbi') or fp.endswith('vcf.gz.csi') or fp.endswith('bcf.tbi') or fp.endswith('bcf.csi') or fp.endswith('vcf.tbi')  or fp.endswith('vcf.csi'):
           tbi = os.path.join(os.getcwd(), args.outdir, os.path.basename(fp))
           os.symlink(os.path.abspath(fp), tbi)
         else:
           sys.exit("Error: not supported input file format")
       with open(output_sample_sheet, 'w', newline='') as f:
         csvwriter = csv.writer(f, delimiter=',')
-        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','tbi',"genome_build",'experiment', 'analysis_json'])
+        csvwriter.writerow(['analysis_type','study_id','patient','sex','sample','variantcaller','vcf','vcf_index',"genome_build",'experiment', 'analysis_json'])
         csvwriter.writerow([analysis_type, study_id, donor_id, sex, sample_id, variantcaller, vcf, tbi ,genome_build,experiment, metadata_json])  
 
     elif analysis_type == 'qc_metrics':
@@ -389,4 +389,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
