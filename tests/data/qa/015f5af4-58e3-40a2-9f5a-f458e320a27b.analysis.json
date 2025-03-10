@@ -1,0 +1,101 @@
+{
+  "analysisId" : "015f5af4-58e3-40a2-9f5a-f458e320a27b",
+  "studyId" : "TEST-PR",
+  "analysisState" : "PUBLISHED",
+  "analysisType" : {
+    "name" : "variant_calling",
+    "version" : 7
+  },
+  "samples" : [
+        {
+      "sampleId" : "SA610229",
+      "specimenId" : "SP210202",
+      "submitterSampleId" : "COLO-829",
+      "sampleType" : "Total DNA",
+      "matchedNormalSubmitterSampleId" : "COLO-829-BL",
+      "specimen" : {
+        "specimenId" : "SP210202",
+        "donorId" : "DO250183",
+        "submitterSpecimenId" : "COLO-829",
+        "tumourNormalDesignation" : "Tumour",
+        "specimenTissueSource" : "Blood derived",
+        "specimenType" : "Cell line - derived from tumour"
+      },
+      "donor" : {
+        "donorId" : "DO250183",
+        "studyId" : "TEST-PR",
+        "submitterDonorId" : "COLO-829",
+        "gender" : "Female"
+      }
+    }
+    ],
+  "files" : [
+        {
+      "info" : {
+        "analysis_tools" : [
+                    "Pindel"
+                ],
+        "data_category" : "Simple Nucleotide Variation"
+      },
+      "objectId" : "215d81fa-94ad-5190-896d-eb1b2f70af1a",
+      "studyId" : "TEST-PR",
+      "analysisId" : "015f5af4-58e3-40a2-9f5a-f458e320a27b",
+      "fileName" : "TEST-PR.DO250183.SA610229.wxs.20200512.sanger-wxs.somatic.indel.vcf.gz",
+      "fileType" : "VCF",
+      "fileMd5sum" : "d38486df64eb6f9288e3b741c0fe6aa6",
+      "fileSize" : 33408,
+      "fileAccess" : "controlled",
+      "dataType" : "Raw InDel Calls"
+    },
+        {
+      "info" : {
+        "analysis_tools" : [
+                    "Pindel"
+                ],
+        "data_category" : "Simple Nucleotide Variation"
+      },
+      "objectId" : "5e7e04e0-d128-59c0-9937-77e89d3185ad",
+      "studyId" : "TEST-PR",
+      "analysisId" : "015f5af4-58e3-40a2-9f5a-f458e320a27b",
+      "fileName" : "TEST-PR.DO250183.SA610229.wxs.20200512.sanger-wxs.somatic.indel.vcf.gz.tbi",
+      "fileType" : "TBI",
+      "fileMd5sum" : "cd05b9b907ff18cc1a42e3cbf6ba014e",
+      "fileSize" : 295,
+      "fileAccess" : "controlled",
+      "dataType" : "VCF Index"
+    }
+    ],
+  "createdAt" : "2020-12-02T17:18:32.353334",
+  "updatedAt" : "2020-12-02T17:18:32.353334",
+  "firstPublishedAt" : "2020-12-02T17:18:32.353334",
+  "publishedAt" : "2020-12-02T17:18:32.353334",
+  "analysisStateHistory" : [
+        {
+      "initialState" : "UNPUBLISHED",
+      "updatedState" : "PUBLISHED",
+      "updatedAt" : "2020-12-02T17:18:32.353334"
+    }
+    ],
+  "experiment" : {
+    "experimental_strategy" : "WXS",
+    "platform" : "ILLUMINA"
+  },
+  "variant_class" : "Somatic",
+  "workflow" : {
+    "genome_build" : "GRCh38_hla_decoy_ebv",
+    "inputs" : [
+            {
+        "analysis_type" : "sequencing_alignment",
+        "tumour_analysis_id" : "03905962-f1e1-41e8-9059-62f1e1c1e8fc"
+      },
+            {
+        "analysis_type" : "sequencing_alignment",
+        "normal_analysis_id" : "9940db0f-c100-496a-80db-0fc100d96ac1"
+      }
+        ],
+    "run_id" : "wes-0a29e03ae3bc400ab2e52009f6cd0380",
+    "workflow_name" : "Sanger WXS Variant Calling",
+    "workflow_short_name" : "sanger-wxs",
+    "workflow_version" : "3.1.6-3-rc.3-dev"
+  }
+}

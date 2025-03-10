@@ -1,0 +1,16 @@
+{
+  "id": "SA610229",
+  "metrics": {
+    "count_deletions": 0,
+    "count_heterozygous_indels": 0,
+    "count_heterozygous_snvs": 0,
+    "count_homozygous_indels": 0,
+    "ratio_heterozygous_homzygous_indel": null,
+    "count_homozygous_snvs": 0,
+    "ratio_heterozygous_homzygous_snv": null,
+    "count_insertions": 0,
+    "ratio_insertion_deletion": null,
+    "count_snvs": 0,
+    "ratio_transitions_transversions_snv": 0.0
+  }
+}
