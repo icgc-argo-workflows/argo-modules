@@ -1,6 +1,6 @@
 
 - name: "test_stage_input_rdpcqa"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile docker,rdpc_qa --api_token YOUR_TOKEN
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_rdpcqa -c ./tests/config/nextflow.config -profile standard,rdpc_qa --api_token YOUR_TOKEN
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
@@ -17,7 +17,7 @@
     - path: "output/songget/8421ae71-e25e-47ba-a1ae-71e25e87bae2.analysis.json"
 
 - name: "test_stage_input_user_aln"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.aln.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.aln.config -profile standard,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
@@ -25,7 +25,7 @@
     - path: "output/samplesheet_check/samplesheet.valid.csv"
 
 - name: "test_stage_input_user_germlinevar"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.germlinevar.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.germlinevar.config -profile standard,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
@@ -33,7 +33,7 @@
     - path: "output/samplesheet_check/samplesheet.valid.csv"
 
 - name: "test_stage_input_user_prealnqc"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.prealnqc.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.prealnqc.config -profile standard,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
@@ -41,7 +41,15 @@
     - path: "output/samplesheet_check/samplesheet.valid.csv"
 
 - name: "test_stage_input_user_rnaaln"
-  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.rnaaln.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.rnaaln.config -profile standard,rdpc_qa
+  tags:
+    - "subworkflows"
+    - "subworkflows/stage_input"
+  files:
+    - path: "output/checkinput/samplesheet.valid.csv"
+
+- name: "test_stage_input_user_vcfqc"
+  command: nextflow run ./tests/subworkflows/icgc-argo-workflows/stage_input -entry test_stage_input_local -c ./tests/subworkflows/icgc-argo-workflows/stage_input/nextflow.vcfqc.config -profile standard,rdpc_qa
   tags:
     - "subworkflows"
     - "subworkflows/stage_input"
