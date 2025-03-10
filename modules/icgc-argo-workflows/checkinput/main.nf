@@ -47,6 +47,11 @@ process CHECKINPUT {
             $samplesheet \\
             samplesheet.valid.csv
         ;;
+    'Variant Call QC')
+        variantcallqc.py \\
+            $samplesheet \\
+            samplesheet.valid.csv
+        ;;
     *)
         echo -n "Unknown workflow"
         exit 1
