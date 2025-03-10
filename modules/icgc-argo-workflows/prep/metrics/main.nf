@@ -43,6 +43,11 @@ process PREP_METRICS {
             -m $multiqc \\
             -s $meta.sample
         ;;
+    'Variant Call QC')
+        vcfqc.py \\
+            -q $qc_files \\
+            -s $meta.sample
+        ;;
     *)
         echo -n "Unknown workflow"
         exit 1

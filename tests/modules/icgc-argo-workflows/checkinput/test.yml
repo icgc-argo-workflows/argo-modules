@@ -1,39 +1,45 @@
 ## TODO nf-core: Please run the following command to build this file:
 #                nf-core modules create-test-yml 
 - name: "checkinput dnaaln"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.dnaaln.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.dnaaln.config -profile standard,rdpc_qa
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: dd15e39be9925cf6d65e644f863d98eb
 - name: "checkinput rnaaln"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.rnaaln.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.rnaaln.config -profile standard,rdpc_qa
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: 152ebec2105e31a9692794f2b5d3e50a
 - name: "checkinput alnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.alnqc.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.alnqc.config -profile standard,rdpc_qa
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: d8e280afe71253702cd43659f13fe123
 - name: "checkinput germlinevar"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.germlinevar.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.germlinevar.config -profile standard,rdpc_qa
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: a6895ef9874c41031125162d521dc4c2
 - name: "checkinput prealnqc"
-  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.prealnqc.config -profile docker,rdpc_qa
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.prealnqc.config -profile standard,rdpc_qa
   tags:
     - "checkinput"
   files:
     - path: "output/samplesheet_check/samplesheet.valid.csv"
       md5sum: b9e5fce0aaf20753b47f7385a01db771
+- name: "checkinput variantcallqc"
+  command: nextflow run ./tests/modules/icgc-argo-workflows/checkinput -entry test_check_input -c ./tests/modules/icgc-argo-workflows/checkinput/nextflow.variantcallqc.config -profile standard,rdpc_qa
+  tags:
+    - "checkinput"
+  files:
+    - path: "output/samplesheet_check/samplesheet.valid.csv"
 
     
